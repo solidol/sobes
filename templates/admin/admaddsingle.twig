@@ -1,0 +1,103 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Додати книгу
+{% endblock %}
+{% block content %}
+    <style>
+        /* сдвиг placeholder-а вправо при фокусе*/
+
+        input::-webkit-input-placeholder       {text-indent: 0px;   transition: text-indent 0.5s ease;}
+        input::-moz-placeholder                {text-indent: 0px;   transition: text-indent 0.5s ease;}
+        input:-moz-placeholder                 {text-indent: 0px;   transition: text-indent 0.5s ease;}
+        input:-ms-input-placeholder            {text-indent: 0px;   transition: text-indent 0.5s ease;}
+        input:focus::-webkit-input-placeholder {text-indent: 500px; transition: text-indent 0.5s ease;}
+        input:focus::-moz-placeholder          {text-indent: 500px; transition: text-indent 0.5s ease;}
+        input:focus:-moz-placeholder           {text-indent: 500px; transition: text-indent 0.5s ease;}
+        input:focus:-ms-input-placeholder      {text-indent: 500px; transition: text-indent 0.5s ease;}
+
+        #header input,
+        #main input{
+            background:#fff;
+            border-radius:15px;
+            border:2px solid #fb910d;
+            color:#000;
+            margin:1% 0;
+            height:35px;
+            font-size:14px;
+            outline:none;
+            font-family:OpenSansSemi;
+            padding:10px;
+        }
+        .carousel-control.right,
+        .carousel-control.left{
+            background-image: none!important;
+        }
+
+    </style>
+
+
+
+    <form id="form-add-book" enctype="multipart/form-data" name="form-add-book" action="{{path('admin.ebook.push')}}" method="post">
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Назва</span>
+            <input id="name" name="name" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Автор</span>
+            <input id="author" name="author" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Редактор</span>
+            <input id="editor" name="editor" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Укладач</span>
+            <input id="compiller" name="compiler" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Рік видавництва</span>
+            <input id="year" name="year" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Де видано</span>
+            <input id="printed" name="printed" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Мова видання</span>
+            <input id="lang" name="lang" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Категорія</span>
+            <input id="type" name="type" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">ISBN/ISSN</span>
+            <input id="isbn" name="isbn" type="text" class="form-control" aria-label="...">			
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">ББК</span>
+            <input id="bbk" name="bbk" type="text" class="form-control" aria-label="...">			
+        </div>			  
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Анотація</span>
+            <textarea id="summary" name="summary" class="form-control" aria-label="..."></textarea>
+        </div>			  
+        <div class="input-group">
+            <span class="input-group-addon wb-group-addon">Зміст</span>
+            <textarea id="content" name="content" class="form-control" aria-label="..."></textarea>			
+        </div>			  
+        <div class="form-group">
+            <span class="input-group-addon">Додати титульну сторінку</span>
+            <input id="title" name="title" type="file">
+        </div>
+        <div class="form-group">
+            <span class="input-group-addon">Додати книгу</span>
+            <input id="book" name="book" type="file">
+        </div>
+        <input type="hidden" name="MAX_FILE_SIZE" value="52428800" />
+        <button type="submit" class="btn btn-default">Зберегти</button>
+    </form>
+
+
+{% endblock %}

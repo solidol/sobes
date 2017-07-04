@@ -1,0 +1,123 @@
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Додати громадянина</h4>
+            </div>
+            <form action="" method="post" name="addmanform" id="addmanform">
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="lastname">Прізвище</label>  
+                                        <div class="col-md-8">
+                                            <input id="lastname" name="lastname" placeholder="Прізвище" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Прізвище громадянина</span>  
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="firstname">Ім'я</label>  
+                                        <div class="col-md-8">
+                                            <input id="firstname" name="firstname" placeholder="Ім'я" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Ім'я громадянина</span>  
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="secondname">По-батькові</label>  
+                                        <div class="col-md-8">
+                                            <input id="secondname" name="secondname" placeholder="По-батькові" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">По-батькові громадянина</span>  
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="passport">Паспорт</label>  
+                                        <div class="col-md-8">
+                                            <input id="passport" name="passport" placeholder="MP123456" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Серія та номер паспорта громадянина</span>  
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="zipcode">Поштовий індекс</label>  
+                                        <div class="col-md-8">
+                                            <input id="zipcode" name="zipcode" placeholder="73000" class="form-control input-md" type="text">
+                                            <span class="help-block">Поштовий індекс громадянина</span>  
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="city">Місто</label>  
+                                        <div class="col-md-8">
+                                            <input id="city" name="city" placeholder="Херсон" class="form-control input-md" type="text">
+                                            <span class="help-block">Місто проживання</span>  
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="street">Вулиця</label>  
+                                        <div class="col-md-8">
+                                            <input id="street" name="street" placeholder="Вулиця" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Вулиця проживання</span>  
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="building">Будинок</label>  
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input id="building" name="building" placeholder="№" class="form-control input-md" required="" type="text">
+                                                    <span class="help-block">Будинок </span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input id="room" name="room" placeholder="№" class="form-control input-md" type="text">
+                                                    <span class="help-block">квартира </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label" for="comment">Коментар</label>
+                                    <div class="col-md-10">                     
+                                        <textarea class="form-control" id="comment" name="comment"></textarea>
+                                    </div>
+                                </div>                     
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnpostpeople" type="button" data-dismiss="modal">Зберегти</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
+                    <script>
+                        $(document).ready(function () {
+                            $("#btnpostpeople").click(function () {
+                                $("#addmanform").ajaxSubmit({url: '{{path('ajax.people.push')}}', type: 'post'});
+                            })
+                        });
+                    </script>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

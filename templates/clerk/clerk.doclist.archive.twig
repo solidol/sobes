@@ -1,0 +1,46 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Список документів
+{% endblock %}
+{% block content %}
+
+
+    <table id="example" class="display table hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Дата створення</th>
+                <th>Дата контролю</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Номер</th>
+                <th>Дата створення</th>
+                <th>Дата контролю</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "language": uk_trans,
+                "processing": true,
+                "serverSide": true,
+                "ajax": "{{path('ajax.document.getlist.archive')}}",
+                "columns": [
+                    {"data": "num"},
+                    {"data": "date_in"},
+                    {"data": "date_control"},
+                    {"data": "view"}
+                ]
+            });
+        });
+    </script>
+
+
+{% endblock %}

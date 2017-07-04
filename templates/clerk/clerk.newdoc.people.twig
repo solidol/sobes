@@ -1,0 +1,124 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Додати документ
+{% endblock %}
+{% block content %}
+
+
+    <form class="form-horizontal" action="{{path('clerk.doc.push')}}" method="post">
+        <fieldset>
+
+            <!-- Form Name -->
+            <legend>Новий документ</legend>
+            <input id="doctype" name="doctype" type="hidden" value="people">
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="internal_number">Номер документу</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+
+                        <span class="input-group-addon" id="prefix_1_span">
+
+                        </span>
+                        <input id="internal_number" name="internal_number" placeholder="Робочий номер" class="form-control input-md" required="" type="text" readonly="readonly" value="{{new_num}}">
+                    </div>
+                    <input id="num_prefix_1" name="num_prefix_1" type="hidden" >
+                    <span class="help-block">Внутрішній номер документу</span>
+                </div>
+            </div>
+
+            <!-- Prepended checkbox -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="input_number">Вхідний номер</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="checkbox" name="cbinput_number" id="cbinput_number">
+                        </span>
+                        <input id="external_number" name="external_number" class="form-control" placeholder="Вхідний номер" required="" type="text" value="-" readOnly="readOnly">
+                    </div>
+                    <p class="help-block">Номер сторонньої організації</p>
+                </div>
+            </div>
+
+
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_in">Дата стоврення</label>
+                <div class="col-md-4">
+                    <input id="date_in" name="date_in" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text">
+                    <span class="help-block">Дата отримання, або сторення</span>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_control">Дата контролю</label>
+                <div class="col-md-4">
+                    <input id="date_control" name="date_control" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text">
+                    <span class="help-block">Дата контролю виконання</span>
+                </div>
+            </div>
+
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="topicstartername">Виберіть громадянина</label>
+                <div class="col-md-4">
+                    <input id="topicstartername" name="topicstartername" placeholder="Ім'я або номер паспорту" class="form-control input-md" required="" type="text">
+                    <input id="topicstarter" name="topicstarter" type="hidden" value="0">
+                </div>
+
+            </div>
+
+            <!-- Button -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="addman">Або додайте нового</label>
+                <div class="col-md-4">
+                    <button type="button" id="addman" name="addman" class="btn btn-inverse"  data-toggle="modal" data-target="#myModal">Новий громадянин</button>
+                </div>
+            </div>
+
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="doccreator">Документ створив</label>
+                <div class="col-md-4">
+                    <input id="doccreator" name="doccreator" placeholder="" class="form-control input-md" required="" type="text" value="{{username}}" readOnly="readOnly">
+                    <span class="help-block">Співробітник, що обробив картку</span>
+                </div>
+            </div>
+
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="summary">Короткий зміст</label>
+                <div class="col-md-4">
+                    <textarea class="form-control" id="summary" name="summary"></textarea>
+                </div>
+            </div>
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="comment">Коментар</label>
+                <div class="col-md-4">
+                    <textarea class="form-control" id="comment" name="comment"></textarea>
+                </div>
+            </div>
+
+            <!-- Button (Double) -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="submitok">Завершити</label>
+                <div class="col-md-8">
+                    <button id="submitok" type="submit" name="submitok" class="btn btn-success">Зберегти</button>
+                    <button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>
+                </div>
+            </div>
+
+        </fieldset>
+
+    </form>
+    {% include 'popup.newpeople.twig' %}
+
+{% endblock %}

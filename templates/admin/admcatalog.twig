@@ -1,0 +1,42 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Книги за категоріями
+{% endblock %}
+{% block content %}
+    <div class="row">
+        {% for bitem in books %}
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="h3">{{bitem.name}}</div>
+                        <div class="h4">Автор {{bitem.author}}</div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="h4">Редактор {{bitem.editor}}</div>
+                        <div class="h4">Укладач {{bitem.compiler}}</div>
+                        <a href="{{path('admin.ebook.view',{'bid':bitem.id})}}">Детальніше...</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% for number, position in pagination.pages %}
+                {% if position == 'first' %}
+                    <li><a href="{{url('admin.catalog.view',{'page':number})}}">&laquo;</a></li>
+                    {% elseif position == 'less' or position == 'more' %}
+                    <li class=""><a href="#">...</a></li>
+                    {% elseif position == 'previous' or position == 'next' %}
+                    <li><a href="{{url('admin.catalog.view',{'page':number})}}">{{ number }}</a></li>
+                    {% elseif position == 'current' %}
+                    <li class="active"><a href="#">{{ number }}</a></li>
+                            {% elseif position == 'last' %}
+                    <li><a href="{{url('admin.catalog.view',{'page':number})}}}">&raquo;</a></li>
+                    {% endif %}
+                {% endfor %}
+        </ul>
+    </nav>	
+{% endblock %}

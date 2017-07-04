@@ -1,0 +1,50 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Заявники
+{% endblock %}
+{% block content %}
+
+
+
+    <table id="example" class="display" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Прізвище</th>
+                <th>Ім'я</th>
+                <th>По батькові</th>
+                <th>Паспорт</th>
+                <th>Адреса</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Прізвище</th>
+                <th>Ім'я</th>
+                <th>По батькові</th>
+                <th>Паспорт</th>
+                <th>Адреса</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "processing": true,
+                "language": uk_trans,
+                "serverSide": true,
+                "ajax": "{{path('ajax.people.getlist')}}",
+                "columns": [
+                    {"data": "lastname"},
+                    {"data": "firstname"},
+                    {"data": "secondname"},
+                    {"data": "passport"},
+                    {"data": "addr"}
+                ]
+            });
+        });
+    </script>
+
+
+{% endblock %}

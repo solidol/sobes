@@ -1,0 +1,27 @@
+{% set n = 4 %}
+{% set i = 0 %}
+{% set i2 = 0 %}
+
+{% for bitem in rand_books %}
+    {% if i == 0 %}
+        {%if i2==0 %} 
+            <div class="item active"> 
+                {% set i2 = 1 %}
+            {% else %}
+                <div class="item"> 
+                {%endif%}
+                <div class="row col-xs-12">  
+                {% endif %}
+
+                <div class="col-lg-3 col-md-3 col-sm-4">
+                    <a href="{{path('unauth.ebook',{'bid':bitem.id})}}" alt="title" class="text-center" title="title"><h4 class="clip">{{bitem.name}}</h4></a>
+                    <a href="{{path('unauth.ebook',{'bid':bitem.id})}}" class="thumbnail">
+                        <img src="{% if bitem.title %}/uploads/books/{{bitem.title}} {% else %}#{% endif %}" alt="Image" style="max-width:100%;max-height: 200px; min-height: 200px;">
+                    </a>
+                </div>
+
+                {% set i = i+1 %}
+                {% if i == n %}</div></div>{% set i = 0 %}{% endif %}
+            {% endfor %}
+            {% if i != 0 %}</div>{% endif %}
+

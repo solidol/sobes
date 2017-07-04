@@ -1,0 +1,22 @@
+{% extends "index.twig" %}
+
+{% block title %}
+Головна
+{% endblock %}
+{% block content %}
+    {% set n = 5 %}
+    {% set i = 0 %}
+    <h1>Останні поновлення</h1>
+    {% for bitem in books %}
+        {% if i == 0 %}<div class="row column-5"> {% endif %}
+            <div class="col-lg-1-5 col-md-1-5 col-sm-1-5 col-xs-12">
+                <a href="{{path('unauth.ebook',{'bid':bitem.id})}}" alt="title" class="text-center" title="title"><h4>{{bitem.name}}</h4></a>
+                <a href="{{path('unauth.ebook',{'bid':bitem.id})}}" class="thumbnail">
+                    <img src="{% if bitem.title %}/uploads/books/{{bitem.title}} {% else %}#{% endif %}" alt="Image" style="max-width:100%;">
+                </a>
+            </div>
+            {% set i = i+1 %}
+            {% if i == n %}</div>{% set i = 0 %}{% endif %}
+        {% endfor %}
+        {% if i != 0 %}</div>{% endif %}
+{% endblock %}
