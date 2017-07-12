@@ -6,6 +6,7 @@
  * and open the template in the editor.
  */
 require_once 'people.php';
+require_once 'org.php';
 require_once 'document.php';
 
 

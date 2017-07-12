@@ -54,7 +54,7 @@ class RDAStatic {
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 switch ($key) {
-                    case "type": $sqlw[] = " type = $value ";
+                    case "type": $sqlw[] = " type = '$value' ";
                         break;
                 }
             }
@@ -84,12 +84,13 @@ class RDAStatic {
             $view = 'document_archive';
         else
             $view = 'document_view';
+        if ($keys['type'] AND $view != 'document_archive') $view.='_'.$keys['type'];
         $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM $view WHERE 1 ";
 
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 switch ($key) {
-                    case "type": $sqlw[] = " type = $value ";
+                    case "type": $sqlw[] = " type = '$value' ";
                         break;
                 }
             }
@@ -111,6 +112,7 @@ class RDAStatic {
             $sql .= " LIMIT " . $limit['start'] . "," . $limit['length'] . " ";
         }
         $arPeople = $app['db']->fetchAll($sql);
+        
         return $arPeople;
     }
 
@@ -147,12 +149,24 @@ class RDAStatic {
     public static function getDocById($id) {
         global $app;
         $arDoc = array();
-        $sql = "SELECT * FROM document "
-                . "INNER JOIN people ON document.topicstarter=people.id "
-                . "WHERE id = '$id'";
+        $sql = "SELECT * FROM document WHERE document.id = ?";
 
-        $arDoc = $app['db']->fetchAssoc($sql);
+        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
+        $view = 'document_view_'.$arDoc['type'];
+        
+        $sql = "SELECT * FROM $view WHERE id = ?";
+
+        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
         return $arDoc;
+    }
+
+    public static function moveToArchById($id) {
+        global $app;
+        $arDoc = array();
+        $sql = "UPDATE document SET status = 'archived' WHERE id = ?";
+
+        $arDoc = $app['db']->executeUpdate($sql, array((int) $id));
+        return 0;
     }
 
     /**
@@ -190,12 +204,59 @@ class RDAStatic {
         return $arPeople;
     }
 
-    
-    public static function getStateDocTypes(){
+    public static function getOrgByAnyKey($keys = array(), $logic = "AND", $limit = "30") {
         global $app;
-        $arTypes=array();
+        $sqlw = array();
+        $arPeople = array();
+        $sql = "SELECT * FROM organizations WHERE 1 ";
+        if (!empty($keys))
+            foreach ($keys as $key => $value) {
+                switch ($key) {
+                    case "name": $sqlw[] = " name LIKE '%$value%' ";
+                        break;
+                }
+            }
+        if (!empty($sqlw))
+            $sqlw = implode($logic, $sqlw);
+        else
+            $sqlw = "";
+        if ($sqlw != "")
+            $sql .= " AND " . $sqlw;
+        $arPeople = $app['db']->fetchAll($sql);
+        return $arPeople;
+    }
+
+    public static function getStateDocTypes() {
+        global $app;
+        $arTypes = array();
         $sql = "SELECT * FROM state_types WHERE 1 ";
         $arTypes = $app['db']->fetchAll($sql);
         return $arTypes;
     }
+
+    public static function getOrgDocTypes() {
+        global $app;
+        $arTypes = array();
+        $sql = "SELECT * FROM org_types WHERE 1 ";
+        $arTypes = $app['db']->fetchAll($sql);
+        return $arTypes;
+    }
+
+    public static function getContentDocTypes() {
+        global $app;
+        $arTypes = array();
+        $sql = "SELECT * FROM content_types WHERE 1 ";
+        $arTypes = $app['db']->fetchAll($sql);
+        return $arTypes;
+    }
+
+    public static function getMaxNumOrg($type = false) {
+        global $app;
+        if (!$type)
+            return false;
+        $sql = "SELECT MAX(internal_number) AS max_num FROM `document` WHERE `num_prefix_0` = ? ";
+        $arRes = $app['db']->fetchAssoc($sql, array($type));
+        return ($arRes['max_num'])?(int) $arRes['max_num']:0;
+    }
+
 }

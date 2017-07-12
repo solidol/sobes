@@ -12,11 +12,24 @@ $app->get('/clerk/doclist/all', function() use ($app) {
     $user = $token->getUser();
     $data['username']=$user->getName();
     $data['userid']=$user->getId();
-    
-    
-    
-    return $app['twig']->render('clerk.doclist.twig', $data);
+    return $app['twig']->render('clerk.doclist.all.twig', $data);
 })->bind('clerk.doclist.all');
+
+$app->get('/clerk/doclist/all:{type}', function($type) use ($app) {
+    $data=array();
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data['username']=$user->getName();
+    $data['userid']=$user->getId();
+    switch ($type){
+        case "org": return $app['twig']->render('clerk.doclist.org.twig', $data); break; 
+        case "state": return $app['twig']->render('clerk.doclist.state.twig', $data); break; 
+        case "people": return $app['twig']->render('clerk.doclist.people.twig', $data); break; 
+        case "visit": return $app['twig']->render('clerk.doclist.visitors.twig', $data); break; 
+        default: return $app['twig']->render('clerk.doclist.all.twig', $data); break; 
+    }
+    return $app['twig']->render('clerk.doclist.all.twig', $data);
+})->bind('clerk.doclist.alltyped');
 
 $app->get('/clerk/doclist/archive', function() use ($app) {
     $data=array();

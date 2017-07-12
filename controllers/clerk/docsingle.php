@@ -16,13 +16,25 @@ $app->get('/clerk/newdoc/people', function() use ($app) {
     return $app['twig']->render('clerk.newdoc.people.twig', $data);
 })->bind('clerk.doc.new.people');
 
+$app->get('/clerk/newdoc/visitors', function() use ($app) {
+    $data = array();
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data['username'] = $user->getName();
+    $data['userid'] = $user->getId();
+    $data['new_num'] = RDAStatic::getMaxNumDoc("visitors") + 1;
+    return $app['twig']->render('clerk.newdoc.visitors.twig', $data);
+})->bind('clerk.doc.new.visitors');
+
 $app->get('/clerk/newdoc/org', function() use ($app) {
     $data = array();
     $token = $app['security']->getToken();
     $user = $token->getUser();
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
-
+    $data['new_num'] = "";
+    $data['doctypes'] = RDAStatic::getOrgDocTypes();
+    $data['doctcontent'] = RDAStatic::getContentDocTypes();
     return $app['twig']->render('clerk.newdoc.org.twig', $data);
 })->bind('clerk.doc.new.org');
 
@@ -48,6 +60,7 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $dt_cr = explode(".", $post->get('date_control'));
     $dt_cr = $dt_cr[2] . '-' . $dt_cr[1] . '-' . $dt_cr[0];
 
+    $data['num_prefix_0'] = $post->get('num_prefix_0');
     $data['num_prefix_1'] = $post->get('num_prefix_1');
     $data['num_prefix_2'] = $post->get('num_prefix_2');
     $data['internal_number'] = $post->get('internal_number');
@@ -57,39 +70,56 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $data['date_in'] = $dt_in;
     $data['date_control'] = $dt_cr;
     $data['type'] = $post->get('doctype');
-    $data['topicstarter'] = $post->get('topicstarter')?$post->get('topicstarter'):0;
+    $data['topicstarter'] = $post->get('topicstarter') ? $post->get('topicstarter') : 0;
+    $data['topicstarter_org'] = $post->get('orgstarter') ? $post->get('orgstarter') : 0;
     $data['created_by'] = $user->getId();
     $data['summary'] = $post->get('summary');
     $data['comment'] = $post->get('comment');
 
     $app['db']->insert('document', $data);
-    
-switch ($post->get('doctype')){
-    case "people": return $app->redirect(
-                    $app['url_generator']->generate('clerk.doc.view', array('id' => date("Y"),
-                        'pref1' => $data['num_prefix_1'],
-                        //'pref2' => $data['num_prefix_1'],
-                        'no' => $data['internal_number']))); break;
-    case "state": return $app->redirect(
-                    $app['url_generator']->generate('clerk.doc.view', array('year' => date("Y"),
-                        'pref1' => $data['num_prefix_1'],
-                        'pref2' => $data['num_prefix_2'],
-                        'no' => $data['internal_number']))); break;
-    case "org": return $app->redirect(
-                    $app['url_generator']->generate('clerk.doc.view', array('year' => date("Y"),
-                        'pref1' => $data['num_prefix_1'],
-                        //'pref2' => $data['num_prefix_1'],
-                        'no' => $data['internal_number']))); break;
-    default: return $app->redirect($app['url_generator']->generate('clerk.start')); break;
-}
-    
+    $newId = $app['db']->lastInsertId();
+
+    switch ($post->get('doctype')) {
+        case "people": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        case "state": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        case "org": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        case "visitors": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        default: return $app->redirect($app['url_generator']->generate('clerk.start'));
+            break;
+    }
 })->bind('clerk.doc.push');
 
 $app->get('/clerk/view/id:{doc}', function($doc) use ($app) {
     $data = array();
     $data['doc'] = RDAStatic::getDocById($doc);
-    return $app['twig']->render('clerk.skarga.twig', $data);
+
+    switch ($data['doc']['type']) {
+        case "people": return $app['twig']->render('clerk.doc.people.twig', $data);
+            break;
+        case "state": return $app['twig']->render('clerk.doc.state.twig', $data);
+            break;
+        case "org": return $app['twig']->render('clerk.doc.org.twig', $data);
+            break;
+        case "visitors": return $app['twig']->render('clerk.doc.visitors.twig', $data);
+            break;
+        default: return $app->redirect($app['url_generator']->generate('clerk.start'));
+            break;
+    }
+    return $app->redirect($app['url_generator']->generate('clerk.start'));
 })->bind('clerk.doc.view');
+
+$app->get('/clerk/toarch/id:{doc}', function($doc) use ($app) {
+    RDAStatic::moveToArchById($doc);
+    return $app->redirect($app['url_generator']->generate('clerk.doc.view', array('doc' => $doc)));
+})->bind('clerk.doc.movetoarch');
 
 $app->get('/clerk/edit/id:{doc}', function($doc) use ($app) {
     $data = array();
@@ -98,36 +128,62 @@ $app->get('/clerk/edit/id:{doc}', function($doc) use ($app) {
     $data['doc'] = RDAStatic::getDocById($doc);
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
-    $data['new_num'] = RDAStatic::getMaxNumPeopleDoc() + 1;
+    //$data['fullnum'] = '';
+    $dt_in = explode("-", $data['doc']['date_in']);
+    $data['doc']['date_in'] = $dt_in[2] . '.' . $dt_in[1] . '.' . $dt_in[0];
+    $dt_cr = explode("-", $data['doc']['date_control']);
+    $data['doc']['date_control'] = $dt_cr[2] . '.' . $dt_cr[1] . '.' . $dt_cr[0];
+
+    switch ($data['doc']['type']) {
+        case "people": return $app['twig']->render('clerk.edit.people.twig', $data);
+            break;
+        case "state": return $app['twig']->render('clerk.edit.state.twig', $data);
+            break;
+        case "org": return $app['twig']->render('clerk.edit.org.twig', $data);
+            break;
+        case "visitors": return $app['twig']->render('clerk.edit.visitors.twig', $data);
+            break;
+        default: return $app->redirect($app['url_generator']->generate('clerk.start'));
+            break;
+    }
+
     return $app['twig']->render('clerk.newdoc.people.twig', $data);
 })->bind('clerk.doc.edit');
 
-
-/**
- $app->get('/clerk/view/no:{pref1}-{no}/{year}', function($year, $pref1, $no) use ($app) {
-    $data = array();
-    $data['doc'] = RDAStatic::getDocBy($pref1, $pref1, $no, $year);
-    return $app['twig']->render('clerk.skarga.twig', $data);
-})->bind('clerk.doc.type1.view');
-
-$app->get('/clerk/view/no:{pref1}-{pref2}-{no}/{year}', function($year, $pref1, $pref2, $no) use ($app) {
-    $data = array();
-    $data['doc'] = RDAStatic::getDocBy($pref1, $pref1, $no, $year);
-    return $app['twig']->render('clerk.skarga.twig', $data);
-})->bind('clerk.doc.type2.view');
-
-$app->get('/clerk/edit/no:{pref1}-{no}/{year}', function($year, $pref1, $no) use ($app) {
-    $data = array();
+$app->post('/clerk/upddoc', function() use ($app) {
     $token = $app['security']->getToken();
     $user = $token->getUser();
-    $data['doc'] = RDAStatic::getDocBy($pref1, $pref1, $no, $year);
-    $data['username'] = $user->getName();
-    $data['userid'] = $user->getId();
-    $data['new_num'] = RDAStatic::getMaxNumPeopleDoc() + 1;
-    return $app['twig']->render('clerk.newdoc.people.twig', $data);
-})->bind('clerk.doc.type1.edit');
+    $data = array();
+    $post = $app['request'];
 
+    $dt_in = explode(".", $post->get('date_in'));
+    $dt_in = $dt_in[2] . '-' . $dt_in[1] . '-' . $dt_in[0];
+    $dt_cr = explode(".", $post->get('date_control'));
+    $dt_cr = $dt_cr[2] . '-' . $dt_cr[1] . '-' . $dt_cr[0];
+    $id = $post->get('docid');
+    $data['date_in'] = $dt_in;
+    $data['date_control'] = $dt_cr;
+    $data['summary'] = $post->get('summary');
+    $data['comment'] = $post->get('comment');
 
- * 
- * 
- */
+    $app['db']->update('document', $data, array('id' => $id));
+    $newId = $id;
+
+    switch ($post->get('doctype')) {
+        case "people": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        case "state": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        case "org": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        case "visitors": return $app->redirect(
+                            $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
+            break;
+        default: return $app->redirect($app['url_generator']->generate('clerk.start'));
+            break;
+    }
+})->bind('clerk.doc.update');
+

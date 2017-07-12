@@ -1,0 +1,101 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Список документів
+{% endblock %}
+{% block content %}
+    <script>
+        function moveToArch(id) {
+            var ask = window.confirm("Ви переносите документ до архіву, відмінити дію буде неможливо. Продовжити?");
+            if (ask) {
+                window.alert("Документ перенесено до архіву!");
+
+                document.location.href = "/default.php/clerk/toarch/id:" + id;
+
+            }
+        }
+    </script>
+
+
+    <div class="tab-content">
+        <div id="menu2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="{{path('clerk.doc.new.people')}}" class="btn btn-success">ДОДАТИ</a>
+                    </div>
+                    <div class="col-md-10">
+                        <h3>Звернення громадян</h3>
+                    </div>
+                </div>
+            </div>
+
+            <table id="people" class="display table hover" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата створення</th>
+                        <th>Дата контролю</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата створення</th>
+                        <th>Дата контролю</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#people').DataTable({
+                "language": uk_trans,
+                "processing": true,
+                "serverSide": true,
+                "ajax": "{{path('ajax.document.getlisttyped',{'type':'people'})}}",
+                "columns": [
+                    {"data": "num"},
+                    {"data": "date_in"},
+                    {"data": "date_control"},
+                    {"data": "view"},
+                    {"data": "edit"},
+                    {"data": "arch"}
+                ],
+                "fnRowCallback": function (nRow, aData) {
+                    if (aData['timetolife'] < 0) {
+                        $('td', nRow).css({"background-color": "#FF978C"});
+                    } else
+
+                    if (aData['timetolife'] > 0 &&
+                            aData['timetolife'] <= 2) {
+                        $('td', nRow).css({"background-color": "#FFDCCB"});
+                    } else
+
+                    if (aData['timetolife'] > 2 &&
+                            aData['timetolife'] <= 5) {
+                        $('td', nRow).css({"background-color": "#FFE9CB"});
+                    } else
+
+                    {
+                        //$('td', nRow).addClass("success");
+                        $('td', nRow).css({"background-color": "#DFFFE5"});
+                    }
+
+                }
+            });
+        });
+    </script>
+
+
+{% endblock %}

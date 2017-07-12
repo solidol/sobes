@@ -64,7 +64,6 @@ $app->register(new \Kilte\Silex\Pagination\PaginationServiceProvider, array('pag
 $app['twig.path'] = array(__DIR__ . '/templates',
     __DIR__ . '/templates/simpleuser',
     __DIR__ . '/templates/clerk',
-    __DIR__ . '/templates/manager',
     __DIR__ . '/templates/admin',
     __DIR__ . '/templates/common'
 );
