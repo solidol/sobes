@@ -1,26 +1,24 @@
 {% extends "index.twig" %}
 
 {% block title %}
-    Організації
+    Заявники
 {% endblock %}
 {% block content %}
 
 
 
-    <table id="peoplelist" class="display" width="100%" cellspacing="0">
+    <table id="example" class="display" width="100%" cellspacing="0">
         <thead>
             <tr>
-                <th>Прізвище</th>
-                <th>Ім'я</th>
-                <th>По батькові</th>
+                <th>Назва</th>
+                <th>Місто</th>
                 <th>Адреса</th>
             </tr>
         </thead>
         <tfoot>
             <tr>
-                <th>Прізвище</th>
-                <th>Ім'я</th>
-                <th>По батькові</th>
+                <th>Назва</th>
+                <th>Місто</th>
                 <th>Адреса</th>
             </tr>
         </tfoot>
@@ -28,15 +26,14 @@
 
     <script>
         $(document).ready(function () {
-            $('#peoplelist').DataTable({
+            $('#example').DataTable({
                 "processing": true,
                 "language": uk_trans,
                 "serverSide": true,
-                "ajax": "{{path('ajax.people.getlist')}}",
+                "ajax": "{{path('ajax.org.getlist')}}",
                 "columns": [
-                    {"data": "lastname"},
-                    {"data": "firstname"},
-                    {"data": "secondname"},
+                    {"data": "name"},
+                    {"data": "city"},
                     {"data": "addr"}
                 ]
             });

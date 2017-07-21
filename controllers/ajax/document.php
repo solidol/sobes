@@ -35,6 +35,7 @@ $app->get('/ajax/document/getlist', function() use ($app) {
     $arDocs = array();
     $get = $app['request'];
     $type = urldecode($get->get('type'));
+    $columnsParam = $get->get('columns') ? $get->get('columns') : array();
     $limit['draw'] = $get->get('draw') ? $get->get('draw') : 1;
     $limit['length'] = $get->get('length') ? $get->get('length') : 10;
     $limit['start'] = $get->get('start') ? $get->get('start') : 0;
@@ -42,11 +43,21 @@ $app->get('/ajax/document/getlist', function() use ($app) {
     $keys = array();
     if ($type)
         $keys['type'] = $searchstring; // ??????? WTF ?????????
-
+    if (!empty($columnsParam))
+        foreach ($columnsParam as $key => $value) {
+            switch ($key) {
+                case 0: if ($value['search']['value']>'') $keys['fullnum'] = $value['search']['value'];
+                    break;
+                case 1: if ($value['search']['value']>'') $keys['date_in'] = $value['search']['value'];
+                    break;
+                case 2: if ($value['search']['value']>'') $keys['date_control'] = $value['search']['value'];
+                    break;
+            }
+        }
     $result = RDAStatic::getDocList($keys, "AND", $limit, $search);
-    $arDocs['data']=array();
+    $arDocs['data'] = array();
     foreach ($result as $k => $v) {
-        
+
         $item['num'] = '';
         if ($v['num_prefix_1'] != '')
             $item['num'] .= $v['num_prefix_1'];
@@ -58,15 +69,15 @@ $app->get('/ajax/document/getlist', function() use ($app) {
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
-        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id'] ))
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
 
         $item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.doc.edit', array('doc' => $v['id']))
                 . '"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a>';
 
         $item['arch'] = '<a href="' . $app['url_generator']->generate('clerk.doc.movetoarch', array('doc' => $v['id']))
-                . '" onClick="moveToArch('.$v['id'].')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
-        $item['arch'] = '<a href="#" onClick="moveToArch('.$v['id'].')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
+                . '" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
+        $item['arch'] = '<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
         $arDocs['data'][] = $item;
     }
     $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;
@@ -83,18 +94,34 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
     $arDocs = array();
     $get = $app['request'];
     $type = urldecode($get->get('type'));
+    $datecontrol = urldecode($get->get('datecontrol'));
+    $columnsParam = $get->get('columns') ? $get->get('columns') : array();
     $limit['draw'] = $get->get('draw') ? $get->get('draw') : 1;
     $limit['length'] = $get->get('length') ? $get->get('length') : 10;
     $limit['start'] = $get->get('start') ? $get->get('start') : 0;
     $search = $get->get('search') ? $get->get('search')['value'] : false;
     $keys = array();
     if ($type)
-        $keys['type'] = $type; // ??????? WTF ?????????
-
-    $result = RDAStatic::getDocList($keys, "AND", $limit, $search);
-    $arDocs['data']=array();
-    foreach ($result as $k => $v) {
+        $keys['type'] = $type;
+    if ($datecontrol)
+        $keys['date_control'] = $datecontrol;
+    if (!empty($columnsParam))
+        foreach ($columnsParam as $key => $value) {
         
+            switch ($key) {
+                case 0: if ($value['search']['value']!='') $keys['fullnum'] = $value['search']['value'];
+                    break;
+            case 1: if ($value['search']['value']!='') $keys['date_in'] = $value['search']['value']; 
+                    break;
+                case 2: if ($value['search']['value']!='') $keys['date_control'] = $value['search']['value'];
+                    break;
+            }
+        }
+        //var_dump($keys);
+    $result = RDAStatic::getDocList($keys, "AND", $limit, $search);
+    $arDocs['data'] = array();
+    foreach ($result as $k => $v) {
+
         $item['num'] = '';
         if ($v['num_prefix_1'] != '')
             $item['num'] .= $v['num_prefix_1'];
@@ -106,15 +133,15 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
-        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id'] ))
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
 
         $item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.doc.edit', array('doc' => $v['id']))
                 . '"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a>';
 
         $item['arch'] = '<a href="' . $app['url_generator']->generate('clerk.doc.movetoarch', array('doc' => $v['id']))
-                . '" onClick="moveToArch('.$v['id'].')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
-        $item['arch'] = '<a href="#" onClick="moveToArch('.$v['id'].')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
+                . '" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
+        $item['arch'] = '<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
         $arDocs['data'][] = $item;
     }
     $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;
@@ -140,7 +167,7 @@ $app->get('/ajax/document/archivelist', function() use ($app) {
         $keys['type'] = $searchstring; // ??????? WTF ?????????
 
     $result = RDAStatic::getDocList($keys, "AND", $limit, $search, "archive");
-    $arDocs['data']=array();
+    $arDocs['data'] = array();
     foreach ($result as $k => $v) {
         $item['num'] = '';
         if ($v['num_prefix_1'] != '')
@@ -152,7 +179,7 @@ $app->get('/ajax/document/archivelist', function() use ($app) {
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
-        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id'] )). 
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id'])) .
                 '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
 
         $arDocs['data'][] = $item;
@@ -171,6 +198,7 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
     $arDocs = array();
     $get = $app['request'];
     $type = urldecode($get->get('type'));
+    $datecontrol = urldecode($get->get('datecontrol'));
     $limit['draw'] = $get->get('draw') ? $get->get('draw') : 1;
     $limit['length'] = $get->get('length') ? $get->get('length') : 10;
     $limit['start'] = $get->get('start') ? $get->get('start') : 0;
@@ -178,9 +206,10 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
     $keys = array();
     if ($type)
         $keys['type'] = $type;
-
+    if ($datecontrol)
+        $keys['date_control'] = $datecontrol;
     $result = RDAStatic::getDocList($keys, "AND", $limit, $search, "archive");
-    $arDocs['data']=array();
+    $arDocs['data'] = array();
     foreach ($result as $k => $v) {
         $item['num'] = '';
         if ($v['num_prefix_1'] != '')
@@ -192,7 +221,7 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
-        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id'] )). 
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id'])) .
                 '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
 
         $arDocs['data'][] = $item;

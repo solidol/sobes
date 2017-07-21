@@ -8,6 +8,8 @@
 require_once 'docsingle.php';
 require_once 'doclists.php';
 require_once 'people.php';
+require_once 'search.php';
+require_once 'org.php';
 
 $app->get('/clerk', function() use ($app) {
     return $app['twig']->render('clerk.start.twig', array());

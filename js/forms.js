@@ -5,8 +5,31 @@
  */
 $(document).ready(function () {
 
-    $(".datepicker").datepicker($.datepicker.regional[ "uk" ]);
+    $(document).on('click', '.btn-add', function(e)
+    {
+        e.preventDefault();
+        var controlForm = $('.controls'),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
 
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<span class="glyphicon glyphicon-minus"></span>');
+    }).on('click', '.btn-remove', function(e)
+    {
+		$(this).parent().parent().remove();
+
+		e.preventDefault();
+		return false;
+	});
+
+
+    $(".datepicker").datepicker();
+
+    $(".datepickersearch").datepicker({dateFormat: 'yy-mm-dd'});
+    $.datepicker.setDefaults($.datepicker.regional['uk']);
     $("#selecttype").change(function () {
         $("#prefix_2_span").html(this.value);
         $("#num_prefix_2").val(this.value);
@@ -21,8 +44,8 @@ $(document).ready(function () {
             data: {
                 type: this.value
             },
-            success: function (data ) {
-                $("#internal_number").val(data+1);
+            success: function (data) {
+                $("#internal_number").val(data + 1);
             }
         });
     });
@@ -110,5 +133,7 @@ $(document).ready(function () {
             //log("Selected: " + ui.item.value + " aka " + ui.item.id);
         }
     });
+    
+    $(".dataTables_filter").hide();
 });
 

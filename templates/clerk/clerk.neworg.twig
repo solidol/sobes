@@ -1,10 +1,17 @@
-<div id="orgModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
+{% extends "index.twig" %}
+
+{% block title %}
+    Заявники
+{% endblock %}
+{% block content %}
+
+
+
+<div class="modal-content">
             <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
                 <h4 class="modal-title">Додати організацію</h4>
             </div>
-            <form action="" method="post" name="addorgform" id="addorgform1">
+            <form action="{{path('clerk.org.push')}}" method="post" name="addorgform" id="addorgform1">
 
                 <div class="modal-body">
                     <div class="container-fluid">
@@ -85,18 +92,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success" id="btnpostorg" type="button" data-dismiss="modal">Зберегти</button>
-                    <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
-                    <script>
-                        $(document).ready(function () {
-                            $("#btnpostorg").click(function () {
-                                $("#addorgform1").ajaxSubmit({url: '{{path('ajax.org.push')}}', type: 'post'});
-                                
-                            });
-                        });
-                    </script>
+                    <button class="btn btn-success" id="btnpostorg" type="submit" data-dismiss="modal">Зберегти</button>
+                    <button class="btn btn-default" type="reset" data-dismiss="modal">Скасувати</button>
                 </div>
             </form>
         </div>
-    </div>
-</div>
+{% endblock %}

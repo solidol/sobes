@@ -41,6 +41,29 @@ class RDAStatic {
         return $arRes['doccnt'];
     }
 
+    public static function getOrgCount($keys = false, $logic = "AND") {
+        global $app;
+        $sqlw = array();
+        $sqls = '';
+        $arPeople = array();
+        $sql = "SELECT COUNT(*) AS doccnt FROM organizations  WHERE 1 ";
+        if (!empty($keys))
+            foreach ($keys as $key => $value) {
+                switch ($key) {
+                    case "name": $sqlw[] = " name LIKE '%$value%' ";
+                        break;
+                }
+            }
+        if (!empty($sqlw))
+            $sqlw = implode($logic, $sqlw);
+        else
+            $sqlw = "";
+        if ($sqlw != "")
+            $sql .= " AND " . $sqlw;
+        $arRes = $app['db']->fetchAssoc($sql);
+        return $arRes['doccnt'];
+    }
+
     public static function getDocCount($keys = false, $logic = "AND", $search = false, $isarchive = false) {
         global $app;
         if ($isarchive)
@@ -54,7 +77,8 @@ class RDAStatic {
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 switch ($key) {
-                    case "type": $sqlw[] = " type = '$value' ";
+                    case "type": $sqlw[] = " type = '$value' "; break;
+                    case "date_control": $sqlw[] = " date_control = '$value' "; break;
                         break;
                 }
             }
@@ -84,13 +108,16 @@ class RDAStatic {
             $view = 'document_archive';
         else
             $view = 'document_view';
-        if ($keys['type'] AND $view != 'document_archive') $view.='_'.$keys['type'];
+        if (isset($keys['type']) AND $view != 'document_archive') $view.='_'.$keys['type'];
         $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM $view WHERE 1 ";
 
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 switch ($key) {
-                    case "type": $sqlw[] = " type = '$value' ";
+                    case "type": $sqlw[] = " type = '$value' "; break;
+                    case "fullnum": $sqlw[] = " fullnum LIKE '%$value%' "; break;
+                    case "date_in": $sqlw[] = " date_in = '$value' "; break;
+                    case "date_control": $sqlw[] = " date_control = '$value' "; break;
                         break;
                 }
             }
@@ -112,7 +139,7 @@ class RDAStatic {
             $sql .= " LIMIT " . $limit['start'] . "," . $limit['length'] . " ";
         }
         $arPeople = $app['db']->fetchAll($sql);
-        
+        //var_dump($sql);
         return $arPeople;
     }
 

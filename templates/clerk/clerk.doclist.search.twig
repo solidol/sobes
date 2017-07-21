@@ -24,8 +24,9 @@
     </ul>
 
     <div class="tab-content">
-        
+
         <div id="menu1" class="tab-pane fade in active">
+
             <h3>Розпорядчі документи</h3>
             <table id="state" class="display table hover" width="100%" cellspacing="0">
                 <thead>
@@ -33,6 +34,14 @@
                         <th>Номер</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th><input type="text" name="internal_num" placeholder="XX-XX-XX" class="form-control input-md" id=""></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -51,13 +60,21 @@
             </table>
         </div>
         <div id="menu2" class="tab-pane fade">
-            <h3>Скарги</h3>
+            <h3>Звернення громадян</h3>
             <table id="people" class="display table hover" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>Номер</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th><input type="text" name="internal_num" placeholder="XX-XX-XX" class="form-control input-md" id=""></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -87,6 +104,14 @@
                         <th></th>
                         <th></th>
                     </tr>
+                    <tr>
+                        <th><input type="text" name="internal_num" placeholder="XX-XX-XX" class="form-control input-md" id=""></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tfoot>
                     <tr>
@@ -112,6 +137,14 @@
                         <th></th>
                         <th></th>
                     </tr>
+                    <tr>
+                        <th><input type="text" name="internal_num" placeholder="XX-XX-XX" class="form-control input-md" id=""></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
+                        <th><input placeholder="2000-00-00" class="form-control input-md datepickersearch" type="text"></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tfoot>
                     <tr>
@@ -131,12 +164,12 @@
 
     <script>
         $(document).ready(function () {
-          
-            $('#state').DataTable({
+
+            var tablestate = $('#state').DataTable({
                 "language": uk_trans,
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{path('ajax.document.getlisttyped',{'type':'state'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
+                "ajax": "{{path('ajax.document.getlisttyped',{'type':'state'})}}",
                 "columns": [
                     {"data": "num"},
                     {"data": "date_in"},
@@ -146,13 +179,26 @@
                     {"data": "arch"}
                 ]
 
-                
+
             });
-            $('#people').DataTable({
+
+            tablestate.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function () {
+                    if (that.search() !== this.value) {
+                        that
+                                .search(this.value)
+                                .draw();
+                    }
+                });
+            });
+
+            var tablepeople = $('#people').DataTable({
                 "language": uk_trans,
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{path('ajax.document.getlisttyped',{'type':'people'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
+                "ajax": "{{path('ajax.document.getlisttyped',{'type':'people'})}}",
                 "columns": [
                     {"data": "num"},
                     {"data": "date_in"},
@@ -162,13 +208,25 @@
                     {"data": "arch"}
                 ]
 
-                
+
             });
-            $('#org').DataTable({
+            tablepeople.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function () {
+                    if (that.search() !== this.value) {
+                        that
+                                .search(this.value)
+                                .draw();
+                    }
+                });
+            });
+
+            var tableorg = $('#org').DataTable({
                 "language": uk_trans,
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{path('ajax.document.getlisttyped',{'type':'org'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
+                "ajax": "{{path('ajax.document.getlisttyped',{'type':'org'})}}",
                 "columns": [
                     {"data": "num"},
                     {"data": "date_in"},
@@ -178,11 +236,23 @@
                     {"data": "arch"}
                 ]
             });
-            $('#visitors').DataTable({
+            tableorg.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function () {
+                    if (that.search() !== this.value) {
+                        that
+                                .search(this.value)
+                                .draw();
+                    }
+                });
+            });
+
+            var tablevisitors = $('#visitors').DataTable({
                 "language": uk_trans,
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{path('ajax.document.getlisttyped',{'type':'visitors'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
+                "ajax": "{{path('ajax.document.getlisttyped',{'type':'visitors'})}}",
                 "columns": [
                     {"data": "num"},
                     {"data": "date_in"},
@@ -192,6 +262,20 @@
                     {"data": "arch"}
                 ]
             });
+            tablevisitors.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function () {
+                    if (that.search() !== this.value) {
+                        that
+                                .search(this.value)
+                                .draw();
+                    }
+                });
+            });
+
+            
+
         });
     </script>
 

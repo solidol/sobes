@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-$app->get('/clerk/people/all', function() use ($app) {
+$app->get('/clerk/org/all', function() use ($app) {
     $data = array();
     $token = $app['security']->getToken();
     $user = $token->getUser();
@@ -15,20 +15,17 @@ $app->get('/clerk/people/all', function() use ($app) {
 
 
 
-    return $app['twig']->render('clerk.peoplelist.twig', $data);
-})->bind('clerk.people.all');
+    return $app['twig']->render('clerk.orglist.twig', $data);
+})->bind('clerk.org.all');
 
 
-$app->post('/clerk/newpeople', function() use ($app) {
+$app->post('/clerk/neworg', function() use ($app) {
     $token = $app['security']->getToken();
     $user = $token->getUser();
     $data = array();
     $post = $app['request'];
 
-    $data['firstname'] = $post->get('firstname');
-    $data['secondname'] = $post->get('secondname');
-    $data['lastname'] = $post->get('lastname');
-    $data['passport'] = $post->get('passport');
+    $data['name'] = $post->get('orgname');
     $data['zipcode'] = $post->get('zipcode');
     $data['city'] = $post->get('city');
     $data['street'] = $post->get('street');
@@ -36,14 +33,14 @@ $app->post('/clerk/newpeople', function() use ($app) {
     $data['room'] = $post->get('room');
     $data['comment'] = $post->get('comment');
 
-    $app['db']->insert('people', $data);
+    $app['db']->insert('organizations', $data);
 
 
     return $app->redirect(
-                    $app['url_generator']->generate('clerk.people.all'));
-})->bind('clerk.people.push');
+                    $app['url_generator']->generate('clerk.org.all'));
+})->bind('clerk.org.push');
 
-$app->get('/clerk/people/add', function() use ($app) {
+$app->get('/clerk/org/add', function() use ($app) {
     $data = array();
     $token = $app['security']->getToken();
     $user = $token->getUser();
@@ -52,8 +49,8 @@ $app->get('/clerk/people/add', function() use ($app) {
 
 
 
-    return $app['twig']->render('clerk.newpeople.twig', $data);
-})->bind('clerk.people.add');
+    return $app['twig']->render('clerk.neworg.twig', $data);
+})->bind('clerk.org.add');
 
 
 

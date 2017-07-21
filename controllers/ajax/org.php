@@ -48,22 +48,17 @@ $app->get('/ajax/org/getlist', function() use ($app) {
     $search = $get->get('search')?$get->get('search')['value']:false;
     $keys = array();
     
-    $keys['firstname'] = $searchstring;
-    $keys['secondname'] = $searchstring;
-    $keys['lastname'] = $searchstring;
-    $keys['passport'] = $searchstring;
-    $result = RDAStatic::getPeopleByAnyKey($keys, "OR");
+    $keys['name'] = $searchstring;
+    $result = RDAStatic::getOrgByAnyKey($keys, "OR");
     foreach ($result as $k => $v) {
-        $item['lastname'] = $v['lastname'];
-        $item['firstname'] = $v['firstname'];
-        $item['secondname'] = $v['secondname'];
-        $item['passport'] = $v['passport'];
+        $item['name'] = $v['name'];
+        $item['city'] = $v['city'];
         $item['addr'] = $v['street'].', б.'.$v['building'].', '.(($v['room']!='')?$v['room']:'');
         $arPeople['data'][] = $item;
     }
     $arPeople['draw']=$get->get('draw')?$get->get('draw'):false;
-    $arPeople['recordsTotal']=RDAStatic::getPeopleCount();
-    $arPeople['recordsFiltered']=RDAStatic::getPeopleCount($keys);
+    $arPeople['recordsTotal']=RDAStatic::getOrgCount();
+    $arPeople['recordsFiltered']=RDAStatic::getOrgCount($keys);
     
     $resp = new JsonResponse($arPeople);
     return $resp->setCallback(
