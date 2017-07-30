@@ -6,6 +6,11 @@
  * and open the template in the editor.
  */
 
+
+
+
+
+
 $app->get('/clerk/newdoc/people', function() use ($app) {
     $data = array();
     $token = $app['security']->getToken();
@@ -64,7 +69,17 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $data['num_prefix_1'] = $post->get('num_prefix_1');
     $data['num_prefix_2'] = $post->get('num_prefix_2');
     $data['internal_number'] = $post->get('internal_number');
-    $data['external_number'] = $post->get('external_number');
+    
+    $orgnums = $post->get('externalnums');
+    $orgs = $post->get('externalorgs');
+    $externals = array();
+    foreach ($orgnums as $k=>$v){
+        $newitem['number']=$v;
+        $newitem['org']=$orgs[$k];
+        $externals[]=$newitem;
+    }
+   
+    $data['external_number'] = serialize($externals);
     $data['year'] = (int) date("Y");
     $data['date_create'] = date("Y-m-d");
     $data['date_in'] = $dt_in;
@@ -99,8 +114,13 @@ $app->post('/clerk/newdoc', function() use ($app) {
 
 $app->get('/clerk/view/id:{doc}', function($doc) use ($app) {
     $data = array();
+    $users = $app['user.manager']->findBy(array(
+    
+));
+var_dump($users);
     $data['doc'] = RDAStatic::getDocById($doc);
-
+    $data['doc']['notes'] = RDAStatic::getNotesByDocId($doc);
+    
     switch ($data['doc']['type']) {
         case "people": return $app['twig']->render('clerk.doc.people.twig', $data);
             break;
@@ -126,6 +146,7 @@ $app->get('/clerk/edit/id:{doc}', function($doc) use ($app) {
     $token = $app['security']->getToken();
     $user = $token->getUser();
     $data['doc'] = RDAStatic::getDocById($doc);
+    $data['doc']['notes'] = RDAStatic::getNotesByDocId($doc);
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
     //$data['fullnum'] = '';
@@ -165,8 +186,8 @@ $app->post('/clerk/upddoc', function() use ($app) {
     $data['date_control'] = $dt_cr;
     $data['summary'] = $post->get('summary');
     $data['comment'] = $post->get('comment');
-
     $app['db']->update('document', $data, array('id' => $id));
+    RDAStatic::pushNotesByDocId($id,$post->get('notes'));
     $newId = $id;
 
     switch ($post->get('doctype')) {

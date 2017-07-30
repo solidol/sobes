@@ -30,16 +30,22 @@
 
             <!-- Prepended checkbox -->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="input_number">Вхідний номер</label>
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <input type="checkbox" name="cbinput_number" id="cbinput_number">
+                <label class="col-md-4 control-label" for="notes">Вихідні номери інших організацій</label>
+                <div class="col-md-4 controls panel panel-default">
+
+
+                    <div class="entry input-group panel-body">
+                        <input class="form-control" name="externalnums[]" type="text" placeholder="Вихідний номер" value="" />
+                        <input class="form-control" name="externalorgs[]" type="text" placeholder="Назва організації" value="" />
+                        <span class="input-group-btn">     
+                            <button class="btn btn-success btn-add" type="button">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
                         </span>
-                        <input id="external_number" name="external_number" class="form-control" placeholder="Вхідний номер" required="" type="text" value="-" readOnly="readOnly">
                     </div>
-                    <p class="help-block">Номер сторонньої організації</p>
+
                 </div>
+
             </div>
 
 

@@ -235,3 +235,20 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
     );
 })->bind('ajax.document.getlist.archivetyped');
 
+$app->post('/ajax/resolution/push', function() use ($app) {
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data = array();
+    $post = $app['request'];
+
+    $value['userid'] = $post->get('user');
+    $value['text'] = $post->get('text');
+    $value['date'] = date('d.m.Y');
+    $data['document_id'] = $post->get('doc');
+    $data['keystr'] = 'resolution';
+    $data['value'] = serialize($data);
+    $app['db']->insert('document_meta', $data);
+
+
+    return $app['db']->lastInsertId();
+})->bind('ajax.resolution.push');

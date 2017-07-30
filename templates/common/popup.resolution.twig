@@ -1,0 +1,56 @@
+<div id="orgModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Додати резолюцію</h4>
+            </div>
+            <form action="" method="post" name="addoresform" id="addorgform1">
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <fieldset>
+                            <div class="row">
+                                <!-- Select Basic -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="selectorgtype">Виберіть тип документа</label>
+                                    <div class="col-md-4">
+                                        <select id="selectorgtype" name="selectorgtype" class="form-control" required="required">
+                                            <option value="-1" disabled="disabled" selected="selected">Оберіть тип</option>
+                                            {% for item in userlist %}
+                                                <option value="{{item.id}}">{{item.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label" for="comment">Коментар</label>
+                                    <div class="col-md-10">                     
+                                        <textarea class="form-control" id="comment" name="comment"></textarea>
+                                    </div>
+                                </div>                     
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnpostresolution" type="button" data-dismiss="modal">Зберегти</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
+                    <script>
+                        $(document).ready(function () {
+                            $("#btnpostresolution").click(function () {
+                                $("#addoresform").ajaxSubmit({url: '{{path('ajax.resolution.push')}}', type: 'post'});
+
+                            });
+                        });
+                    </script>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

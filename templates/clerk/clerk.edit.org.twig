@@ -21,13 +21,13 @@
                     <div class="input-group">
 
                         <input id="fullnum" name="fullnum" class="form-control input-md" type="text" readonly="readonly" value="{{doc.fullnum}}">
-                        
+
                     </div>
                     <span class="help-block">Внутрішній номер документу</span>
                 </div>
             </div>
 
-            
+
 
 
 
@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            
+
 
             <!-- Text input-->
             <div class="form-group">
@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            
+
             <!-- Textarea -->
             <div class="form-group">
                 <label class="col-md-4 control-label" for="summary">Зміст документу</label>
@@ -85,17 +85,29 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="notes">Нотатки</label>
                 <div class="col-md-4 controls">
+                    {% if doc.notes is not empty %}
+                        {% for item in doc.notes %}
+                            <div class="entry input-group">
+                                <input class="form-control" name="notes[]" type="text" placeholder="Type something" value="{{item.value}}" />
+                                <span class="input-group-btn">     
+                                    <button class="btn btn-danger btn-remove" type="button">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                     <div class="entry input-group">
-                        <input class="form-control" name="fields[]" type="text" placeholder="Type something" />
+                        <input class="form-control" name="notes[]" type="text" placeholder="Type something" />
                         <span class="input-group-btn">     
                             <button class="btn btn-success btn-add" type="button">
                                 <span class="glyphicon glyphicon-plus"></span>
                             </button>
                         </span>
                     </div>
-                    
+
                 </div>
-               
+
             </div>
 
             <!-- Button (Double) -->
@@ -111,4 +123,4 @@
     </form>
 
 
-    {% endblock %}
+{% endblock %}

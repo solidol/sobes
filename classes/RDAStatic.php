@@ -11,7 +11,7 @@
  * 
  */
 class RDAStatic {
-
+    
     public static function getPeopleCount($keys = false, $logic = "AND") {
         global $app;
         $sqlw = array();
@@ -77,8 +77,10 @@ class RDAStatic {
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 switch ($key) {
-                    case "type": $sqlw[] = " type = '$value' "; break;
-                    case "date_control": $sqlw[] = " date_control = '$value' "; break;
+                    case "type": $sqlw[] = " type = '$value' ";
+                        break;
+                    case "date_control": $sqlw[] = " date_control = '$value' ";
+                        break;
                         break;
                 }
             }
@@ -108,16 +110,21 @@ class RDAStatic {
             $view = 'document_archive';
         else
             $view = 'document_view';
-        if (isset($keys['type']) AND $view != 'document_archive') $view.='_'.$keys['type'];
+        if (isset($keys['type']) AND $view != 'document_archive')
+            $view .= '_' . $keys['type'];
         $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM $view WHERE 1 ";
 
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 switch ($key) {
-                    case "type": $sqlw[] = " type = '$value' "; break;
-                    case "fullnum": $sqlw[] = " fullnum LIKE '%$value%' "; break;
-                    case "date_in": $sqlw[] = " date_in = '$value' "; break;
-                    case "date_control": $sqlw[] = " date_control = '$value' "; break;
+                    case "type": $sqlw[] = " type = '$value' ";
+                        break;
+                    case "fullnum": $sqlw[] = " fullnum LIKE '%$value%' ";
+                        break;
+                    case "date_in": $sqlw[] = " date_in = '$value' ";
+                        break;
+                    case "date_control": $sqlw[] = " date_control = '$value' ";
+                        break;
                         break;
                 }
             }
@@ -179,12 +186,49 @@ class RDAStatic {
         $sql = "SELECT * FROM document WHERE document.id = ?";
 
         $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
-        $view = 'document_view_'.$arDoc['type'];
-        
+        $view = 'document_view_' . $arDoc['type'];
+
         $sql = "SELECT * FROM $view WHERE id = ?";
 
         $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
         return $arDoc;
+    }
+
+    public static function getNotesByDocId($id) {
+        global $app;
+        $arDoc = array();
+        $sql = "SELECT * FROM document_notes_view WHERE document_id = ? AND `keystr` = 'notes' ";
+
+        $res = false;
+        $arDoc = $app['db']->fetchAll($sql, array((int) $id));
+        if (is_null($arDoc) or empty($arDoc))
+            $arDoc = array();
+        else {
+            $arDoc = unserialize($arDoc[0]['value']);
+            $res = array();
+            foreach ($arDoc as $key => $value)
+                $res[]['value'] = $value;
+        }
+
+        return $res;
+    }
+
+    public static function pushNotesByDocId($id = 0, $arNotes = array()) {
+        global $app;
+        $arDoc = 0;
+        $arNotes = array_diff($arNotes, array(''));
+        /* foreach ($arNotes as &$item){
+          $new['date'] = date('d.m.Y');
+          $new['data'] = $item;
+          $item = $new;
+
+          } */
+        $notes = serialize($arNotes);
+
+        $result = $app['db']->update('document_meta', array('value' => $notes), array('document_id' => $id, 'keystr' => "notes"));
+        if (!$result)
+            $app['db']->insert('document_meta', array('keystr' => 'notes', 'value' => $notes, 'document_id' => $id));
+        return $result;
     }
 
     public static function moveToArchById($id) {
@@ -283,7 +327,7 @@ class RDAStatic {
             return false;
         $sql = "SELECT MAX(internal_number) AS max_num FROM `document` WHERE `num_prefix_0` = ? ";
         $arRes = $app['db']->fetchAssoc($sql, array($type));
-        return ($arRes['max_num'])?(int) $arRes['max_num']:0;
+        return ($arRes['max_num']) ? (int) $arRes['max_num'] : 0;
     }
 
 }

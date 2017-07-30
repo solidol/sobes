@@ -16,6 +16,14 @@
             </td>
             <td width="20%">
                 {{doc.date_control}}
+                <div class="btn-group-vertical">
+                    {% if doc.status!='archived' %}
+                        <a href="{{path('clerk.doc.edit',{'doc':doc.id})}}" class="btn btn-warning">Редагувати</a>
+                    {% endif %}
+                    {% if doc.status!='hasresolution' and doc.status!='archived'%}
+                        <button type="button" id="addresolutonbtn" class="btn btn-success">Резолюція голови</button>
+                    {% endif %}
+                </div>
             </td>
         </tr>
         <tr>
@@ -92,7 +100,19 @@
 
             </td>
         </tr>
-
+        <tr>
+            <td width="20%">
+                Примітки
+            </td>
+            <td colspan="2">
+                {% if doc.notes is not empty %}
+                    {% for item in doc.notes %}
+                        {{item.value}}
+                        <br/>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
 
     </table>
 

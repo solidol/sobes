@@ -1,7 +1,44 @@
 
-<ul class="nav nav-sidebar">
-    <li><a class="active" href="{{url('admin.starter')}}">ГОЛОВНА</a></li>
-    <li><a href="{{url('admin.catalog.starter')}}">КАТАЛОГ</a></li>
-    <li><a href="{{url('admin.ebook.add')}}">ДОДАТИ</a></li>
-    <li><a href="http://college.ks.ua">САЙТ КОЛЕДЖУ</a></li>
+<ul class="nav navbar navbar-nav">
+
+    <li><a href="{{path('clerk.start')}}">ПОЧАТОК</a></li>
+
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ВХІДНІ ДОКУМЕНТИ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З ОРГАНІЗАЦІЙ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
+            <li><a href="{{path('clerk.doc.searchinput')}}">ПОШУК</a></li>
+        </ul>
+    </li>    
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ВИХІДНІ ДОКУМЕНТИ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З ОРГАНІЗАЦІЙ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПОШУК</a></li>
+        </ul>
+    </li>    
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">АРХІВ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.doclist.archive')}}">ВХІДНІ ДОКУМЕНТИ</a></li>
+            <li><a href="{{path('clerk.doclist.archive')}}">ВИХІДНІ ДОКУМЕНТИ</a></li>
+        </ul>
+    </li>
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ЗАЯВНИКИ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.people.all')}}">ГРОМАДЯНИ</a></li>
+            <li><a href="{{path('clerk.org.all')}}">ОРГАНІЗАЦІЇ</a></li>
+            <li><a href="{{path('clerk.people.add')}}">ДОДАТИ ГОМАДЯНИНА</a></li>
+            <li><a href="{{path('clerk.org.add')}}">ДОДАТИ ОРГАНІЗАЦІЮ</a></li>
+        </ul>
+    </li>
+      
+
+
 </ul>
+

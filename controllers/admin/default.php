@@ -10,5 +10,5 @@
 
 
 $app->get('/admin', function() use ($app) {
-    return $app->redirect($app['url_generator']->generate('admin.catalog.view', array('page' => 1)));
+    return $app->redirect($app['url_generator']->generate('clerk.start'));
 })->bind('admin.start');
