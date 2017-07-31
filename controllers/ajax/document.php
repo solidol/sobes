@@ -46,11 +46,14 @@ $app->get('/ajax/document/getlist', function() use ($app) {
     if (!empty($columnsParam))
         foreach ($columnsParam as $key => $value) {
             switch ($key) {
-                case 0: if ($value['search']['value']>'') $keys['fullnum'] = $value['search']['value'];
+                case 0: if ($value['search']['value'] > '')
+                        $keys['fullnum'] = $value['search']['value'];
                     break;
-                case 1: if ($value['search']['value']>'') $keys['date_in'] = $value['search']['value'];
+                case 1: if ($value['search']['value'] > '')
+                        $keys['date_in'] = $value['search']['value'];
                     break;
-                case 2: if ($value['search']['value']>'') $keys['date_control'] = $value['search']['value'];
+                case 2: if ($value['search']['value'] > '')
+                        $keys['date_control'] = $value['search']['value'];
                     break;
             }
         }
@@ -107,17 +110,20 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         $keys['date_control'] = $datecontrol;
     if (!empty($columnsParam))
         foreach ($columnsParam as $key => $value) {
-        
+
             switch ($key) {
-                case 0: if ($value['search']['value']!='') $keys['fullnum'] = $value['search']['value'];
+                case 0: if ($value['search']['value'] != '')
+                        $keys['fullnum'] = $value['search']['value'];
                     break;
-            case 1: if ($value['search']['value']!='') $keys['date_in'] = $value['search']['value']; 
+                case 1: if ($value['search']['value'] != '')
+                        $keys['date_in'] = $value['search']['value'];
                     break;
-                case 2: if ($value['search']['value']!='') $keys['date_control'] = $value['search']['value'];
+                case 2: if ($value['search']['value'] != '')
+                        $keys['date_control'] = $value['search']['value'];
                     break;
             }
         }
-        //var_dump($keys);
+    //var_dump($keys);
     $result = RDAStatic::getDocList($keys, "AND", $limit, $search);
     $arDocs['data'] = array();
     foreach ($result as $k => $v) {
@@ -242,13 +248,17 @@ $app->post('/ajax/resolution/push', function() use ($app) {
     $post = $app['request'];
 
     $value['userid'] = $post->get('user');
+    $manager = $app['user.manager']->getUser($post->get('user'));
+    $value['username'] = $manager->getName();
     $value['text'] = $post->get('text');
     $value['date'] = date('d.m.Y');
     $data['document_id'] = $post->get('doc');
     $data['keystr'] = 'resolution';
-    $data['value'] = serialize($data);
+    $data['value'] = serialize($value);
     $app['db']->insert('document_meta', $data);
-
-
-    return $app['db']->lastInsertId();
+    //if ($app['db']->lastInsertId() > 0) {
+        RDAStatic::changeDocStatus($data['document_id'], 'hasresolution');
+        RDAStatic::moveDoc($post->get('doc'), false, $value['userid'], 'Резолюція голови');
+    //}
+    return 'OK';
 })->bind('ajax.resolution.push');

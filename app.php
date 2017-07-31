@@ -4,7 +4,7 @@ date_default_timezone_set('Europe/Kiev');
 $loader = require_once __DIR__.'/vendor/autoload.php';
 //$loader->add('RDA', __DIR__.'/classes');
 require_once __DIR__.'/classes/RDAStatic.php';
-require_once __DIR__.'/classes/ssp.class.php';
+//require_once __DIR__.'/classes/ssp.class.php';
 
 
 
@@ -147,8 +147,6 @@ $app->before(function () use ($app) {
 
     return "";
 });
-//require_once __DIR__ . '/classes/RDAStaticDocument.php';
-//require_once __DIR__ . '/classes/RDAStaticPeople.php';
-require_once __DIR__ . '/classes/RDAStatic.php';
+
 
 return $app;

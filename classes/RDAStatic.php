@@ -11,7 +11,21 @@
  * 
  */
 class RDAStatic {
-    
+
+    public static function getManagers() {
+        global $app;
+        $sql = "SELECT * FROM users WHERE roles LIKE '%ROLE_MANAGER%'";
+        $arRes = $app['db']->fetchAll($sql);
+        return $arRes;
+    }
+
+    public static function getBoss() {
+        global $app;
+        $sql = "SELECT * FROM users WHERE roles LIKE '%ROLE_BOSS%'";
+        $arRes = $app['db']->fetchAssoc($sql);
+        return $arRes;
+    }
+
     public static function getPeopleCount($keys = false, $logic = "AND") {
         global $app;
         $sqlw = array();
@@ -300,7 +314,7 @@ class RDAStatic {
     public static function getStateDocTypes() {
         global $app;
         $arTypes = array();
-        $sql = "SELECT * FROM state_types WHERE 1 ";
+        $sql = "SELECT * FROM state_types WHERE subcode > 0 ";
         $arTypes = $app['db']->fetchAll($sql);
         return $arTypes;
     }
@@ -308,7 +322,7 @@ class RDAStatic {
     public static function getOrgDocTypes() {
         global $app;
         $arTypes = array();
-        $sql = "SELECT * FROM org_types WHERE 1 ";
+        $sql = "SELECT * FROM org_types WHERE subcode > 0 ";
         $arTypes = $app['db']->fetchAll($sql);
         return $arTypes;
     }
@@ -316,7 +330,7 @@ class RDAStatic {
     public static function getContentDocTypes() {
         global $app;
         $arTypes = array();
-        $sql = "SELECT * FROM content_types WHERE 1 ";
+        $sql = "SELECT * FROM content_types WHERE subcode > 0 ";
         $arTypes = $app['db']->fetchAll($sql);
         return $arTypes;
     }
@@ -330,4 +344,91 @@ class RDAStatic {
         return ($arRes['max_num']) ? (int) $arRes['max_num'] : 0;
     }
 
+    public static function changeDocStatus($doc, $status = 'created') {
+        global $app;
+        $result = $app['db']->update('document', array('status' => $status), array('id' => $doc));
+        return $result;
+    }
+
+    public static function getResolutionByDocId($id) {
+        global $app;
+        $arDoc = array();
+        $sql = "SELECT * FROM document_resolution_view WHERE document_id = ? AND `keystr` = 'resolution' ";
+
+        $res = false;
+        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
+        if (is_null($arDoc) or empty($arDoc))
+            $arDoc = array();
+        else {
+            $arDoc = unserialize($arDoc['value']);
+        }
+
+        return $arDoc;
+    }
+   
+    public static function moveDoc($docId, $from, $to, $text){
+        global $app;
+        if ($from==false) {
+            $sql = "SELECT * FROM document WHERE id = $docId";
+            $res = $app['db']->fetchAssoc($sql);
+            $from = $res['curr_user'];
+        }
+        $app['db']->insert('movings',array('document'=>$docId,
+            'prevuser'=>$from,
+            'nextuser'=>$to,
+            'movtext'=>$text));
+        
+        if ($app['db']->lastInsertId()>0){
+            $app['db']->update('document',array('curr_user'=>$to),array('id'=>$docId));
+        }
+        return 0;
+    }
+
+    public static function getMovingsByDocId($docId){
+                global $app;
+        $arDoc = array();
+        $sql = "SELECT * FROM movings_view WHERE document = ?";
+
+        $res = false;
+        $arDoc = $app['db']->fetchAll($sql, array((int) $docId));
+        if (is_null($arDoc) or empty($arDoc))
+            $arDoc = array();
+        
+
+        return $arDoc;
+    }
+    
+    public static function pushExternalsByDocId($id = 0, $arExternals = array()) {
+        global $app;
+        if (empty($arExternals)) return false;
+        $arDoc = 0;
+        foreach($arExternals as &$item){
+            if ($item['date']=='' or $item['date']==null) $item['date']=date('d.m.Y');
+        }
+        $externals = serialize($arExternals);
+
+        $result = $app['db']->update('document_meta', array('value' => $externals), array('document_id' => $id, 'keystr' => "externals"));
+        if (!$result)
+            $app['db']->insert('document_meta', array('keystr' => 'notes', 'externals' => $externals, 'document_id' => $id));
+        return $result;
+    }
+
+    public static function getExternalsByDocId($id) {
+        global $app;
+        $arDoc = array();
+        $sql = "SELECT * FROM document_notes_view WHERE document_id = ? AND `keystr` = 'externals' ";
+
+        $res = false;
+        $arDoc = $app['db']->fetchAll($sql, array((int) $id));
+        if (is_null($arDoc) or empty($arDoc))
+            $arDoc = array();
+        else {
+            $arDoc = unserialize($arDoc[0]['value']);
+            
+        }
+
+        return $arDoc;
+    }
+
+    
 }

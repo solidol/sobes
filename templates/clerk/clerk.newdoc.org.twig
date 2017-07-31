@@ -63,6 +63,24 @@
             </div>
 
 
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="orgname">Виберіть організацію</label>
+                <div class="col-md-4">
+                    <input id="orgname" name="orgname" placeholder="Назва або адреса" class="form-control input-md" required="" type="text">
+                    <input id="orgstarter" name="orgstarter" type="hidden" value="0">
+                </div>
+
+            </div>
+
+            <!-- Button -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="addorg">Або додайте нову</label>
+                <div class="col-md-4">
+                    <button type="button" id="addorg" name="addorg" class="btn btn-inverse"  data-toggle="modal" data-target="#orgModal">Нова організація</button>
+                </div>
+            </div>
+
 
             <div class="form-group">
                 <label class="col-md-4 control-label" for="notes">Вихідні номери інших організацій</label>
@@ -100,24 +118,6 @@
                 <div class="col-md-4">
                     <input id="date_control" name="date_control" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text">
                     <span class="help-block">Дата контролю виконання</span>  
-                </div>
-            </div>
-
-            <!-- Select Basic -->
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="orgname">Виберіть організацію</label>
-                <div class="col-md-4">
-                    <input id="orgname" name="orgname" placeholder="Назва або адреса" class="form-control input-md" required="" type="text">
-                    <input id="orgstarter" name="orgstarter" type="hidden" value="0">
-                </div>
-
-            </div>
-
-            <!-- Button -->
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="addorg">Або додайте нову</label>
-                <div class="col-md-4">
-                    <button type="button" id="addorg" name="addorg" class="btn btn-inverse"  data-toggle="modal" data-target="#orgModal">Нова організація</button>
                 </div>
             </div>
 

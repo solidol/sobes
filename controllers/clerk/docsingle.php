@@ -65,9 +65,9 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $dt_cr = explode(".", $post->get('date_control'));
     $dt_cr = $dt_cr[2] . '-' . $dt_cr[1] . '-' . $dt_cr[0];
 
-    $data['num_prefix_0'] = $post->get('num_prefix_0');
-    $data['num_prefix_1'] = $post->get('num_prefix_1');
-    $data['num_prefix_2'] = $post->get('num_prefix_2');
+    $data['num_prefix_0'] = ($post->get('num_prefix_0')!=null)?$post->get('num_prefix_0'):'';
+    $data['num_prefix_1'] = ($post->get('num_prefix_1')!=null)?$post->get('num_prefix_1'):'';
+    $data['num_prefix_2'] = ($post->get('num_prefix_2')!=null)?$post->get('num_prefix_2'):'';
     $data['internal_number'] = $post->get('internal_number');
     
     $orgnums = $post->get('externalnums');
@@ -76,10 +76,11 @@ $app->post('/clerk/newdoc', function() use ($app) {
     foreach ($orgnums as $k=>$v){
         $newitem['number']=$v;
         $newitem['org']=$orgs[$k];
+        $newitem['date']=$orgs[$k];
         $externals[]=$newitem;
     }
    
-    $data['external_number'] = serialize($externals);
+    $data['external_number'] = $post->get('external_number');
     $data['year'] = (int) date("Y");
     $data['date_create'] = date("Y-m-d");
     $data['date_in'] = $dt_in;
@@ -88,12 +89,15 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $data['topicstarter'] = $post->get('topicstarter') ? $post->get('topicstarter') : 0;
     $data['topicstarter_org'] = $post->get('orgstarter') ? $post->get('orgstarter') : 0;
     $data['created_by'] = $user->getId();
+    $data['curr_user'] = $user->getId();
     $data['summary'] = $post->get('summary');
     $data['comment'] = $post->get('comment');
 
     $app['db']->insert('document', $data);
     $newId = $app['db']->lastInsertId();
-
+    $boss = RDAStatic::getBoss();
+    RDAStatic::moveDoc($newId, $user->getId(), $boss['id'], 'Створено картку');
+    RDAStatic::pushExternalsByDocId($doc,$externals);
     switch ($post->get('doctype')) {
         case "people": return $app->redirect(
                             $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
@@ -114,13 +118,13 @@ $app->post('/clerk/newdoc', function() use ($app) {
 
 $app->get('/clerk/view/id:{doc}', function($doc) use ($app) {
     $data = array();
-    $users = $app['user.manager']->findBy(array(
-    
-));
-var_dump($users);
+    $data['userlist'] = RDAStatic::getManagers();
     $data['doc'] = RDAStatic::getDocById($doc);
+    $data['doc']['externals'] = RDAStatic::getExternalsByDocId($doc);
     $data['doc']['notes'] = RDAStatic::getNotesByDocId($doc);
-    
+    $data['doc']['resolution'] = RDAStatic::getResolutionByDocId($doc);
+    $data['doc']['movings'] = RDAStatic::getMovingsByDocId($doc);
+    //var_dump($data['doc']['movings']);
     switch ($data['doc']['type']) {
         case "people": return $app['twig']->render('clerk.doc.people.twig', $data);
             break;
