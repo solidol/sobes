@@ -27,6 +27,8 @@ $app->get('/clerk/newdoc/visitors', function() use ($app) {
     $user = $token->getUser();
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
+    $data['peopleattr'] = RDAStaticPeople::getSocialStatuses();
+    $data['bosslist'] = RDAStatic::getManagers(true);
     $data['new_num'] = RDAStatic::getMaxNumDoc("visitors") + 1;
     return $app['twig']->render('clerk.newdoc.visitors.twig', $data);
 })->bind('clerk.doc.new.visitors');
@@ -65,21 +67,22 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $dt_cr = explode(".", $post->get('date_control'));
     $dt_cr = $dt_cr[2] . '-' . $dt_cr[1] . '-' . $dt_cr[0];
 
-    $data['num_prefix_0'] = ($post->get('num_prefix_0')!=null)?$post->get('num_prefix_0'):'';
-    $data['num_prefix_1'] = ($post->get('num_prefix_1')!=null)?$post->get('num_prefix_1'):'';
-    $data['num_prefix_2'] = ($post->get('num_prefix_2')!=null)?$post->get('num_prefix_2'):'';
+    $data['num_prefix_0'] = ($post->get('num_prefix_0') != null) ? $post->get('num_prefix_0') : '';
+    $data['num_prefix_1'] = ($post->get('num_prefix_1') != null) ? $post->get('num_prefix_1') : '';
+    $data['num_prefix_2'] = ($post->get('num_prefix_2') != null) ? $post->get('num_prefix_2') : '';
     $data['internal_number'] = $post->get('internal_number');
-    
+
     $orgnums = $post->get('externalnums');
     $orgs = $post->get('externalorgs');
+    $dates = $post->get('externaldates');
     $externals = array();
-    foreach ($orgnums as $k=>$v){
-        $newitem['number']=$v;
-        $newitem['org']=$orgs[$k];
-        $newitem['date']=$orgs[$k];
-        $externals[]=$newitem;
+    foreach ($orgnums as $k => $v) {
+        $newitem['number'] = $v;
+        $newitem['org'] = $orgs[$k];
+        $newitem['date'] = $dates[$k];
+        $externals[] = $newitem;
     }
-   
+
     $data['external_number'] = $post->get('external_number');
     $data['year'] = (int) date("Y");
     $data['date_create'] = date("Y-m-d");
@@ -92,12 +95,16 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $data['curr_user'] = $user->getId();
     $data['summary'] = $post->get('summary');
     $data['comment'] = $post->get('comment');
+    $data['topicstarter_text'] = $post->get('tstext');
 
     $app['db']->insert('document', $data);
     $newId = $app['db']->lastInsertId();
     $boss = RDAStatic::getBoss();
-    RDAStatic::moveDoc($newId, $user->getId(), $boss['id'], 'Створено картку');
-    RDAStatic::pushExternalsByDocId($doc,$externals);
+    if ($post->get('doctype') != "visitors")
+        RDAStatic::moveDoc($newId, $user->getId(), $boss['id'], 'Створено картку');
+    else
+        RDAStatic::moveDoc($newId, $user->getId(), $post->get('selectinterviewer'), 'Створено картку');
+    RDAStatic::pushExternalsByDocId($newId, $externals);
     switch ($post->get('doctype')) {
         case "people": return $app->redirect(
                             $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
@@ -122,9 +129,13 @@ $app->get('/clerk/view/id:{doc}', function($doc) use ($app) {
     $data['doc'] = RDAStatic::getDocById($doc);
     $data['doc']['externals'] = RDAStatic::getExternalsByDocId($doc);
     $data['doc']['notes'] = RDAStatic::getNotesByDocId($doc);
+    $data['doc']['donestr'] = RDAStatic::getNotesByDocId($doc,'donestr');
+    //var_dump($data['doc']['donestr']);
+    $data['doc']['serialpost'] = RDAStatic::getNotesByDocId($doc,'serialpost');
     $data['doc']['resolution'] = RDAStatic::getResolutionByDocId($doc);
     $data['doc']['movings'] = RDAStatic::getMovingsByDocId($doc);
-    //var_dump($data['doc']['movings']);
+    $data['doc']['socials'] = RDAStaticPeople::getSocialStatusesByPeopleId($data['doc']['pid']);
+    //var_dump($data['doc']['socials']);
     switch ($data['doc']['type']) {
         case "people": return $app['twig']->render('clerk.doc.people.twig', $data);
             break;
@@ -191,7 +202,7 @@ $app->post('/clerk/upddoc', function() use ($app) {
     $data['summary'] = $post->get('summary');
     $data['comment'] = $post->get('comment');
     $app['db']->update('document', $data, array('id' => $id));
-    RDAStatic::pushNotesByDocId($id,$post->get('notes'));
+    RDAStatic::pushNotesByDocId($id, $post->get('notes'));
     $newId = $id;
 
     switch ($post->get('doctype')) {

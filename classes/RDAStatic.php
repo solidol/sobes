@@ -12,9 +12,11 @@
  */
 class RDAStatic {
 
-    public static function getManagers() {
+    public static function getManagers($andBoss = false) {
         global $app;
         $sql = "SELECT * FROM users WHERE roles LIKE '%ROLE_MANAGER%'";
+        if ($andBoss)
+            $sql .= " OR roles LIKE '%ROLE_BOSS%'";
         $arRes = $app['db']->fetchAll($sql);
         return $arRes;
     }
@@ -124,7 +126,7 @@ class RDAStatic {
             $view = 'document_archive';
         else
             $view = 'document_view';
-        if (isset($keys['type']) AND $view != 'document_archive')
+        if (isset($keys['type']))
             $view .= '_' . $keys['type'];
         $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM $view WHERE 1 ";
 
@@ -208,12 +210,12 @@ class RDAStatic {
         return $arDoc;
     }
 
-    public static function getNotesByDocId($id) {
+    public static function getNotesByDocId($id, $type = 'notes') {
         global $app;
         $arDoc = array();
-        $sql = "SELECT * FROM document_notes_view WHERE document_id = ? AND `keystr` = 'notes' ";
-
-        $res = false;
+        $sql = "SELECT * FROM document_notes_view WHERE document_id = ? AND `keystr` = '$type' ";
+        //var_dump($sql);
+        $res = array();
         $arDoc = $app['db']->fetchAll($sql, array((int) $id));
         if (is_null($arDoc) or empty($arDoc))
             $arDoc = array();
@@ -227,7 +229,7 @@ class RDAStatic {
         return $res;
     }
 
-    public static function pushNotesByDocId($id = 0, $arNotes = array()) {
+    public static function pushNotesByDocId($id = 0, $arNotes = array(), $type = 'notes') {
         global $app;
         $arDoc = 0;
         $arNotes = array_diff($arNotes, array(''));
@@ -239,9 +241,9 @@ class RDAStatic {
           } */
         $notes = serialize($arNotes);
 
-        $result = $app['db']->update('document_meta', array('value' => $notes), array('document_id' => $id, 'keystr' => "notes"));
+        $result = $app['db']->update('document_meta', array('value' => $notes), array('document_id' => $id, 'keystr' => $type));
         if (!$result)
-            $app['db']->insert('document_meta', array('keystr' => 'notes', 'value' => $notes, 'document_id' => $id));
+            $app['db']->insert('document_meta', array('keystr' => $type, 'value' => $notes, 'document_id' => $id));
         return $result;
     }
 
@@ -365,27 +367,27 @@ class RDAStatic {
 
         return $arDoc;
     }
-   
-    public static function moveDoc($docId, $from, $to, $text){
+
+    public static function moveDoc($docId, $from, $to, $text) {
         global $app;
-        if ($from==false) {
+        if ($from == false) {
             $sql = "SELECT * FROM document WHERE id = $docId";
             $res = $app['db']->fetchAssoc($sql);
             $from = $res['curr_user'];
         }
-        $app['db']->insert('movings',array('document'=>$docId,
-            'prevuser'=>$from,
-            'nextuser'=>$to,
-            'movtext'=>$text));
-        
-        if ($app['db']->lastInsertId()>0){
-            $app['db']->update('document',array('curr_user'=>$to),array('id'=>$docId));
+        $app['db']->insert('movings', array('document' => $docId,
+            'prevuser' => $from,
+            'nextuser' => $to,
+            'movtext' => $text));
+
+        if ($app['db']->lastInsertId() > 0) {
+            $app['db']->update('document', array('curr_user' => $to), array('id' => $docId));
         }
         return 0;
     }
 
-    public static function getMovingsByDocId($docId){
-                global $app;
+    public static function getMovingsByDocId($docId) {
+        global $app;
         $arDoc = array();
         $sql = "SELECT * FROM movings_view WHERE document = ?";
 
@@ -393,30 +395,32 @@ class RDAStatic {
         $arDoc = $app['db']->fetchAll($sql, array((int) $docId));
         if (is_null($arDoc) or empty($arDoc))
             $arDoc = array();
-        
+
 
         return $arDoc;
     }
-    
+
     public static function pushExternalsByDocId($id = 0, $arExternals = array()) {
         global $app;
-        if (empty($arExternals)) return false;
+        if (empty($arExternals))
+            return false;
         $arDoc = 0;
-        foreach($arExternals as &$item){
-            if ($item['date']=='' or $item['date']==null) $item['date']=date('d.m.Y');
+        foreach ($arExternals as &$item) {
+            if ($item['date'] == '' or $item['date'] == null)
+                $item['date'] = date('d.m.Y');
         }
         $externals = serialize($arExternals);
 
         $result = $app['db']->update('document_meta', array('value' => $externals), array('document_id' => $id, 'keystr' => "externals"));
         if (!$result)
-            $app['db']->insert('document_meta', array('keystr' => 'notes', 'externals' => $externals, 'document_id' => $id));
+            $app['db']->insert('document_meta', array('keystr' => 'externals', 'value' => $externals, 'document_id' => $id));
         return $result;
     }
 
     public static function getExternalsByDocId($id) {
         global $app;
         $arDoc = array();
-        $sql = "SELECT * FROM document_notes_view WHERE document_id = ? AND `keystr` = 'externals' ";
+        $sql = "SELECT * FROM document_externals_view WHERE document_id = ? AND `keystr` = 'externals' ";
 
         $res = false;
         $arDoc = $app['db']->fetchAll($sql, array((int) $id));
@@ -424,11 +428,11 @@ class RDAStatic {
             $arDoc = array();
         else {
             $arDoc = unserialize($arDoc[0]['value']);
-            
         }
 
         return $arDoc;
     }
 
-    
+
+
 }

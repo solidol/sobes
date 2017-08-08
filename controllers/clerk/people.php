@@ -35,10 +35,17 @@ $app->post('/clerk/newpeople', function() use ($app) {
     $data['building'] = $post->get('building');
     $data['room'] = $post->get('room');
     $data['comment'] = $post->get('comment');
-
+    $data['sex'] = $post->get('sex');
+    $phones[] = $post->get('homephone');
+    $phones[] = $post->get('mobilephone');
+    $data['phones'] = implode(',',$phones);
     $app['db']->insert('people', $data);
-
-
+    $newId = $app['db']->lastInsertId();
+    $arMetaSoc = array();
+    foreach ($post->get('social') as $k=>$v){
+        $arMetaSoc[]=$k;
+    }
+    RDAStaticPeople::pushPeopleMetaByPeopleId($newId, $arMetaSoc);
     return $app->redirect(
                     $app['url_generator']->generate('clerk.people.all'));
 })->bind('clerk.people.push');
@@ -49,7 +56,7 @@ $app->get('/clerk/people/add', function() use ($app) {
     $user = $token->getUser();
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
-
+$data['peopleattr'] = RDAStaticPeople::getSocialStatuses();
 
 
     return $app['twig']->render('clerk.newpeople.twig', $data);

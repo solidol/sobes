@@ -35,6 +35,12 @@ $(document).ready(function () {
         $("#num_prefix_2").val(this.value);
     });
 
+    $("#selectinterviewer").change(function () {
+        var str = $("#selectinterviewer option:selected").text();
+        $("#prefix_2_span").html(str[0]);
+        $("#num_prefix_2").val(str[0]);
+    });
+
     $("#selectorgtype").change(function () {
         $("#prefix_0_span").html(this.value);
         $("#num_prefix_0").val(this.value);
@@ -107,6 +113,8 @@ $(document).ready(function () {
         minLength: 3,
         select: function (event, ui) {
             $("#topicstarter").val(ui.item.id);
+            $("#prefix_1_span").html($("#prefix_1_span").html()+'/'+ui.item.label[0]);
+            $("#num_prefix_1").val($("#prefix_1_span").html());
             //log("Selected: " + ui.item.value + " aka " + ui.item.id);
         }
     });

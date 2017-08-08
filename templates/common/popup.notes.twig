@@ -1,0 +1,139 @@
+<div id="doneNotesModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Додати відмітку про виконання</h4>
+            </div>
+            <form action="" method="post" name="add1" id="add1">
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <fieldset>
+                            <input type="hidden" name="doc" value="{{doc.id}}" />
+                            <input type="hidden" name="notestype" value="donestr" />
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="text">Примітки</label>
+                                    <div class="col-md-6">                     
+                                        <textarea class="form-control" name="text"></textarea>
+                                    </div>
+                                </div>                     
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnpost1" type="button" data-dismiss="modal">Зберегти</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
+                    <script>
+                        $(document).ready(function () {
+                            $("#btnpost1").click(function () {
+                                $("#add1").ajaxSubmit({url: '{{path('ajax.notes.push')}}', type: 'post'});
+                                setTimeout(500,
+                                        location.reload()
+                                        );
+                            });
+
+                        });
+                    </script>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{# empty Twig template #}
+<div id="serialNotesModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Додати відмітку про повторне звернення</h4>
+            </div>
+            <form action="" method="post" name="add2" id="add2">
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <fieldset>
+                            <input type="hidden" name="doc" value="{{doc.id}}" />
+                            <input type="hidden" name="notestype" value="serialpost" />
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="text">Примітки</label>
+                                    <div class="col-md-6">                     
+                                        <textarea class="form-control" name="text"></textarea>
+                                    </div>
+                                </div>                     
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnpost2" type="button" data-dismiss="modal">Зберегти</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
+                    <script>
+                        $(document).ready(function () {
+                            $("#btnpost2").click(function () {
+                                $("#add2").ajaxSubmit({url: '{{path('ajax.notes.push')}}', type: 'post'});
+                                setTimeout(500,
+                                        location.reload()
+                                        );
+                            });
+
+                        });
+                    </script>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{# empty Twig template #}
+<div id="otherNotesModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Додати примітку для внутрішнього користування</h4>
+            </div>
+            <form action="" method="post" name="add3" id="add3">
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <fieldset>
+                            <input type="hidden" name="doc" value="{{doc.id}}" />
+                            <input type="hidden" name="notestype" value="notes" />
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="text">Примітки</label>
+                                    <div class="col-md-6">                     
+                                        <textarea class="form-control" name="text"></textarea>
+                                    </div>
+                                </div>                     
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnpost3" type="button" data-dismiss="modal">Зберегти</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
+                    <script>
+                        $(document).ready(function () {
+                            $("#btnpost3").click(function () {
+                                $("#add3").ajaxSubmit({url: '{{path('ajax.notes.push')}}', type: 'post'});
+
+                                setTimeout(500,
+                                        location.reload()
+                                        );
+                            });
+
+                        });
+                    </script>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{# empty Twig template #}

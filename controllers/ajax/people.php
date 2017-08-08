@@ -81,9 +81,19 @@ $app->post('/ajax/people/push', function() use ($app) {
     $data['building'] = $post->get('building');
     $data['room'] = $post->get('room');
     $data['comment'] = $post->get('comment');
+    $data['sex'] = $post->get('sex');
+    $phones[] = $post->get('homephone');
+    $phones[] = $post->get('mobilephone');
+    $data['phones'] = implode(',', $phones);
 
     $app['db']->insert('people', $data);
-
+    $newId = $app['db']->lastInsertId();
+    $arMetaSoc = array();
+    foreach ($post->get('social') as $k=>$v){
+        $arMetaSoc[]=$k;
+    }
+    RDAStaticPeople::pushPeopleMetaByPeopleId($newId, $arMetaSoc);
+    
 
     return $app['db']->lastInsertId();
 })->bind('ajax.people.push');

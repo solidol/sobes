@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <td width="25%"  align="center">
-                <h2>№ {{doc.fullnum}} / {{doc.year}}</h2>
+                <h2>№ {{doc.fullnum}} : {{doc.year}}</h2>
             </td>
             <td  align="center">
                 <h3>КОНТРОЛЬ {{doc.date_control}}</h3> 
@@ -30,7 +30,7 @@
                         <a href="{{path('clerk.doc.edit',{'doc':doc.id})}}" class="btn btn-warning">Редагувати</a>
                     {% endif %}
                     {% if doc.status!='hasresolution' and doc.status!='archived'%}
-                        <button type="button" id="addresolutonbtn" class="btn btn-success" data-toggle="modal" data-target="#orgModal">Резолюція голови</button>
+                        <button type="button" id="addresolutonbtn" class="btn btn-success" data-toggle="modal" data-target="#orgModal">Резолюція приймаючого</button>
                     {% endif %}
                 </div>
             </td>
@@ -53,10 +53,14 @@
         </tr>
         <tr>
             <td width="20%">
-                Місце роботи та посада
+                Соціальні групи
             </td>
             <td colspan="2">
-
+                {% if doc.socials is not empty %}
+                    {% for item in doc.socials %}
+                        {{item.value}},
+                    {% endfor %}
+                {% endif %}
             </td>
         </tr>
 
@@ -89,7 +93,74 @@
         </tr>
         <tr>
             <td width="20%">
-                Історія переміщень
+
+                <div class="input-group">
+                    Відмітки про виконання
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#doneNotesModal">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </td>
+            <td colspan="2">
+                {% if doc.donestr is not empty %}
+                    {% for item in doc.donestr %}
+                        {{item.value}}
+                        <br/>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <div class="input-group">
+                    Відмітки про повторні заяви
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#serialNotesModal">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </td>
+            <td colspan="2">
+                {% if doc.serialpost is not empty %}
+                    {% for item in doc.serialpost %}
+                        {{item.value}}
+                        <br/>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <div class="input-group">
+                    Інші відмітки
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#otherNotesModal">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </td>
+            <td colspan="2">
+                {% if doc.notes is not empty %}
+                    {% for item in doc.notes %}
+                        {{item.value}}
+                        <br/>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <div class="input-group">
+                    Історія передачі документу
+
+                </div>
+
             </td>
             <td colspan="2">
                 {% if doc.movings is not empty %}
@@ -102,20 +173,8 @@
                 {% endif %}
             </td>
         </tr>
-        <tr>
-            <td width="20%">
-                Примітки
-            </td>
-            <td colspan="2">
-                {% if doc.notes is not empty %}
-                    {% for item in doc.notes %}
-                        {{item.value}}
-                        <br/>
-                    {% endfor %}
-                {% endif %}
-            </td>
-        </tr>
 
     </table>
-    {% include 'popup.resolution.twig' %}
+    {% include 'popup.resolution.visitors.twig' %}
+    {% include 'popup.notes.twig' %}
 {% endblock %}

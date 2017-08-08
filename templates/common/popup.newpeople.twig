@@ -39,20 +39,40 @@
                                     </div>
 
                                     <!-- Text input-->
-                                    <!--<div class="form-group row">
-                                        <label class="col-md-4 control-label" for="passport">Паспорт</label>  
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="secondname">Телефон громадянина</label>  
                                         <div class="col-md-8">
-                                            <input id="passport" name="passport" placeholder="MP123456" class="form-control input-md" required="" type="text">
-                                            <span class="help-block">Серія та номер паспорта громадянина</span>  
+                                            <input id="secondname" name="homephone" placeholder="12-34-56" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Стаціонарний телефон</span>  
+                                            <input id="secondname" name="mobilephone" placeholder="(012)345-67-89" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Мобільний телефон</span>  
                                         </div>
-                                    </div>-->
+                                    </div>
+
+                                    <!-- Multiple Radios -->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="sex">Стать заявника</label>
+                                        <div class="col-md-8"> 
+                                            <label class="radio-inline" for="radios-0">
+                                                <input name="sex" id="radios-0" value="m" checked="checked" type="radio">
+                                                Ч
+                                            </label> 
+                                            <label class="radio-inline" for="radios-1">
+                                                <input name="sex" id="radios-1" value="f" type="radio">
+                                                Ж
+                                            </label> 
+
+                                        </div>
+                                    </div>
+
+
                                 </div>
                                 <div class="col-md-6">
                                     <!-- Text input-->
                                     <div class="form-group row">
                                         <label class="col-md-4 control-label" for="zipcode">Поштовий індекс</label>  
                                         <div class="col-md-8">
-                                            <input id="zipcode" name="zipcode" placeholder="73000" class="form-control input-md" type="text">
+                                            <input id="zipcode" name="zipcode" value="73000" class="form-control input-md" type="text">
                                             <span class="help-block">Поштовий індекс громадянина</span>  
                                         </div>
                                     </div>
@@ -61,7 +81,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 control-label" for="city">Місто</label>  
                                         <div class="col-md-8">
-                                            <input id="city" name="city" placeholder="Херсон" class="form-control input-md" type="text">
+                                            <input id="city" name="city" value="Херсон" class="form-control input-md" type="text">
                                             <span class="help-block">Місто проживання</span>  
                                         </div>
                                     </div>
@@ -98,6 +118,26 @@
                             </div>
 
                             <div class="row">
+                               
+                                <div class="col-md-12">
+                                    <!-- Multiple Checkboxes -->
+                                    <div class="form-group row">
+                                        <!--<label class="col-md-4 control-label" for="socials">Соціальна група</label>-->
+                                        {% for atitem in peopleattr %}
+                                        <div class="col-md-3">
+                                            <div class="checkbox">
+                                                <label for="social[]">
+                                                    <input name="social[{{atitem.keystr}}]" id="soc-{{atitem.keystr}}" value="1" type="checkbox">
+                                                    {{atitem.text}}
+                                                </label>
+                                            </div>
+      
+                                        </div>
+                                        {% endfor %}
+                                    </div>  
+                                </div>
+                            </div>
+                            <!--<div class="row">
                                 <div class="form-group">
                                     <label class="col-md-2 control-label" for="comment">Коментар</label>
                                     <div class="col-md-10">                     
@@ -105,7 +145,7 @@
                                     </div>
                                 </div>                     
                             </div>
-
+                            -->
 
                         </fieldset>
                     </div>
