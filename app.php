@@ -20,9 +20,10 @@ $app = new Application();
 
 
 require_once __DIR__ . '/config/local.php';
-$app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
-    'http_cache.cache_dir' => __DIR__ . '/cache/',
-));
+//$app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
+//    'http_cache.cache_dir' => __DIR__ . '/cache/',
+//));
+$app->register(new Provider\SessionServiceProvider());
 $app->register(new Provider\DoctrineServiceProvider());
 $app->register(new Provider\SecurityServiceProvider(), array(
     'security.firewalls' => array(
@@ -47,7 +48,6 @@ $app->register(new Provider\SecurityServiceProvider(), array(
 // throws 'InvalidArgumentException' with message 'Identifier "security.remember_me.service.secured_area" is not defined.'
 
 $app->register(new Provider\RememberMeServiceProvider());
-$app->register(new Provider\SessionServiceProvider());
 $app->register(new Provider\ServiceControllerServiceProvider());
 $app->register(new Provider\UrlGeneratorServiceProvider());
 $app->register(new Provider\TwigServiceProvider());

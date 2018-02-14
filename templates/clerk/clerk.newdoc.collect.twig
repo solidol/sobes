@@ -6,11 +6,11 @@
 {% block content %}
 
 
-    <form class="form-horizontal" action="{{path('clerk.doc.push')}}" method="post">
+    <form class="form-horizontal" action="{{path('clerk.doc.push.collect')}}" method="post">
         <fieldset>
 
             <!-- Form Name -->
-            <legend>Звернення громадянина</legend>
+            <legend>Колективне звернення громадян</legend>
             <input id="doctype" name="doctype" type="hidden" value="people">
             <!-- Text input-->
             <div class="form-group">
@@ -19,51 +19,16 @@
                     <div class="input-group">
 
                         <span class="input-group-addon" id="prefix_1_span">
-
+                            КЗ
                         </span>
                         <input id="internal_number" name="internal_number" placeholder="Робочий номер" class="form-control input-md" required="" type="text" readonly="readonly" value="{{new_num}}">
                     </div>
-                    <input id="num_prefix_1" name="num_prefix_1" type="hidden" >
+                    <input id="num_prefix_1" name="num_prefix_1" type="hidden" value="КЗ" >
                     <span class="help-block">Внутрішній номер документу</span>
                 </div>
             </div>
 
-            <!-- Text input-->
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="isreapeted">Надійшла повторно</label>
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <div class="input-group-addon">
-
-
-                            <input id="cb-number-on" name="cb-number-on" type="checkbox" aria-label="Checkbox for following text input">
-
-                        </div>
-                        <input type="text" id="isreapeted" name="isreapeted" readonly="readonly" class="form-control">
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Text input-->
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="impstatus">Урядова гаряча лінія</label>
-                <div class="col-md-4">
-                    <div class="input-group mb-3">
-                        <div class="input-group-addon">
-
-
-                            <input id="impstatus" name="impstatus" type="checkbox" aria-label="Checkbox for following text input">
-
-                        </div>
-                        
-                    </div>
-
-                </div>
-            </div>
-
             <!-- Prepended checkbox -->
-            
             <div class="form-group">
                 <label class="col-md-4 control-label" for="notes">Вихідні номери інших організацій</label>
                 <div class="col-md-4 controls panel panel-default">
@@ -72,7 +37,7 @@
                     <div class="entry input-group panel-body">
                         <input class="form-control" name="externalnums[]" type="text" placeholder="Вихідний номер" value="" />
                         <input class="form-control" name="externalorgs[]" type="text" placeholder="Назва організації" value="" />
-                        <input class="form-control datepicker" name="externaldates[]" type="text" placeholder="Дата документу" value="" />
+                        <input class="form-control datepicker" name="externaldates[]" type="text" placeholder="Дата" value="" />
                         <span class="input-group-btn">     
                             <button class="btn btn-success btn-add" type="button">
                                 <span class="glyphicon glyphicon-plus"></span>
@@ -103,26 +68,13 @@
                     <span class="help-block">Дата контролю виконання</span>
                 </div>
             </div>
-            
-                        <!-- Select Basic -->
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="selectinterviewer">На резолюцію подано</label>
-                <div class="col-md-4">
-                    <select id="selectinterviewer" name="selectinterviewer" class="form-control" required="required">
-                        <option value="-1" disabled="disabled" selected="selected">Оберіть співробітника</option>
-                        {% for item in bosslist %}
-                            <option value="{{item.id}}">{{item.name}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
 
             <!-- Select Basic -->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="topicstartername">Виберіть громадянина</label>
+                <label class="col-md-4 control-label" for="topicstarter">Виберіть громадянина (громадян)</label>
                 <div class="col-md-4">
-                    <input type="text" class="form-control input-md" name="topicstarter" id="topicstarter" value="" />
-
+                    <input type="text" class="form-control" name="topicstarter" id="topicstarter" value="" />
+                    <span class="help-block">Виберіть громадянина або громадян, що є контактними особами у зверненні</span>
                 </div>
 
             </div>
@@ -137,6 +89,15 @@
                 </div>
             </div>
 
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="othersts">Опис інших заявників</label>
+                <div class="col-md-4">                     
+                    <textarea class="form-control" id="othersts" name="othersts"></textarea>
+                    <span class="help-block">Опишіть інших громадян, що звертаються</span>
+                </div>
+            </div>
 
             <!-- Text input-->
             <div class="form-group">
@@ -169,7 +130,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="submitok">Завершити</label>
                 <div class="col-md-8">
-                    <button id="submitok" type="submit" disabled="disabled" name="submitok" class="btn btn-success">Зберегти</button>
+                    <button id="submitok" type="submit" name="submitok" class="btn btn-success">Зберегти</button>
                     <button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>
                 </div>
             </div>
@@ -178,13 +139,6 @@
     </form>
     <script type="text/javascript">
         $(document).ready(function () {
-            function getMailersTotal(topicstarter = '') {
-
-                var outStr = 'Листа надіслав ' + topicstarter + '  ' + $('#date_in').val() + ', дата контролю ' +
-                        $('#date_control').val() + '';
-                $('#comment').text(outStr);
-                return outStr;
-            }
 
             var engine = new Bloodhound({
                 remote: {
@@ -219,15 +173,13 @@
                     }
                     )
                     .on('tokenfield:createdtoken', function (e) {
-                        $("#prefix_1_span").html($('#topicstarter').tokenfield('getTokens')[0].label[0]);
-                        $("#num_prefix_1").val($('#topicstarter').tokenfield('getTokens')[0].label[0]);
-                        $("#submitok").attr("disabled", false);
-                        getMailersTotal($('#topicstarter').tokenfield('getTokens')[0].label);
+                        //$("#prefix_1_span").html($('#topicstarter').tokenfield('getTokens')[0].label[0]);
+                        //$("#num_prefix_1").val($('#topicstarter').tokenfield('getTokens')[0].label[0]);
                     })
                     .on('tokenfield:removedtoken', function (e) {
                         alert('Видалено особу: ' + e.attrs.label);
-                        $("#prefix_1_span").html($('#topicstarter').tokenfield('getTokens')[0].label[0]);
-                        $("#num_prefix_1").val($('#topicstarter').tokenfield('getTokens')[0].label[0]);
+                        //$("#prefix_1_span").html($('#topicstarter').tokenfield('getTokens')[0].label[0]);
+                        //$("#num_prefix_1").val($('#topicstarter').tokenfield('getTokens')[0].label[0]);
                     })
                     .tokenfield({
                         showAutocompleteOnFocus: true,
@@ -245,18 +197,32 @@
 
                     });
             $('#topicstarter').tokenfield('setTokens', []);
-
-            $("#cb-number-on").change(function () {
-                if (this.checked) {
-                    $("#internal_number").attr("readOnly", false);
-                    $("#isreapeted").attr("readOnly", false);
-                } else {
-                    $("#internal_number").attr("readOnly", "readOnly");
-                    $("#isreapeted").attr("readOnly", "readOnly");
-                }
-            });
         });
 
+
+
+
+
+        //=====================================================
+        /*
+         $(document).ready(function () {
+         //==================== povs
+         var engine3 = new Bloodhound({
+         local:[],
+         datumTokenizer: function (d) {
+         return Bloodhound.tokenizers.whitespace(d.label);
+         },
+         queryTokenizer: Bloodhound.tokenizers.whitespace
+         });
+         engine3.initialize();
+         $('#tokenfield-people1').tokenfield({
+         typeahead: [null, {
+         display: 'label',
+         source: engine3.ttAdapter()
+         }]
+         });
+         $('#tokenfield-people1').tokenfield('setTokens', []);
+         */
 
     </script>
     {% include 'popup.newpeople.twig' %}

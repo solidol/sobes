@@ -24,19 +24,27 @@
                     <div class="col-md-2">
                         <a href="{{path('clerk.doc.new.people')}}" class="btn btn-success">ДОДАТИ</a>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-2">
+                        <a href="{{path('clerk.doc.new.collect')}}" class="btn btn-success">ДОДАТИ КЗ</a>
+                    </div>
+                    
+                    <div class="col-md-8">
                         <h3>Звернення громадян</h3>
                     </div>
                 </div>
             </div>
 
+            
+
             <table id="people" class="display table hover" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -44,9 +52,11 @@
                 <tfoot>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -66,10 +76,12 @@
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'people'})}}",
                 "columns": [
                     {"data": "num"},
+                    {"data": "notes"},
                     {"data": "date_in"},
                     {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "comment"},
                     {"data": "view"},
-                    {"data": "edit"},
                     {"data": "arch"}
                 ],
                 "fnRowCallback": function (nRow, aData) {

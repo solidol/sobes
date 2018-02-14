@@ -13,10 +13,10 @@
                             <div class="row">
                                 <!-- Select Basic -->
                                 <div class="form-group">
-                                    <label class="col-md-4 control-label" for="user">Оберіть заступника голови</label>
+                                    <label class="col-md-4 control-label" for="user">Оберіть виконавця</label>
                                     <div class="col-md-6">
                                         <select id="user" name="user" class="form-control" required="required">
-                                            <option value="-1" disabled="disabled" selected="selected">Оберіть заступника</option>
+                                            <option value="-1" disabled="disabled" selected="selected">Оберіть виконавця</option>
                                             {% for item in userlist %}
                                                 <option value="{{item.id}}">{{item.name}}</option>
                                             {% endfor %}
@@ -28,9 +28,9 @@
 
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="col-md-4 control-label" for="text">Коментар</label>
+                                    <label class="col-md-4 control-label" for="text">Текст резолюції</label>
                                     <div class="col-md-6">                     
-                                        <textarea class="form-control" id="text" name="text"></textarea>
+                                        <textarea class="form-control" id="textres" name="textres"></textarea>
                                     </div>
                                 </div>                     
                             </div>
@@ -46,7 +46,7 @@
                         $(document).ready(function () {
                             $("#btnpostresolution").click(function () {
                                 $("#addoresform").ajaxSubmit({url: '{{path('ajax.resolution.push')}}', type: 'post'});
-                                location.reload();
+                                setTimeout(function(){location.reload();}, 500);
                             });
 
                         });

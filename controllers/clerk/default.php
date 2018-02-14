@@ -6,6 +6,7 @@
  * and open the template in the editor.
  */
 require_once 'docsingle.php';
+require_once 'docpush.php';
 require_once 'doclists.php';
 require_once 'people.php';
 require_once 'search.php';

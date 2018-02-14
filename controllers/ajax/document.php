@@ -69,14 +69,25 @@ $app->get('/ajax/document/getlist', function() use ($app) {
         if ($v['internal_number'] != '')
             $item['num'] .= '-' . $v['internal_number'];
         $item['num'] = $v['fullnum'];
+        $item['notes'] = '';
+        if ($v['impstatus'] == 'ugl')
+            $item['notes'] .= ' <span style="background-color:red;color:white;font-size:20px">УГЛ</span>';
+        if ($v['donestatus'] == 'p')
+            $item['notes'] .= ' <span style="color:rgb(0, 150, 60);font-size:20px">+</span>';
+        if ($v['donestatus'] == 'm')
+            $item['notes'] .= ' <span style="color:red;font-size:20px">-</span>';
+        if ($v['donestatus'] == 'r')
+            $item['notes'] .= ' <span style="color:blue;font-size:20px">P</span>';
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
+        $item['comment'] = $v['comment'];
+        $item['summary'] = $v['summary'];
         $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
 
-        $item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.doc.edit', array('doc' => $v['id']))
-                . '"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a>';
+        /*$item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.doc.edit', array('doc' => $v['id']))
+                . '"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a>';*/
 
         $item['arch'] = '<a href="' . $app['url_generator']->generate('clerk.doc.movetoarch', array('doc' => $v['id']))
                 . '" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
@@ -136,9 +147,20 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         if ($v['internal_number'] != '')
             $item['num'] .= '-' . $v['internal_number'];
         $item['num'] = $v['fullnum'];
+        $item['notes'] = '';
+        if ($v['impstatus'] == 'ugl')
+            $item['notes'] .= ' <span style="background-color:red;color:white;font-size:20px">УГЛ</span>';
+        if ($v['donestatus'] == 'p')
+            $item['notes'] .= ' <span style="color:rgb(0, 150, 60);font-size:20px">+</span>';
+        if ($v['donestatus'] == 'm')
+            $item['notes'] .= ' <span style="color:red;font-size:20px">-</span>';
+        if ($v['donestatus'] == 'r')
+            $item['notes'] .= ' <span style="color:blue;font-size:20px">P</span>';
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
+        $item['comment'] = $v['comment'];
+        $item['summary'] = $v['summary'];
         $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
 
@@ -231,7 +253,7 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
             }
         }
     //var_dump($keys);
-    $result = RDAStatic::getDocList($keys, "AND", $limit, $search);
+    $result = RDAStatic::getDocList($keys, "AND", $limit, $search, 1);
     $arDocs['data'] = array();
     foreach ($result as $k => $v) {
 
@@ -246,15 +268,11 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
-        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
+        $item['comment'] = $v['comment'];
+        $item['summary'] = $v['summary'];
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.arch.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
 
-        $item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.doc.edit', array('doc' => $v['id']))
-                . '"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a>';
-
-        $item['arch'] = '<a href="' . $app['url_generator']->generate('clerk.doc.movetoarch', array('doc' => $v['id']))
-                . '" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
-        $item['arch'] = '<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
         $arDocs['data'][] = $item;
     }
     $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;
@@ -272,19 +290,13 @@ $app->post('/ajax/resolution/push', function() use ($app) {
     $data = array();
     $post = $app['request'];
 
-    $value['userid'] = $post->get('user');
-    $manager = $app['user.manager']->getUser($post->get('user'));
-    $value['username'] = $manager->getName();
-    $value['text'] = $post->get('text');
-    $value['date'] = date('d.m.Y');
-    $data['document_id'] = $post->get('doc');
-    $data['keystr'] = 'resolution';
-    $data['value'] = serialize($value);
-    $app['db']->insert('document_meta', $data);
-    //if ($app['db']->lastInsertId() > 0) {
-    RDAStatic::changeDocStatus($data['document_id'], 'hasresolution');
-    RDAStatic::moveDoc($post->get('doc'), false, $value['userid'], 'Резолюція голови');
-    //}
+    $userfrom = $user->getId();
+    $userto = ($post->get('user') > 0) ? $post->get('user') : $user->getId();
+
+
+    RDAStatic::changeDocStatus($post->get('doc'), 'hasresolution');
+    RDAStatic::pushResolution($post->get('doc'), $userto, $post->get('textres'));
+
     return 'OK';
 })->bind('ajax.resolution.push');
 
@@ -293,14 +305,58 @@ $app->post('/ajax/notes/push', function() use ($app) {
     $user = $token->getUser();
     $data = array();
     $post = $app['request'];
-    $id = $post->get('doc');
-    $notes = RDAStatic::getNotesByDocId($id, $post->get('notestype'));
-    foreach ($notes as $item){
-        $currentNotes[]=$item['value'];
-    }
-    $currentNotes[] = $post->get('text');
-    RDAStatic::pushNotesByDocId($id, $currentNotes, $post->get('notestype'));
+    
+    
+    RDAStatic::pushNotesByDocId($post->get('doc'), $post->get('text'), $post->get('notestype'));
 
-    var_dump($currentNotes);
+
     return 'OK';
 })->bind('ajax.notes.push');
+
+$app->post('/ajax/document/move', function() use ($app) {
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data = array();
+    $post = $app['request'];
+
+    $userfrom = ($post->get('userfrom') > 0) ? $post->get('userfrom') : $user->getId();
+    $userto = ($post->get('usertomov') > 0) ? $post->get('usertomov') : $user->getId();
+
+    
+    RDAStatic::moveDoc($post->get('docid'), $userfrom, $userto, $post->get('textmov'));
+    //}
+    return 'OK';
+})->bind('ajax.moving.push');
+
+$app->post('/ajax/donestatus/push', function() use ($app) {
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data = array();
+    $post = $app['request'];
+    $id = $post->get('docid');
+    
+    RDAStatic::pushNotesByDocId($id, $post->get('textstatus'), 'donestr');
+    RDAStatic::setDoneStatusById($id, $post->get('donestat'));
+
+
+    return 'OK';
+})->bind('ajax.donestatus.push');
+
+$app->post('/ajax/autosave/push', function() use ($app) {
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data = array();
+    $post = $app['request'];
+    $id = $post->get('id');
+    $content = strip_tags($post->get('content'));
+    $params=explode(":", $id);
+    switch ($params[1]){
+        case "mainfield": 
+            RDAStatic::updateMainField($params[0], $params[2], $content);
+            break;
+        case "metafield":
+            RDAStatic::updateMetaField($params[0], $params[2], $content);
+            break;
+    }
+    return $post->get('content');
+})->bind('ajax.autosave.push');

@@ -30,13 +30,16 @@ class RDAStaticPeople {
         $arKeys = unserialize($arKeys['value']);
         //var_dump($arKeys);
         $arRes = array();
-        foreach ($arAllStatuses as $value) {
-            //if ($value['keystr']=="geroyukrainy") var_dump ($value);
-            if (in_array($value['keystr'], $arKeys)) {
-                //var_dump($value);
-                $arRes[] = $value;
-            }
-        }
+        if (is_array($arAllStatuses) and is_array($arKeys))
+            foreach ($arAllStatuses as $value) {
+                //if ($value['keystr']=="geroyukrainy") var_dump ($value);
+
+                if (in_array($value['keystr'], $arKeys)) {
+                    //var_dump($value);
+                    $arRes[] = $value;
+                }
+            } else
+            $arRes = array();
 
         return $arRes;
     }
@@ -70,6 +73,25 @@ class RDAStaticPeople {
         if (!$result)
             $app['db']->insert('people_meta', array('keystr' => $type, 'value' => $notes, 'people_id' => $id));
         return $result;
+    }
+
+    public static function insertPeoplesDoc($docId = 0, $peoples = array()) {
+        global $app;
+        $query = array();
+        foreach ($peoples as $item) {
+            $ny['people_id'] = $item;
+            $ny['document_id'] = $docId;
+            $app['db']->insert('document_people', $ny);
+        }
+    }
+
+    public static function getPeoplesIdByDoc($docId) {
+        global $app;
+        $arRes = array();
+        $sql = "SELECT people_id FROM document_people WHERE document_id = ?";
+        //var_dump($sql);
+        $arRes = $app['db']->fetchAll($sql, array((int) $docId));
+        return $arRes;
     }
 
 }

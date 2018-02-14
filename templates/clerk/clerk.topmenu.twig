@@ -6,35 +6,35 @@
     <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ВХІДНІ ДОКУМЕНТИ</a>
         <ul class="dropdown-menu" role="menu">
             <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
-            <li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
-            <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З ОРГАНІЗАЦІЙ</a></li>
+            <!--<li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З ОРГАНІЗАЦІЙ</a></li>-->
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
-            <li><a href="{{path('clerk.doc.searchinput')}}">ПОШУК</a></li>
+            <!--<li><a href="{{path('clerk.doc.searchinput')}}">ПОШУК</a></li>-->
         </ul>
     </li>    
     <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ВИХІДНІ ДОКУМЕНТИ</a>
-        <ul class="dropdown-menu" role="menu">
+        <!--<ul class="dropdown-menu" role="menu">
             <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З ОРГАНІЗАЦІЙ</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПОШУК</a></li>
-        </ul>
+        </ul>-->
     </li>    
     <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">АРХІВ</a>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="{{path('clerk.doclist.archive')}}">ВХІДНІ ДОКУМЕНТИ</a></li>
-            <li><a href="{{path('clerk.doclist.archive')}}">ВИХІДНІ ДОКУМЕНТИ</a></li>
+            <li><a href="{{path('clerk.docarchive.alltyped',{'type':'visit'})}}">ВХІДНІ ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
+            
         </ul>
     </li>
     <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ЗАЯВНИКИ</a>
         <ul class="dropdown-menu" role="menu">
             <li><a href="{{path('clerk.people.all')}}">ГРОМАДЯНИ</a></li>
-            <li><a href="{{path('clerk.org.all')}}">ОРГАНІЗАЦІЇ</a></li>
+            <!--<li><a href="{{path('clerk.org.all')}}">ОРГАНІЗАЦІЇ</a></li>-->
             <li><a href="{{path('clerk.people.add')}}">ДОДАТИ ГPОМАДЯНИНА</a></li>
-            <li><a href="{{path('clerk.org.add')}}">ДОДАТИ ОРГАНІЗАЦІЮ</a></li>
+            <!--<li><a href="{{path('clerk.org.add')}}">ДОДАТИ ОРГАНІЗАЦІЮ</a></li>-->
         </ul>
     </li>
       

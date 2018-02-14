@@ -20,23 +20,38 @@
 
                         <span class="input-group-addon" id="prefix_1_span">ПР</span>
                         <input id="internal_number" name="internal_number" placeholder="Робочий номер" class="form-control input-md" required="" type="text" readonly="readonly" value="{{new_num}}">
-                         <span class="input-group-addon" id="prefix_2_span">
+                        <span class="input-group-addon" id="prefix_2_span">
                             -
                         </span>
-                   </div>
+                    </div>
                     <input id="num_prefix_1" name="num_prefix_1" type="hidden" value="ПР">
                     <input id="num_prefix_2" name="num_prefix_2" type="hidden" value="">
                     <span class="help-block">Внутрішній номер документу</span>
                 </div>
             </div>
-
-            
             <!-- Text input-->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="date_in">Дата стоврення</label>
+                <label class="col-md-4 control-label" for="isreapeted">Повторне звернення</label>
+                <div class="col-md-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-addon">
+
+
+                            <input id="cb-number-on" name="cb-number-on" type="checkbox" aria-label="Checkbox for following text input">
+
+                        </div>
+                        <input type="text" id="isreapeted" name="isreapeted" readonly="readonly" class="form-control">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_in">Дата відвідування</label>
                 <div class="col-md-4">
                     <input id="date_in" name="date_in" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text">
-                    <span class="help-block">Дата отримання, або сторення</span>
+                    <span class="help-block">Дата відвідування громадянином</span>
                 </div>
             </div>
 
@@ -103,7 +118,7 @@
 
             <!-- Textarea -->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="comment">Комментар</label>
+                <label class="col-md-4 control-label" for="comment">Загальна інформація</label>
                 <div class="col-md-4">                     
                     <textarea class="form-control" id="comment" name="comment"></textarea>
                 </div>
@@ -113,14 +128,30 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="submitok">Завершити</label>
                 <div class="col-md-8">
-                    <button id="submitok" type="submit" name="submitok" class="btn btn-success">Зберегти</button>
+                    <button id="submitok" disabled="disabled" type="submit" name="submitok" class="btn btn-success">Зберегти</button>
                     <button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>
                 </div>
             </div>
 
         </fieldset>
     </form>
-    
+
+
+    <script>
+        $(document).ready(function () {
+
+            $("#cb-number-on").change(function () {
+                if (this.checked) {
+                    $("#internal_number").attr("readOnly", false);
+                    $("#isreapeted").attr("readOnly", false);
+                } else {
+                    $("#internal_number").attr("readOnly", "readOnly");
+                    $("#isreapeted").attr("readOnly", "readOnly");
+                }
+            });
+        });
+    </script>
+
     {% include 'popup.newpeople.twig' %}
 
 {% endblock %}

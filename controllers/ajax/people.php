@@ -8,11 +8,13 @@
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-$app->get('/ajax/people/shortsearch', function() use ($app) {
+$app->get('/ajax/people/shortsearchpeople', function() use ($app) {
     $result = array();
     $arPeople = array();
     $get = $app['request'];
     $searchstring = urldecode($get->get('term'));
+    if ($get->get('query')>"")
+        $searchstring = urldecode($get->get('query'));
     $keys['firstname'] = $searchstring;
     $keys['secondname'] = $searchstring;
     $keys['lastname'] = $searchstring;
@@ -20,9 +22,47 @@ $app->get('/ajax/people/shortsearch', function() use ($app) {
     $result = RDAStatic::getPeopleByAnyKey($keys, "OR");
     foreach ($result as $k => $v) {
         $item['id'] = $v['id'];
-        $item['label'] = $v['lastname'] . ' ' . $v['firstname'] . ' ' . $v['secondname'] .
-                ' | ' . $v['street'] . ', ' . $v['building'] . ', кв.' . $v['room'];
-        $item['value'] = $v['lastname'] . ' ' . $v['firstname'] . ' ' . $v['secondname'];
+        $item['label'] = $v['lastname'] . ' ' .
+                $v['firstname'] . ' ' .
+                $v['secondname'] . ' | ' .
+                $v['street'] . ', буд.' .
+                $v['building'] .
+                (($v['housing'] > 0) ? ' корп.' . $v['housing'] : '') .
+                (($v['room'] > 0) ? ', кв.' . $v['room'] : '');
+        $item['value'] = $item['id'];
+        $item['name'] = $item['label'];
+        $arPeople[] = $item;
+    }
+    $resp = new JsonResponse($arPeople);
+    return $resp->setCallback(
+                    $get->get('callback')
+    );
+})->bind('ajax.people.shortsearchpeople');
+
+
+$app->get('/ajax/people/shortsearch', function() use ($app) {
+    $result = array();
+    $arPeople = array();
+    $get = $app['request'];
+    $searchstring = urldecode($get->get('term'));
+    if ($get->get('query')>"")
+        $searchstring = urldecode($get->get('query'));
+    $keys['firstname'] = $searchstring;
+    $keys['secondname'] = $searchstring;
+    $keys['lastname'] = $searchstring;
+    $keys['passport'] = $searchstring;
+    $result = RDAStatic::getPeopleByAnyKey($keys, "OR");
+    foreach ($result as $k => $v) {
+        $item['id'] = $v['id'];
+        $item['label'] = $v['lastname'] . ' ' .
+                $v['firstname'] . ' ' .
+                $v['secondname'] . ' | ' .
+                $v['street'] . ', буд.' .
+                $v['building'] .
+                (($v['housing'] > 0) ? ' корп.' . $v['housing'] : '') .
+                (($v['room'] > 0) ? ', кв.' . $v['room'] : '');
+        $item['value'] = $item['label'];
+        $item['name'] = $item['label'];
         $arPeople[] = $item;
     }
     $resp = new JsonResponse($arPeople);
@@ -77,8 +117,9 @@ $app->post('/ajax/people/push', function() use ($app) {
     $data['passport'] = $post->get('passport');
     $data['zipcode'] = $post->get('zipcode');
     $data['city'] = $post->get('city');
-    $data['street'] = $post->get('street');
+    $data['street'] = $post->get('stype').' '.$post->get('street');
     $data['building'] = $post->get('building');
+    $data['housing'] = $post->get('housing');
     $data['room'] = $post->get('room');
     $data['comment'] = $post->get('comment');
     $data['sex'] = $post->get('sex');
@@ -89,11 +130,11 @@ $app->post('/ajax/people/push', function() use ($app) {
     $app['db']->insert('people', $data);
     $newId = $app['db']->lastInsertId();
     $arMetaSoc = array();
-    foreach ($post->get('social') as $k=>$v){
-        $arMetaSoc[]=$k;
+    foreach ($post->get('social') as $k => $v) {
+        $arMetaSoc[] = $k;
     }
     RDAStaticPeople::pushPeopleMetaByPeopleId($newId, $arMetaSoc);
-    
+
 
     return $app['db']->lastInsertId();
 })->bind('ajax.people.push');

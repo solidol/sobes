@@ -5,29 +5,41 @@
  */
 $(document).ready(function () {
 
-    $(document).on('click', '.btn-add', function(e)
+    function getVisitorsTotal() {
+        if (!$('#topicstartername1').val())
+            return false;
+        var outStr = 'Відвідвувач ' + $('#topicstartername1').val() + ' прийнятий ' +
+                $('#selectinterviewer option:selected').text() + ' ' + $('#date_in').val() + ', дата контролю ' +
+                $('#date_control').val() + '';
+        $('#comment').text(outStr);
+        return outStr;
+    }
+    $(document).on('click', '.btn-add', function (e)
     {
         e.preventDefault();
         var controlForm = $('.controls'),
-            currentEntry = $(this).parents('.entry:first'),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+                currentEntry = $(this).parents('.entry:first'),
+                newEntry = $(currentEntry.clone()).appendTo(controlForm);
 
         newEntry.find('input').val('');
         controlForm.find('.entry:not(:last) .btn-add')
-            .removeClass('btn-add').addClass('btn-remove')
-            .removeClass('btn-success').addClass('btn-danger')
-            .html('<span class="glyphicon glyphicon-minus"></span>');
-    }).on('click', '.btn-remove', function(e)
+                .removeClass('btn-add').addClass('btn-remove')
+                .removeClass('btn-success').addClass('btn-danger')
+                .html('<span class="glyphicon glyphicon-minus"></span>');
+    }).on('click', '.btn-remove', function (e)
     {
-		$(this).parent().parent().remove();
+        $(this).parent().parent().remove();
 
-		e.preventDefault();
-		return false;
-	});
+        e.preventDefault();
+        return false;
+    });
 
 
     $(".datepicker").datepicker();
 
+    $(".datepicker").change(function () {
+        getVisitorsTotal();
+    });
     $(".datepickersearch").datepicker({dateFormat: 'yy-mm-dd'});
     $.datepicker.setDefaults($.datepicker.regional['uk']);
     $("#selecttype").change(function () {
@@ -39,6 +51,10 @@ $(document).ready(function () {
         var str = $("#selectinterviewer option:selected").text();
         $("#prefix_2_span").html(str[0]);
         $("#num_prefix_2").val(str[0]);
+        getVisitorsTotal();
+
+        if ($("#topicstartername1").val() != "")
+            $("#submitok").attr("disabled", false);
     });
 
     $("#selectorgtype").change(function () {
@@ -84,6 +100,7 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     response(data);
+
                 }
             });
         },
@@ -93,6 +110,8 @@ $(document).ready(function () {
             $("#prefix_1_span").html(ui.item.label[0]);
             $("#num_prefix_1").val(ui.item.label[0]);
             //log("Selected: " + ui.item.value + " aka " + ui.item.id);
+            //$("#submitok").remuveAttr("disabled");
+            //('000');
         }
     });
 
@@ -113,8 +132,16 @@ $(document).ready(function () {
         minLength: 3,
         select: function (event, ui) {
             $("#topicstarter").val(ui.item.id);
-            $("#prefix_1_span").html($("#prefix_1_span").html()+'/'+ui.item.label[0]);
+            $("#prefix_1_span").html('ПР/' + ui.item.label[0]);
             $("#num_prefix_1").val($("#prefix_1_span").html());
+
+            setTimeout(function () {
+                getVisitorsTotal();
+            }, 300);
+
+
+            if ($("#selectinterviewer").val() > 0)
+                $("#submitok").attr("disabled", false);
             //log("Selected: " + ui.item.value + " aka " + ui.item.id);
         }
     });
@@ -141,7 +168,9 @@ $(document).ready(function () {
             //log("Selected: " + ui.item.value + " aka " + ui.item.id);
         }
     });
-    
+
     $(".dataTables_filter").hide();
+
+
 });
 

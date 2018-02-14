@@ -31,9 +31,9 @@
                         $(document).ready(function () {
                             $("#btnpost1").click(function () {
                                 $("#add1").ajaxSubmit({url: '{{path('ajax.notes.push')}}', type: 'post'});
-                                setTimeout(500,
-                                        location.reload()
-                                        );
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
                             });
 
                         });
@@ -77,9 +77,9 @@
                         $(document).ready(function () {
                             $("#btnpost2").click(function () {
                                 $("#add2").ajaxSubmit({url: '{{path('ajax.notes.push')}}', type: 'post'});
-                                setTimeout(500,
-                                        location.reload()
-                                        );
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
                             });
 
                         });
@@ -123,10 +123,9 @@
                         $(document).ready(function () {
                             $("#btnpost3").click(function () {
                                 $("#add3").ajaxSubmit({url: '{{path('ajax.notes.push')}}', type: 'post'});
-
-                                setTimeout(500,
-                                        location.reload()
-                                        );
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
                             });
 
                         });

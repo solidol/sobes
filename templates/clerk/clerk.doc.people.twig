@@ -7,58 +7,94 @@
 
 
     <table width="100%" border="1">
-        <tr>
+        <tr {%if doc.impstatus=='ugl' %}style="background-color: rgb(255, 151, 140);"{%endif%}>
+            <td align="center" style="font-size:40px;">
+                {%if doc.impstatus=='ugl' %} УГЛ {%endif%}
+                <br/>
+                {% if doc.donestatus=="p" %}
 
-            <td  colspan="3" align="center">
+                    <span style="background-color: rgb(0, 150, 60); color:#ffffff; ">
+                        <span style="width: 150px; font-size:40px;">+</span>
+                    </span>
+
+                {% elseif doc.donestatus=="m" %}
+
+                    <span style="background-color: rgb(255, 0, 0); color:#ffffff; font-size:40px; ">
+                        <span style="width: 150px; font-size:40px;">-</span>
+                    </span>
+
+                {% elseif doc.donestatus=="к" %}
+
+                    <span style="background-color: rgb(0, 0, 255); color:#ffffff; font-size:40px; ">
+                        <span style="width: 150px; font-size:40px;">P</span>
+                    </span>
+
+
+                {% elseif doc.donestatus=="e" %}
+                {% else %}
+
+                {% endif %}
+            </td>
+            <td  align="center">
                 <h1>
                     КАРТКА ОБЛІКУ<br>
                     скарг, заяв, пропозицій
                 </h1>
             </td>
-
+            <td align="center">
+                <button id="save" class="btn btn-warning" style="display:none;">Зберегти</button>
+            </td>
         </tr>
         <tr>
             <td width="25%"  align="center">
-                <h2>№ {{doc.fullnum}} / {{doc.year}}</h2>
+                <h2>№ {{doc.fullnum}}
+                    {% if doc.isreapeted!='no' %}
+                        <span style="color:red">/{{doc.isreapeted}}</span>
+                    {% endif %} : {{doc.year}}</h2>
+                    
             </td>
             <td  align="center">
-                <h3>КОНТРОЛЬ {{doc.date_control}}</h3> 
+                <h3>КОНТРОЛЬ {{doc.date_control_text}}</h3> 
             </td>
             <td width="25%" align="center">
                 <div class="btn-group-vertical">
+                    
                     {% if doc.status!='archived' %}
-                        <a href="{{path('clerk.doc.edit',{'doc':doc.id})}}" class="btn btn-warning">Редагувати</a>
+                        <!--<a href="{{path('clerk.doc.edit',{'doc':doc.id})}}" class="btn btn-warning">Редагувати</a>-->
                     {% endif %}
-                    {% if doc.status!='hasresolution' and doc.status!='archived'%}
-                        <button type="button" id="addresolutonbtn" class="btn btn-success" data-toggle="modal" data-target="#orgModal">Резолюція голови</button>
+
+
+                    {% if ((doc.donestatus!='p') and (doc.donestatus!='m') and (doc.donestatus!='r'))%}
+
+                        <button type="button" id="addresolutonbtn" class="btn btn-info" data-toggle="modal" data-target="#orgModal">Додати резолюцію</button>
+                        {% if doc.status=='hasresolution' and doc.status!='archived'%}
+
+                            <button type="button" id="addresolutonbtn" class="btn btn-success" data-toggle="modal" data-target="#moveModal">Передати документ</button>    
+                        {% endif %}
+                        <button type="button" id="setstatusbutton" class="btn btn-danger" data-toggle="modal" data-target="#statusModal">Остаточне виконання</button>                
                     {% endif %}
+
                 </div>
             </td>
         </tr>
         <tr>
             <td width="20%">
-                Громадянин
+                Громадянин (громадяни)
             </td>
             <td colspan="2">
-                {{doc.fullname}}
+                {% for item in doc.peoples %}
+                    {{item.full[0].lastname}} 
+                    {{item.full[0].firstname}}
+                    {{item.full[0].secondname}}
+                    вул. {{item.full[0].street}}, 
+                    буд. {{item.full[0].building}}
+                    {% if item.full[0].housing!='' %}/{{item.full[0].housing}}{% endif %}, 
+                    {% if item.full[0].room!='' %}кв. {{item.full[0].room}}{% endif %}<br>
+                {% endfor %}
             </td>
         </tr>
-        <tr>
-            <td width="20%">
-                Адреса
-            </td>
-            <td colspan="2">
-                вул. {{doc.street}}, буд. {{doc.building}}{% if doc.housing!='' %}/{{doc.housing}}{% endif %}, {% if doc.room!='' %}кв. {{doc.room}}{% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td width="20%">
-                Місце роботи та посада
-            </td>
-            <td colspan="2">
 
-            </td>
-        </tr>
+
         <tr>
             <td width="20%">
                 Звідки, дата, номер
@@ -66,9 +102,7 @@
             <td colspan="2">
                 {% if doc.externals is not empty %}
                     {% for item in doc.externals %}
-                        Документ надійшов {{item.date}}  
-                        з {{item.org}} 
-                        під номером {{item.number}}
+                        {{item.serial.fullstr}}
                         <br/>
                     {% endfor %}
                 {% endif %}
@@ -79,7 +113,11 @@
                 Надійшла повторно
             </td>
             <td colspan="2">
-
+                {% if doc.isreapeted!='no' %}
+                    повтор №{{doc.isreapeted}}
+                {% else %}
+                    -
+                {% endif %}
             </td>
         </tr>
         <tr>
@@ -87,7 +125,7 @@
                 Зміст
             </td>
             <td colspan="2">
-                {{doc.summary}}
+                <div id="{{doc.id}}:mainfield:summary" contenteditable="true">{{doc.summary}}</div>
             </td>
         </tr>
         <tr>
@@ -96,48 +134,77 @@
             </td>
             <td colspan="2">
                 {% if doc.resolution is not empty %}
-
-                    {{doc.resolution.date}}
-                    <br/>
-                    Передано до виконання {{doc.resolution.username}}
-                    {% if doc.resolution.text is not empty %}
-                        <br/>
-                        З приміткою
-                        <br/>
-                        {{doc.resolution.text}}
-                    {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <td width="20%">
-                Історія переміщень
-            </td>
-            <td colspan="2">
-                {% if doc.movings is not empty %}
-                    {% for item in doc.movings %}
-                        {{item.dateformated}} - Документ передано 
-                        з {{item.prevusername}} на {{item.nextusername}}
-                        з приміткою: {{item.movtext}}
-                        <br/>
+                    {% for item in doc.resolution %}
+                        <div id="{{item.id}}:metafield:movings" contenteditable="true">{{item.serial.fullstr}}</div>
+                        
                     {% endfor %}
                 {% endif %}
             </td>
         </tr>
         <tr>
             <td width="20%">
-                Примітки
+
+                <div class="input-group">
+                    Відмітки про виконання
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#doneNotesModal">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </td>
+            <td colspan="2">
+                {% if doc.donestr is not empty %}
+                    {% for item in doc.donestr %}
+                        <div id="{{item.id}}:metafield:donestr" contenteditable="true">{{item.serial.fullstr}}</div>
+                        
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <td width="20%">
+                <div class="input-group">
+                    Інші відмітки
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#otherNotesModal">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
             </td>
             <td colspan="2">
                 {% if doc.notes is not empty %}
                     {% for item in doc.notes %}
-                        {{item.value}}
-                        <br/>
+                        <div id="{{item.id}}:metafield:notes" contenteditable="true">{{item.serial.fullstr}}</div>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <div class="input-group">
+                    Історія передачі документу
+
+                </div>
+
+            </td>
+            <td colspan="2">
+                {% if doc.movings is not empty %}
+                    {% for item in doc.movings %}
+                        <div id="{{item.id}}:metafield:movings" contenteditable="true">{{item.serial.fullstr}}</div>
                     {% endfor %}
                 {% endif %}
             </td>
         </tr>
 
     </table>
+
+
     {% include 'popup.resolution.twig' %}
+    {% include 'popup.docmov.twig' %}
+    {% include 'popup.setstatus.twig' %}
+    {% include 'popup.notes.twig' %}
 {% endblock %}

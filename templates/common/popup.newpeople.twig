@@ -89,8 +89,26 @@
                                     <div class="form-group row">
                                         <label class="col-md-4 control-label" for="street">Вулиця</label>  
                                         <div class="col-md-8">
-                                            <input id="street" name="street" placeholder="Вулиця" class="form-control input-md" required="" type="text">
-                                            <span class="help-block">Вулиця проживання</span>  
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <select class="form-control input-md" name="stype">
+                                                        <option disabled="disabled" selected="selected" value="-1">Виберіть</option>
+                                                        <option value="вул.">вул.</option>
+                                                        <option value="просп.">просп.</option>
+                                                        <option value="пров.">пров.</option>
+                                                        <option value="площа">площа</option>
+                                                        <option value="проїзд">проїзд</option>
+                                                        <option value="бульвар">бульвар</option>
+                                                    </select>
+
+                                                    <span class="help-block">Тип </span>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input id="street" name="street" placeholder="Вулиця" class="form-control input-md" required="" type="text">
+                                                    <span class="help-block">Назва</span> 
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <!-- Text input-->
@@ -118,21 +136,21 @@
                             </div>
 
                             <div class="row">
-                               
+
                                 <div class="col-md-12">
                                     <!-- Multiple Checkboxes -->
                                     <div class="form-group row">
                                         <!--<label class="col-md-4 control-label" for="socials">Соціальна група</label>-->
                                         {% for atitem in peopleattr %}
-                                        <div class="col-md-3">
-                                            <div class="checkbox">
-                                                <label for="social[]">
-                                                    <input name="social[{{atitem.keystr}}]" id="soc-{{atitem.keystr}}" value="1" type="checkbox">
-                                                    {{atitem.text}}
-                                                </label>
+                                            <div class="col-md-3">
+                                                <div class="checkbox">
+                                                    <label for="social[]">
+                                                        <input name="social[{{atitem.keystr}}]" id="soc-{{atitem.keystr}}" value="1" type="checkbox">
+                                                        {{atitem.value}}
+                                                    </label>
+                                                </div>
+
                                             </div>
-      
-                                        </div>
                                         {% endfor %}
                                     </div>  
                                 </div>

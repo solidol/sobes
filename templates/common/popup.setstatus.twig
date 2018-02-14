@@ -1,0 +1,59 @@
+<div id="statusModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Завершити обробку</h4>
+            </div>
+            <form action="" method="post" name="setstatusform" id="setstatusform">
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <fieldset>
+                            <input type="hidden" name="docid" value="{{doc.id}}" />
+                            <div class="row">
+                                <!-- Select Basic -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="donestat">Оберіть статус</label>
+                                    <div class="col-md-6">
+                                        <select id="donestat" name="donestat" class="form-control" required="required">
+                                            <option value="-1" disabled="disabled" selected="selected">Оберіть статус</option>
+                                            <option value="p">Задовольнити</option>
+                                            <option value="m">Відмовити</option>
+                                            <option value="r">Роз'яснити</option>
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textstatus">Примітка до виконання</label>
+                                    <div class="col-md-6">                     
+                                        <textarea class="form-control" id="textstatus" name="textstatus"></textarea>
+                                    </div>
+                                </div>                     
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnpoststatus" type="button" data-dismiss="modal">Передати</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
+                    <script>
+                        $(document).ready(function () {
+                            $("#btnpoststatus").click(function () {
+                                $("#setstatusform").ajaxSubmit({url: '{{path('ajax.donestatus.push')}}', type: 'post'});
+                                setTimeout(function(){location.reload();}, 1000);
+                            });
+
+                        });
+                    </script>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

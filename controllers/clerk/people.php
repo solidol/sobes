@@ -31,7 +31,7 @@ $app->post('/clerk/newpeople', function() use ($app) {
     $data['passport'] = $post->get('passport');
     $data['zipcode'] = $post->get('zipcode');
     $data['city'] = $post->get('city');
-    $data['street'] = $post->get('street');
+    $data['street'] = $post->get('stype').' '.$post->get('street');
     $data['building'] = $post->get('building');
     $data['room'] = $post->get('room');
     $data['comment'] = $post->get('comment');

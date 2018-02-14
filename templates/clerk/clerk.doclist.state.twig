@@ -32,6 +32,7 @@
                 <thead>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
                         <th></th>
@@ -42,6 +43,7 @@
                 <tfoot>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
                         <th></th>
@@ -64,6 +66,7 @@
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'state'})}}",
                 "columns": [
                     {"data": "num"},
+                    {"data": "notes"},
                     {"data": "date_in"},
                     {"data": "date_control"},
                     {"data": "view"},

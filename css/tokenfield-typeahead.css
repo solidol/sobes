@@ -23,7 +23,7 @@
 }
 .twitter-typeahead .tt-input {
   color: #555555;
-  z-index: 2;
+  z-index: 1;
 }
 .twitter-typeahead .tt-input,
 .twitter-typeahead .tt-hint {

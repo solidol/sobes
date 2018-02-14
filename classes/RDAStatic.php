@@ -11,12 +11,49 @@
  * 
  */
 class RDAStatic {
+    
+    public static function updateMainField($docid, $fieldname, $content) {
+        global $app;
+        if ($docid<1) return false;
+        $result = $app['db']->update('document', array($fieldname => $content), array('id' => $docid));
+        
+        return 'OK';
+    }
+
+    public static function updateMetaField($fieldid, $fieldname, $content) {
+        global $app;
+        if ($fieldid<1) return false;
+                $sql = "SELECT * FROM document_$fieldname WHERE id = ?";
+
+        
+        $arRes = $app['db']->fetchAssoc($sql,array((int)$fieldid));
+        $values = unserialize($arRes['value']);
+        $values['fullstr'] = $content;
+        $content = serialize($values);
+        $result = $app['db']->update('document_'.$fieldname, array('value' => $content), array('id' => $fieldid));
+        
+        return 'OK';
+    }
 
     public static function getManagers($andBoss = false) {
         global $app;
         $sql = "SELECT * FROM users WHERE roles LIKE '%ROLE_MANAGER%'";
+
         if ($andBoss)
             $sql .= " OR roles LIKE '%ROLE_BOSS%'";
+        $arRes = $app['db']->fetchAll($sql);
+        return $arRes;
+    }
+
+    public static function getByRoles($roles = array("ROLE_USER")) {
+        global $app;
+
+        foreach ($roles as &$rItem) {
+            $rItem = " roles LIKE '%$rItem%' ";
+        }
+        $roles = implode(' OR ', $roles);
+        $sql = "SELECT * FROM users WHERE $roles";
+
         $arRes = $app['db']->fetchAll($sql);
         return $arRes;
     }
@@ -207,44 +244,91 @@ class RDAStatic {
         $sql = "SELECT * FROM $view WHERE id = ?";
 
         $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
+
+        if ($arDoc['type'] == 'people') {
+            $arDoc['peoples'] = RDAStaticPeople::getPeoplesIdByDoc($arDoc['id']);
+            foreach ($arDoc['peoples'] as &$item) {
+                $item['full'] = RDAStatic::getPeopleByAnyKey(array('id' => $item['people_id']));
+            }
+        } else
+            $arDoc['peoples'] = array();
+        return $arDoc;
+    }
+
+    public static function getArchDocById($id) {
+        global $app;
+        $arDoc = array();
+        $sql = "SELECT * FROM document WHERE document.id = ?";
+
+        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
+        $view = 'document_archive_' . $arDoc['type'];
+
+        $sql = "SELECT * FROM $view WHERE id = ?";
+
+        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
+
+        if ($arDoc['type'] == 'people') {
+            $arDoc['peoples'] = RDAStaticPeople::getPeoplesIdByDoc($arDoc['id']);
+            foreach ($arDoc['peoples'] as &$item) {
+                $item['full'] = RDAStatic::getPeopleByAnyKey(array('id' => $item['people_id']));
+            }
+        } else
+            $arDoc['peoples'] = array();
         return $arDoc;
     }
 
     public static function getNotesByDocId($id, $type = 'notes') {
         global $app;
         $arDoc = array();
-        $sql = "SELECT * FROM document_notes_view WHERE document_id = ? AND `keystr` = '$type' ";
+        $sql = "SELECT * FROM document_$type WHERE document_id = ? AND `keystr` = '$type' ORDER BY id ASC";
         //var_dump($sql);
         $res = array();
         $arDoc = $app['db']->fetchAll($sql, array((int) $id));
         if (is_null($arDoc) or empty($arDoc))
             $arDoc = array();
-        else {
-            $arDoc = unserialize($arDoc[0]['value']);
-            $res = array();
-            foreach ($arDoc as $key => $value)
-                $res[]['value'] = $value;
-        }
 
-        return $res;
+
+        return $arDoc;
     }
 
-    public static function pushNotesByDocId($id = 0, $arNotes = array(), $type = 'notes') {
+    public static function pushNotesByDocId($docId = 0, $note = '', $type = 'notes') {
         global $app;
-        $arDoc = 0;
-        $arNotes = array_diff($arNotes, array(''));
-        /* foreach ($arNotes as &$item){
-          $new['date'] = date('d.m.Y');
-          $new['data'] = $item;
-          $item = $new;
+        $arDoc = '';
+        $token = $app['security']->getToken();
+        $user = $token->getUser();
 
-          } */
-        $notes = serialize($arNotes);
+        $value['userid'] = $user->getId();
+        $userFrom = $app['user.manager']->getUser($user->getId());
 
-        $result = $app['db']->update('document_meta', array('value' => $notes), array('document_id' => $id, 'keystr' => $type));
-        if (!$result)
-            $app['db']->insert('document_meta', array('keystr' => $type, 'value' => $notes, 'document_id' => $id));
-        return $result;
+        $txtvalue['userfrom'] = $userFrom->getName();
+
+        $value['userfrom'] = $user->getId();
+
+        $value['text'] = $note;
+        $value['date'] = date('d.m.Y');
+
+        switch ($type) {
+            case 'notes': $typetext = 'Внутрішня відмітка: ';
+                $tab = 'notes';
+                break;
+            case 'donestr': $typetext = 'Відмітка про виконання: ';
+                $tab = 'donestr';
+                break;
+            default: $typetext = 'Відмітка ';
+                $tab = 'notes';
+        }
+
+        $value['fullstr'] = date('d.m.Y') . ' - ' . $typetext .
+                $value['text'];
+        $data['document_id'] = $docId;
+        $data['keystr'] = $tab;
+        $data['value'] = serialize($value);
+        $app['db']->insert('document_' . $tab, $data);
+
+
+
+
+        return 'OK';
     }
 
     public static function moveToArchById($id) {
@@ -253,6 +337,15 @@ class RDAStatic {
         $sql = "UPDATE document SET status = 'archived' WHERE id = ?";
 
         $arDoc = $app['db']->executeUpdate($sql, array((int) $id));
+        return 0;
+    }
+
+    public static function setDoneStatusById($id, $status = 'err') {
+        global $app;
+        $arDoc = array();
+        $sql = "UPDATE document SET donestatus = ? WHERE id = ?";
+
+        $arDoc = $app['db']->executeUpdate($sql, array($status, (int) $id));
         return 0;
     }
 
@@ -267,19 +360,23 @@ class RDAStatic {
         global $app;
         $sqlw = array();
         $arPeople = array();
-        $sql = "SELECT * FROM people_view WHERE 1 ";
+        $sql = "SELECT * FROM people_view WHERE id > '0' ";
         if (!empty($keys))
             foreach ($keys as $key => $value) {
-                switch ($key) {
-                    case "firstname": $sqlw[] = " firstname LIKE '%$value%' ";
-                        break;
-                    case "secondname": $sqlw[] = " secondname LIKE '%$value%' ";
-                        break;
-                    case "lastname": $sqlw[] = " lastname LIKE '%$value%' ";
-                        break;
-                    case "passport": $sqlw[] = " passport LIKE '%$value%' ";
-                        break;
-                }
+                if ($value != '')
+                    switch ($key) {
+
+                        case "id": $sqlw[] = " id = '$value' ";
+                            break;
+                        case "firstname": $sqlw[] = " firstname LIKE '%$value%' ";
+                            break;
+                        case "secondname": $sqlw[] = " secondname LIKE '%$value%' ";
+                            break;
+                        case "lastname": $sqlw[] = " lastname LIKE '%$value%' ";
+                            break;
+                        case "passport": $sqlw[] = " passport LIKE '%$value%' ";
+                            break;
+                    }
             }
         if (!empty($sqlw))
             $sqlw = implode($logic, $sqlw);
@@ -352,44 +449,12 @@ class RDAStatic {
         return $result;
     }
 
-    public static function getResolutionByDocId($id) {
-        global $app;
-        $arDoc = array();
-        $sql = "SELECT * FROM document_resolution_view WHERE document_id = ? AND `keystr` = 'resolution' ";
-
-        $res = false;
-        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
-        if (is_null($arDoc) or empty($arDoc))
-            $arDoc = array();
-        else {
-            $arDoc = unserialize($arDoc['value']);
-        }
-
-        return $arDoc;
-    }
-
-    public static function moveDoc($docId, $from, $to, $text) {
-        global $app;
-        if ($from == false) {
-            $sql = "SELECT * FROM document WHERE id = $docId";
-            $res = $app['db']->fetchAssoc($sql);
-            $from = $res['curr_user'];
-        }
-        $app['db']->insert('movings', array('document' => $docId,
-            'prevuser' => $from,
-            'nextuser' => $to,
-            'movtext' => $text));
-
-        if ($app['db']->lastInsertId() > 0) {
-            $app['db']->update('document', array('curr_user' => $to), array('id' => $docId));
-        }
-        return 0;
-    }
-
-    public static function getMovingsByDocId($docId) {
+    public static function getResolutionByDocId($docId) {
         global $app;
         $arDoc = array();
         $sql = "SELECT * FROM movings_view WHERE document = ?";
+
+        $sql = "SELECT * FROM document_movings WHERE document_id = ? and keystr='resolution' ORDER BY id ASC";
 
         $res = false;
         $arDoc = $app['db']->fetchAll($sql, array((int) $docId));
@@ -400,39 +465,143 @@ class RDAStatic {
         return $arDoc;
     }
 
-    public static function pushExternalsByDocId($id = 0, $arExternals = array()) {
+    public static function moveDoc($docId, $from, $to, $text) {
+        global $app;
+        $token = $app['security']->getToken();
+        $user = $token->getUser();
+        $sql = "SELECT * FROM document WHERE id = $docId";
+        $res = $app['db']->fetchAssoc($sql);
+        //$from = $res['curr_user'];
+        $current_users = unserialize($res['curr_user']);
+
+        $value['userid'] = $user->getId();
+        $userFrom = $app['user.manager']->getUser($from);
+        $userTo = $app['user.manager']->getUser($to);
+        $txtvalue['userfrom'] = $userFrom->getName();
+        $txtvalue['userto'] = $userTo->getName();
+        $value['userfrom'] = $from;
+        $value['userto'] = $to;
+        $value['text'] = $text;
+        $value['date'] = date('d.m.Y');
+        $value['fullstr'] = date('d.m.Y') . ' - Передача документу з ' .
+                $txtvalue['userfrom'] . ' на ' . $txtvalue['userto'] .
+                ' Передано з приміткою: ' . $value['text'];
+        $data['document_id'] = $docId;
+        $data['keystr'] = 'moving';
+        $data['value'] = serialize($value);
+        $app['db']->insert('document_movings', $data);
+        if ($app['db']->lastInsertId() > 0) {
+            $current_users[] = $value['userto'];
+            $app['db']->update('document', array('curr_user' => serialize($current_users)), array('id' => $docId));
+        }
+        return 0;
+    }
+
+    public static function getMovingsByDocId($docId) {
+        global $app;
+        $arDoc = array();
+        $sql = "SELECT * FROM movings_view WHERE document = ?";
+
+        $sql = "SELECT * FROM document_movings WHERE document_id = ? ORDER BY id ASC";
+
+        $res = false;
+        $arDoc = $app['db']->fetchAll($sql, array((int) $docId));
+        if (is_null($arDoc) or empty($arDoc))
+            $arDoc = array();
+
+
+        return $arDoc;
+    }
+
+    public static function pushExternalsByDocId($docId = 0, $arExternals = array()) {
         global $app;
         if (empty($arExternals))
             return false;
-        $arDoc = 0;
+        
         foreach ($arExternals as &$item) {
             if ($item['date'] == '' or $item['date'] == null)
                 $item['date'] = date('d.m.Y');
-        }
-        $externals = serialize($arExternals);
+            $item['fullstr'] = $item['date'] . ' надійшов з ' . $item['org'] .
+                    ' під номером ' . $item['number'];
+            $data['document_id'] = $docId;
+            $data['keystr'] = 'externals';
+            $data['value'] = serialize($item);
+            
 
-        $result = $app['db']->update('document_meta', array('value' => $externals), array('document_id' => $id, 'keystr' => "externals"));
-        if (!$result)
-            $app['db']->insert('document_meta', array('keystr' => 'externals', 'value' => $externals, 'document_id' => $id));
-        return $result;
+            $result = $app['db']->insert('document_extnum', $data);
+        }
+        
+
+
+        return 'OK';
     }
 
     public static function getExternalsByDocId($id) {
         global $app;
         $arDoc = array();
-        $sql = "SELECT * FROM document_externals_view WHERE document_id = ? AND `keystr` = 'externals' ";
+        $sql = "SELECT * FROM document_extnum WHERE document_id = ? AND `keystr` = 'externals' ";
 
         $res = false;
         $arDoc = $app['db']->fetchAll($sql, array((int) $id));
         if (is_null($arDoc) or empty($arDoc))
             $arDoc = array();
-        else {
-            $arDoc = unserialize($arDoc[0]['value']);
-        }
+        
 
         return $arDoc;
     }
 
+    public static function pushOthersTsByDocId($id = 0, $externals = "") {
+        global $app;
+        $result = $app['db']->update('document_meta', array('value' => $externals), array('document_id' => $id, 'keystr' => "others"));
+        if (!$result)
+            $app['db']->insert('document_meta', array('keystr' => 'others', 'value' => $externals, 'document_id' => $id));
+        return $result;
+    }
 
+    public static function getOthersTsByDocId($id) {
+        global $app;
+        $arDoc = array();
+        $sql = "SELECT * FROM other_people_view WHERE document_id = ? AND `keystr` = 'others' ";
+
+        $res = false;
+        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
+        if ($arDoc['value'])
+            $res = $arDoc['value'];
+        else
+            $res = "";
+        return $res;
+    }
+
+    public static function pushResolution($docId, $to, $text) {
+        global $app;
+        $token = $app['security']->getToken();
+        $user = $token->getUser();
+        $sql = "SELECT * FROM document WHERE id = $docId";
+        $res = $app['db']->fetchAssoc($sql);
+        //$from = $res['curr_user'];
+        $current_users = unserialize($res['curr_user']);
+
+        $value['userid'] = $user->getId();
+        $userFrom = $app['user.manager']->getUser($user->getId());
+        $userTo = $app['user.manager']->getUser($to);
+        $txtvalue['userfrom'] = $userFrom->getName();
+        $txtvalue['userto'] = $userTo->getName();
+        $value['userfrom'] = $from;
+        $value['userto'] = $to;
+        $value['text'] = $text;
+        $value['date'] = date('d.m.Y');
+        $value['fullstr'] = date('d.m.Y') . ' - Резолюція до виконання на ' .
+                $txtvalue['userto'] .
+                ' Передано з приміткою: ' . $value['text'];
+        $data['document_id'] = $docId;
+        $data['keystr'] = 'resolution';
+        $data['value'] = serialize($value);
+        $app['db']->insert('document_movings', $data);
+        if ($app['db']->lastInsertId() > 0) {
+            $current_users[] = $value['userto'];
+            $app['db']->update('document', array('curr_user' => serialize($current_users)), array('id' => $docId));
+        }
+        return 0;
+    }
 
 }
