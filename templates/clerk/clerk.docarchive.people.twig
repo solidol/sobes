@@ -9,7 +9,7 @@
         <div id="menu4">
 
 
-            <table id="visitors" class="display table hover" width="100%" cellspacing="0">
+            <table id="people" class="display table hover" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>Номер</th>
@@ -32,27 +32,28 @@
         </div>
     </div>
 
-
-
     <script>
         $(document).ready(function () {
-            $('#visitors').DataTable({
+            $('#people').DataTable({
                 "language": uk_trans,
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{path('ajax.document.getlist.archivetyped',{'type':'visitors'})}}",
+                "ajax": "{{path('ajax.document.getlist.archivetyped',{'type':'people'})}}",
                 "columns": [
                     {"data": "num"},
                     {"data": "date_in"},
                     {"data": "date_control"},
                     {"data": "summary"},
-                    {"data": "view"}
+                    {"data": "view"},
+                    
                 ],
                 "fnRowCallback": function (nRow, aData) {
                 }
             });
         });
     </script>
+
+
 
 
 {% endblock %}

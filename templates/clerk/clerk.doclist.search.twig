@@ -4,17 +4,7 @@
     Список документів
 {% endblock %}
 {% block content %}
-    <script>
-        function moveToArch(id) {
-            var ask = window.confirm("Ви переносите документ до архіву, відмінити дію буде неможливо. Продовжити?");
-            if (ask) {
-                window.alert("Документ перенесено до архіву!");
 
-                document.location.href = "/default.php/clerk/toarch/id:" + id;
-
-            }
-        }
-    </script>
     <ul class="nav nav-tabs">
         <!--<li class="active"><a data-toggle="tab" href="#home">Усі</a></li>-->
         <li class="active"><a data-toggle="tab" href="#menu1">Розпорядчі документи</a></li>

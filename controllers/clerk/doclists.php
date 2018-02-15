@@ -31,7 +31,7 @@ $app->get('/clerk/doclist/all:{type}', function($type) use ($app) {
     return $app['twig']->render('clerk.doclist.all.twig', $data);
 })->bind('clerk.doclist.alltyped');
 
-$app->get('/clerk/doclist/archive', function() use ($app) {
+/*$app->get('/clerk/doclist/archive', function() use ($app) {
     $data=array();
     $token = $app['security']->getToken();
     $user = $token->getUser();
@@ -42,6 +42,7 @@ $app->get('/clerk/doclist/archive', function() use ($app) {
     
     return $app['twig']->render('clerk.doclist.archive.twig', $data);
 })->bind('clerk.doclist.archive');
+*/
 
 $app->get('/clerk/docarchive/all:{type}', function($type) use ($app) {
     $data=array();
@@ -52,7 +53,7 @@ $app->get('/clerk/docarchive/all:{type}', function($type) use ($app) {
     switch ($type){
         //case "org": return $app['twig']->render('clerk.docarchive.org.twig', $data); break; 
         //case "state": return $app['twig']->render('clerk.docarchive.state.twig', $data); break; 
-        //case "people": return $app['twig']->render('clerk.docarchive.people.twig', $data); break; 
+        case "people": return $app['twig']->render('clerk.docarchive.people.twig', $data); break; 
         case "visit": return $app['twig']->render('clerk.docarchive.visitors.twig', $data); break; 
         //default: return $app['twig']->render('clerk.doclist.all.twig', $data); break; 
     }

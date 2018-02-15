@@ -46,6 +46,8 @@ $app->get('/clerk/view/id:{doc}', function($doc) use ($app) {
     
     $data['doc']['others'] = RDAStatic::getOthersTsByDocId($doc);
     
+    
+    
     if (!empty($data['doc']['peoples'])) {
         //var_dump($data['doc']['peoples']);
         foreach ($data['doc']['peoples'] as $item) {
@@ -112,16 +114,42 @@ $app->get('/clerk/edit/id:{doc}', function($doc) use ($app) {
 $app->get('/clerk/archview/id:{doc}', function($doc) use ($app) {
     $data = array();
     $data['userlist'] = RDAStatic::getManagers();
-    $data['doc'] = RDAStatic::getArchDocById($doc);
+    $data['userlist'] = RDAStatic::getByRoles(array('ROLE_DEPT','ROLE_MANAGER'));
+    $data['doc'] = RDAStatic::getDocById($doc, 'archive');
     $data['doc']['externals'] = RDAStatic::getExternalsByDocId($doc);
     $data['doc']['notes'] = RDAStatic::getNotesByDocId($doc);
     $data['doc']['donestr'] = RDAStatic::getNotesByDocId($doc, 'donestr');
-    //var_dump($data['doc']['donestr']);
-    $data['doc']['serialpost'] = RDAStatic::getNotesByDocId($doc, 'serialpost');
     $data['doc']['resolution'] = RDAStatic::getResolutionByDocId($doc);
     $data['doc']['movings'] = RDAStatic::getMovingsByDocId($doc);
+    
+    foreach ($data['doc']['externals'] as &$item){
+        $item['serial']=unserialize($item['value']);
+    }
+    unset($item);
+    
+    foreach ($data['doc']['donestr'] as &$item){
+        $item['serial']=unserialize($item['value']);
+    }
+    unset($item);
+    
+    foreach ($data['doc']['notes'] as &$item){
+        $item['serial']=unserialize($item['value']);
+    }
+    unset($item);
+    
+    foreach ($data['doc']['resolution'] as &$item){
+        $item['serial']=unserialize($item['value']);
+    }
+    unset($item);
+    
+    foreach ($data['doc']['movings'] as &$item){
+        $item['serial']=unserialize($item['value']);
+    }
+    unset($item);
+    
+    
     $data['doc']['others'] = RDAStatic::getOthersTsByDocId($doc);
-
+    
     if (!empty($data['doc']['peoples'])) {
         //var_dump($data['doc']['peoples']);
         foreach ($data['doc']['peoples'] as $item) {
@@ -133,17 +161,16 @@ $app->get('/clerk/archview/id:{doc}', function($doc) use ($app) {
     switch ($data['doc']['type']) {
         case "people":
             if ($data['doc']['num_prefix_1'] == "КЗ")
-                return $app['twig']->render('clerk.doc.collect.twig', $data);
+                return $app['twig']->render('clerk.archive.collect.twig', $data);
             else
-                return $app['twig']->render('clerk.doc.people.twig', $data);
+                return $app['twig']->render('clerk.archive.people.twig', $data);
             break;
-        case "state": return $app['twig']->render('clerk.doc.state.twig', $data);
+        case "state": return $app['twig']->render('clerk.archive.state.twig', $data);
             break;
-        case "org": return $app['twig']->render('clerk.doc.org.twig', $data);
+        case "org": return $app['twig']->render('clerk.archive.org.twig', $data);
             break;
         case "visitors": 
-            $data['userlist'] = RDAStatic::getByRoles(array('ROLE_DEPT','ROLE_MANAGER'));
-            return $app['twig']->render('clerk.doc.visitors.twig', $data);
+            return $app['twig']->render('clerk.archive.visitors.twig', $data);
             break;
         default: return $app->redirect($app['url_generator']->generate('clerk.start'));
             break;

@@ -4,17 +4,7 @@
     Список документів
 {% endblock %}
 {% block content %}
-    <script>
-        function moveToArch(id) {
-            var ask = window.confirm("Ви переносите документ до архіву, відмінити дію буде неможливо. Продовжити?");
-            if (ask) {
-                window.alert("Документ перенесено до архіву!");
 
-                document.location.href = "/default.php/clerk/toarch/id:" + id;
-
-            }
-        }
-    </script>
     <div class="tab-content">
         <div id="menu4">
             <div class="container">
@@ -94,6 +84,10 @@
                     {
                         //$('td', nRow).addClass("success");
                         $('td', nRow).css({"background-color": "#DFFFE5"});
+                    }
+                    if (aData['donestatus'] == 'm' || aData['donestatus'] == 'p' || aData['donestatus'] == 'r') {
+                        $('td', nRow).css({"background-color": "#889688"});
+                        $('td', nRow).css({"color": "#ffffff"});
                     }
 
                 }

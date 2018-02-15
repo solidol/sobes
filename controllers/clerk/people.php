@@ -56,11 +56,36 @@ $app->get('/clerk/people/add', function() use ($app) {
     $user = $token->getUser();
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
-$data['peopleattr'] = RDAStaticPeople::getSocialStatuses();
-
-
+    $data['peopleattr'] = RDAStaticPeople::getSocialStatuses();
+    
+    $data['id']='';
+    $data['lastname']='';
+    $data['firstname']='';
+    $data['secondname']='';
+    $data['sex']='';
+    $data['passport']='';
+    $data['zipcode']='';
+    $data['city']='';
+    $data['building']='';
+    $data['housing']='';
+    $data['room']='';
+    $data['phones']='';
     return $app['twig']->render('clerk.newpeople.twig', $data);
 })->bind('clerk.people.add');
+
+$app->get('/clerk/people/edit:{pid}', function($pid) use ($app) {
+    $data = array();
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data['username'] = $user->getName();
+    $data['userid'] = $user->getId();
+    $data['peopleattr'] = RDAStaticPeople::getSocialStatuses();
+    
+    
+    $data['data']=RDAStatic::getPeopleByAnyKey(array('id'=>$pid))[0] ;
+    
+    return $app['twig']->render('clerk.newpeople.twig', $data);
+})->bind('clerk.people.edit');
 
 
 

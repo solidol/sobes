@@ -233,20 +233,24 @@ class RDAStatic {
         return $arDoc;
     }
 
-    public static function getDocById($id) {
+    public static function getDocById($id, $isarchive = false) {
         global $app;
         $arDoc = array();
         $sql = "SELECT * FROM document WHERE document.id = ?";
 
         $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
-        $view = 'document_view_' . $arDoc['type'];
+        
+        if (!$isarchive) $view = 'document_view_' . $arDoc['type'];
+        else $view = 'document_archive_' . $arDoc['type'];
+        
+        
 
         $sql = "SELECT * FROM $view WHERE id = ?";
 
         $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
-
+        
         if ($arDoc['type'] == 'people') {
-            $arDoc['peoples'] = RDAStaticPeople::getPeoplesIdByDoc($arDoc['id']);
+            $arDoc['peoples'] = RDAStaticPeople::getPeoplesIdByDoc($id);
             foreach ($arDoc['peoples'] as &$item) {
                 $item['full'] = RDAStatic::getPeopleByAnyKey(array('id' => $item['people_id']));
             }
@@ -384,6 +388,7 @@ class RDAStatic {
             $sqlw = "";
         if ($sqlw != "")
             $sql .= " AND " . $sqlw;
+        $sql.=" ORDER BY lastname  COLLATE  utf8_unicode_ci ASC";
         $arPeople = $app['db']->fetchAll($sql);
         return $arPeople;
     }

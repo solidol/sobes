@@ -13,7 +13,7 @@ $app->get('/ajax/people/shortsearchpeople', function() use ($app) {
     $arPeople = array();
     $get = $app['request'];
     $searchstring = urldecode($get->get('term'));
-    if ($get->get('query')>"")
+    if ($get->get('query') > "")
         $searchstring = urldecode($get->get('query'));
     $keys['firstname'] = $searchstring;
     $keys['secondname'] = $searchstring;
@@ -45,7 +45,7 @@ $app->get('/ajax/people/shortsearch', function() use ($app) {
     $arPeople = array();
     $get = $app['request'];
     $searchstring = urldecode($get->get('term'));
-    if ($get->get('query')>"")
+    if ($get->get('query') > "")
         $searchstring = urldecode($get->get('query'));
     $keys['firstname'] = $searchstring;
     $keys['secondname'] = $searchstring;
@@ -92,6 +92,8 @@ $app->get('/ajax/people/getlist', function() use ($app) {
         $item['firstname'] = $v['firstname'];
         $item['secondname'] = $v['secondname'];
         $item['passport'] = $v['passport'];
+        $item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.people.edit', array('pid' => $v['id']))
+                . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
         $item['addr'] = $v['street'] . ', б.' . $v['building'] . ', ' . (($v['room'] != '') ? $v['room'] : '');
         $arPeople['data'][] = $item;
     }
@@ -117,7 +119,7 @@ $app->post('/ajax/people/push', function() use ($app) {
     $data['passport'] = $post->get('passport');
     $data['zipcode'] = $post->get('zipcode');
     $data['city'] = $post->get('city');
-    $data['street'] = $post->get('stype').' '.$post->get('street');
+    $data['street'] = $post->get('stype') . ' ' . $post->get('street');
     $data['building'] = $post->get('building');
     $data['housing'] = $post->get('housing');
     $data['room'] = $post->get('room');

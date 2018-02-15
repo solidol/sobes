@@ -85,13 +85,8 @@ $app->get('/ajax/document/getlist', function() use ($app) {
         $item['summary'] = $v['summary'];
         $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
-
-        /*$item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.doc.edit', array('doc' => $v['id']))
-                . '"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a>';*/
-
-        $item['arch'] = '<a href="' . $app['url_generator']->generate('clerk.doc.movetoarch', array('doc' => $v['id']))
-                . '" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
         $item['arch'] = '<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
+        $item['donestatus'] = $v['donestatus'];
         $arDocs['data'][] = $item;
     }
     $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;
@@ -163,13 +158,8 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         $item['summary'] = $v['summary'];
         $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
-
-        $item['edit'] = '<a href="' . $app['url_generator']->generate('clerk.doc.edit', array('doc' => $v['id']))
-                . '"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></a>';
-
-        $item['arch'] = '<a href="' . $app['url_generator']->generate('clerk.doc.movetoarch', array('doc' => $v['id']))
-                . '" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
         $item['arch'] = '<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>';
+        $item['donestatus'] = $v['donestatus'];
         $arDocs['data'][] = $item;
     }
     $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;
@@ -305,8 +295,8 @@ $app->post('/ajax/notes/push', function() use ($app) {
     $user = $token->getUser();
     $data = array();
     $post = $app['request'];
-    
-    
+
+
     RDAStatic::pushNotesByDocId($post->get('doc'), $post->get('text'), $post->get('notestype'));
 
 
@@ -322,7 +312,7 @@ $app->post('/ajax/document/move', function() use ($app) {
     $userfrom = ($post->get('userfrom') > 0) ? $post->get('userfrom') : $user->getId();
     $userto = ($post->get('usertomov') > 0) ? $post->get('usertomov') : $user->getId();
 
-    
+
     RDAStatic::moveDoc($post->get('docid'), $userfrom, $userto, $post->get('textmov'));
     //}
     return 'OK';
@@ -334,7 +324,7 @@ $app->post('/ajax/donestatus/push', function() use ($app) {
     $data = array();
     $post = $app['request'];
     $id = $post->get('docid');
-    
+
     RDAStatic::pushNotesByDocId($id, $post->get('textstatus'), 'donestr');
     RDAStatic::setDoneStatusById($id, $post->get('donestat'));
 
@@ -349,9 +339,9 @@ $app->post('/ajax/autosave/push', function() use ($app) {
     $post = $app['request'];
     $id = $post->get('id');
     $content = strip_tags($post->get('content'));
-    $params=explode(":", $id);
-    switch ($params[1]){
-        case "mainfield": 
+    $params = explode(":", $id);
+    switch ($params[1]) {
+        case "mainfield":
             RDAStatic::updateMainField($params[0], $params[2], $content);
             break;
         case "metafield":
