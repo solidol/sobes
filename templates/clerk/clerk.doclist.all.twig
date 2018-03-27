@@ -22,9 +22,11 @@
                 <thead>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -32,9 +34,11 @@
                 <tfoot>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -47,9 +51,11 @@
                 <thead>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -57,9 +63,11 @@
                 <tfoot>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -72,9 +80,11 @@
                 <thead>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -82,9 +92,11 @@
                 <tfoot>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -97,9 +109,11 @@
                 <thead>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -107,9 +121,11 @@
                 <tfoot>
                     <tr>
                         <th>Номер</th>
+                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
-                        <th></th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -130,10 +146,12 @@
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'state'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
                 "columns": [
                     {"data": "num"},
+                    {"data": "notes"},
                     {"data": "date_in"},
                     {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "comment"},
                     {"data": "view"},
-                    {"data": "edit"},
                     {"data": "arch"}
                 ]
 
@@ -146,10 +164,12 @@
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'people'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
                 "columns": [
                     {"data": "num"},
+                    {"data": "notes"},
                     {"data": "date_in"},
                     {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "comment"},
                     {"data": "view"},
-                    {"data": "edit"},
                     {"data": "arch"}
                 ]
 
@@ -162,10 +182,12 @@
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'org'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
                 "columns": [
                     {"data": "num"},
+                    {"data": "notes"},
                     {"data": "date_in"},
                     {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "comment"},
                     {"data": "view"},
-                    {"data": "edit"},
                     {"data": "arch"}
                 ]
             });
@@ -176,10 +198,12 @@
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'visitors'})}}?datecontrol={{ "now"|date("Y-m-d") }}",
                 "columns": [
                     {"data": "num"},
+                    {"data": "notes"},
                     {"data": "date_in"},
                     {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "comment"},
                     {"data": "view"},
-                    {"data": "edit"},
                     {"data": "arch"}
                 ]
             });

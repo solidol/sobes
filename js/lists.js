@@ -3,12 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+var table;
+
 function moveToArch(id) {
     var ask = window.confirm("Ви переносите документ до архіву, відмінити дію буде неможливо. Продовжити?");
     if (ask) {
         window.alert("Документ перенесено до архіву!");
 
-        document.location.href = "/default.php/clerk/toarch/id:" + id;
+        $.post("/default.php/ajax/toarch/id:" + id, function (data) {
+            setTimeout(function () {
+                window.table.ajax.reload();
+            }, 200);
+        });
+
 
     }
 }

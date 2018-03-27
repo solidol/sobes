@@ -1,0 +1,182 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Звіт за датами
+{% endblock %}
+{% block content %}
+
+<form class="form-horizontal" action="{{path('clerk.report.totalpostmonth')}}" method="post">
+                <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_start">Рік</label>
+                <div class="col-md-4">
+                    <input id="date_start" name="year" placeholder="2018" class="form-control input-md" required="" value="{{ "now"|date("Y") }}" type="text">
+                    <span class="help-block">Рік</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="submitok">Показати</label>
+                <div class="col-md-8">
+                    <button id="submitok" type="submit" name="submitok" class="btn btn-success">Показати</button>
+                    <button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>
+                </div>
+            </div>
+</form>
+    
+    <table class="repTable">
+        <caption>
+            ВІДОМІСТЬ НАДХОДЖЕННЯ СКАРГ, ЗАЯВ ЗА МІСЯЦАМИ РОКУ
+        </caption>
+        <thead>
+            <tr>
+                <th>
+
+                </th>
+                {% for ditem in dates %}
+                    <th>
+                        {{ditem}}
+                    </th>
+                {%endfor%}
+                <th>
+                    Всього
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    Всього                    
+                </th>
+                {% for item in report.total.data %}
+                    <th>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </th>
+                {%endfor%}
+                <th>
+                    <span {%if report.total.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.total.total}}</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Чоловіків                    
+                </td>
+                {% for item in report.male.data %}
+                    <td>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </td>
+                {%endfor%}
+                <td>
+                    <span {%if report.male.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.male.total}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Жінок                    
+                </td>
+                {% for item in report.female.data %}
+                    <td>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </td>
+                {%endfor%}
+                <td>
+                    <span {%if report.female.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.female.total}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    УГЛ                    
+                </td>
+                {% for item in report.ugl.data %}
+                    <td>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </td>
+                {%endfor%}
+                <td>
+                    <span {%if report.ugl.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.ugl.total}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ОДА                    
+                </td>
+                {% for item in report.oda.data %}
+                    <td>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </td>
+                {%endfor%}
+                <td>
+                    <span {%if report.oda.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.oda.total}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Облрада                    
+                </td>
+                {% for item in report.oblrada.data %}
+                    <td>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </td>
+                {%endfor%}
+                <td>
+                    <span {%if report.oblrada.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.oblrada.total}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    МВК                    
+                </td>
+                {% for item in report.mvk.data %}
+                    <td>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </td>
+                {%endfor%}
+                <td>
+                    <span {%if report.mvk.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.mvk.total}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    РВК                    
+                </td>
+                {% for item in report.rvk.data %}
+                    <td>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </td>
+                {%endfor%}
+                <td>
+                    <span {%if report.rvk.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.rvk.total}}</span>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>
+                    Всього                    
+                </th>
+                {% for item in report.total.data %}
+                    <th>
+                        <span {%if item<1 %}style="color:#DDDDDD;"{%endif%}>{{item}}</span>
+                    </th>
+                {%endfor%}
+                <th>
+                    <span {%if report.total.total<1 %}style="color:#DDDDDD;"{%endif%}>{{report.total.total}}</span>
+                </th>
+            </tr>
+            <tr>
+                <th>
+
+                </th>
+                {% for ditem in dates %}
+                    <th>
+                        {{ditem}}
+                    </th>
+                {%endfor%}
+                <th>
+                    Всього
+                </th>
+            </tr>
+
+        </tfoot>
+    </table>
+{% endblock %}

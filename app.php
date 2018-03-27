@@ -1,10 +1,13 @@
 <?php
+
 date_default_timezone_set('Europe/Kiev');
 
-$loader = require_once __DIR__.'/vendor/autoload.php';
+$loader = require_once __DIR__ . '/vendor/autoload.php';
 //$loader->add('RDA', __DIR__.'/classes');
-require_once __DIR__.'/classes/RDAStatic.php';
-require_once __DIR__.'/classes/RDAStaticPeople.php';
+require_once __DIR__ . '/classes/RDAStatic.php';
+require_once __DIR__ . '/classes/RDAStaticPeople.php';
+require_once __DIR__ . '/classes/RDAStaticReport.php';
+
 //require_once __DIR__.'/classes/ssp.class.php';
 
 
@@ -25,6 +28,13 @@ require_once __DIR__ . '/config/local.php';
 //));
 $app->register(new Provider\SessionServiceProvider());
 $app->register(new Provider\DoctrineServiceProvider());
+
+$app->register(new Provider\TwigServiceProvider());
+
+
+
+
+
 $app->register(new Provider\SecurityServiceProvider(), array(
     'security.firewalls' => array(
         'secured_area' => array(
@@ -39,18 +49,15 @@ $app->register(new Provider\SecurityServiceProvider(), array(
                 'logout_path' => '/user/logout',
             ),
             'users' => $app->share(function($app) {
-                return $app['user.manager'];
-            }),
+                        return $app['user.manager'];
+                    }),
         ),
     ),
 ));
-// Note: As of this writing, RememberMeServiceProvider must be registered *after* SecurityServiceProvider or SecurityServiceProvider
-// throws 'InvalidArgumentException' with message 'Identifier "security.remember_me.service.secured_area" is not defined.'
-
 $app->register(new Provider\RememberMeServiceProvider());
 $app->register(new Provider\ServiceControllerServiceProvider());
 $app->register(new Provider\UrlGeneratorServiceProvider());
-$app->register(new Provider\TwigServiceProvider());
+
 $app->register(new Provider\SwiftmailerServiceProvider());
 
 // Register the SimpleUser service provider.
@@ -62,6 +69,7 @@ $app->mount('/user', $u);
 $app->register(new \Kilte\Silex\Pagination\PaginationServiceProvider, array('pagination.per_page' => 25));
 
 
+
 $app['twig.path'] = array(__DIR__ . '/templates',
     __DIR__ . '/templates/simpleuser',
     __DIR__ . '/templates/clerk',
@@ -69,6 +77,12 @@ $app['twig.path'] = array(__DIR__ . '/templates',
     __DIR__ . '/templates/common'
 );
 
+$app->boot();
+
+$app['twig']->addGlobal('datemonthstart', date("Y-m-01"));
+$app['twig']->addGlobal('datemonthend', date("Y-m-t"));
+$app['twig']->addGlobal('dateyearstart', date("Y-01-01"));
+$app['twig']->addGlobal('dateyearend', date("Y-12-31"));
 
 $app['user.options'] = array(
     // ...
@@ -127,8 +141,6 @@ $app['security.access_rules'] = array(
   });
  */
 
-
-$app['upload_folder'] = 'uploads/';
 
 
 //var_dump(date("Y-m-d H:i:s"));

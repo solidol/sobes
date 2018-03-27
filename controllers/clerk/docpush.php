@@ -43,6 +43,7 @@ $app->get('/clerk/newdoc/org', function() use ($app) {
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
     $data['new_num'] = "";
+    $data['bosslist'] = RDAStatic::getManagers(true);
     $data['doctypes'] = RDAStatic::getOrgDocTypes();
     $data['doctcontent'] = RDAStatic::getContentDocTypes();
     return $app['twig']->render('clerk.newdoc.org.twig', $data);
@@ -54,6 +55,7 @@ $app->get('/clerk/newdoc/state', function() use ($app) {
     $user = $token->getUser();
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
+    $data['bosslist'] = RDAStatic::getManagers(true);
     $data['new_num'] = RDAStatic::getMaxNumDoc("state") + 1;
     $data['doctypes'] = RDAStatic::getStateDocTypes();
     return $app['twig']->render('clerk.newdoc.state.twig', $data);
@@ -96,7 +98,7 @@ $app->post('/clerk/newdoc/people', function() use ($app) {
     $data['type'] = $post->get('doctype');
     $data['topicstarter'] = $post->get('topicstarter') ? $post->get('topicstarter') : 0;
     $data['topicstarter_org'] = 0;
-    $post->get('orgstarter') ? $post->get('orgstarter') : 0;
+    //$post->get('orgstarter') ? $post->get('orgstarter') : 0;
     $data['created_by'] = $user->getId();
     $data['curr_user'] = $user->getId();
     $data['summary'] = $post->get('summary');
@@ -106,7 +108,7 @@ $app->post('/clerk/newdoc/people', function() use ($app) {
     $data['topicstarter_text'] = $post->get('tstext');
     if ($data['type'] == "people") {
         $peoples = explode(",", $data['topicstarter']);
-        $data['topicstarter'] = 0;
+        $data['topicstarter'] = $peoples[0];
     }
 
     $app['db']->insert('document', $data);
@@ -119,8 +121,7 @@ $app->post('/clerk/newdoc/people', function() use ($app) {
     else
         RDAStatic::moveDoc($newId, $user->getId(), $post->get('selectinterviewer'), 'Створено картку');
     RDAStatic::pushExternalsByDocId($newId, $externals);
-    if ($post->get('othersts'))
-        RDAStatic::pushOthersTsByDocId($newId, $post->get('othersts'));
+    
 
     return $app->redirect($app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
 })->bind('clerk.doc.push.collect');
@@ -134,10 +135,10 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $post = $app['request'];
 
     $data['isreapeted'] = $post->get('isreapeted') ? $post->get('isreapeted') : "no";
-
+    
     $dt_in = explode(".", $post->get('date_in'));
     $dt_in = $dt_in[2] . '-' . $dt_in[1] . '-' . $dt_in[0];
-    $dt_cr = explode(".", $post->get('date_control'));
+    $dt_cr = explode(".", ($post->get('date_control')>'')?$post->get('date_control'):'00.00.0000');
     $dt_cr = $dt_cr[2] . '-' . $dt_cr[1] . '-' . $dt_cr[0];
 
     $data['num_prefix_0'] = ($post->get('num_prefix_0') != null) ? $post->get('num_prefix_0') : '';
@@ -149,6 +150,9 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $orgs = $post->get('externalorgs');
     $dates = $post->get('externaldates');
     $externals = array();
+    //var_dump($orgnums);
+    //die('');
+    if (!empty($orgnums[0]))
     foreach ($orgnums as $k => $v) {
         $newitem['number'] = $v;
         $newitem['org'] = $orgs[$k];
@@ -172,7 +176,7 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $data['topicstarter_text'] = $post->get('tstext');
     if ($data['type'] == "people") {
         $peoples = explode(",", $data['topicstarter']);
-        $data['topicstarter'] = 0;
+        $data['topicstarter'] = $peoples[0];
     }
     $app['db']->insert('document', $data);
     $newId = $app['db']->lastInsertId();

@@ -5,7 +5,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 $app->post('/ajax/org/getmaxnum', function() use ($app) {
     $result = array();

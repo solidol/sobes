@@ -11,27 +11,29 @@
  * 
  */
 class RDAStatic {
-    
+
     public static function updateMainField($docid, $fieldname, $content) {
         global $app;
-        if ($docid<1) return false;
+        if ($docid < 1)
+            return false;
         $result = $app['db']->update('document', array($fieldname => $content), array('id' => $docid));
-        
+
         return 'OK';
     }
 
     public static function updateMetaField($fieldid, $fieldname, $content) {
         global $app;
-        if ($fieldid<1) return false;
-                $sql = "SELECT * FROM document_$fieldname WHERE id = ?";
+        if ($fieldid < 1)
+            return false;
+        $sql = "SELECT * FROM document_$fieldname WHERE id = ?";
 
-        
-        $arRes = $app['db']->fetchAssoc($sql,array((int)$fieldid));
+
+        $arRes = $app['db']->fetchAssoc($sql, array((int) $fieldid));
         $values = unserialize($arRes['value']);
         $values['fullstr'] = $content;
         $content = serialize($values);
-        $result = $app['db']->update('document_'.$fieldname, array('value' => $content), array('id' => $fieldid));
-        
+        $result = $app['db']->update('document_' . $fieldname, array('value' => $content), array('id' => $fieldid));
+
         return 'OK';
     }
 
@@ -162,7 +164,7 @@ class RDAStatic {
         if ($isarchive)
             $view = 'document_archive';
         else
-            $view = 'document_view';
+            $view = 'document_work';
         if (isset($keys['type']))
             $view .= '_' . $keys['type'];
         $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM $view WHERE 1 ";
@@ -170,7 +172,12 @@ class RDAStatic {
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 switch ($key) {
-                    case "type": $sqlw[] = " type = '$value' ";
+                    case "type":
+                        if ($value == 'people')
+                            $type = " (type = 'people' OR type = 'visitors') ";
+                        else
+                            $type = " type = '$value' ";
+                        $sqlw[] = $type;
                         break;
                     case "fullnum": $sqlw[] = " fullnum LIKE '%$value%' ";
                         break;
@@ -196,6 +203,7 @@ class RDAStatic {
             $sql .= " AND " . $sqls;
 
         if (is_numeric($limit['start']) and is_numeric($limit['draw']) and is_numeric($limit['length'])) {
+            $sql .= " ORDER BY internal_number DESC ";
             $sql .= " LIMIT " . $limit['start'] . "," . $limit['length'] . " ";
         }
         $arPeople = $app['db']->fetchAll($sql);
@@ -208,9 +216,13 @@ class RDAStatic {
         if (!$type)
             return false;
         $year = date("Y");
+        if ($type == 'people' or $type == 'visitors')
+            $type = " (`type` = 'people' OR type = 'visitors') ";
+        else
+            $type = " `type` = '$type' ";
         $sql = "SELECT MAX(internal_number) AS max_num FROM `document` WHERE `year` = ? "
-                . "AND `type` = ?";
-        $arRes = $app['db']->fetchAssoc($sql, array((int) $year, $type));
+                . "AND $type";
+        $arRes = $app['db']->fetchAssoc($sql, array((int) $year));
         return (int) $arRes['max_num'];
     }
 
@@ -239,16 +251,18 @@ class RDAStatic {
         $sql = "SELECT * FROM document WHERE document.id = ?";
 
         $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
-        
-        if (!$isarchive) $view = 'document_view_' . $arDoc['type'];
-        else $view = 'document_archive_' . $arDoc['type'];
-        
-        
+
+        if (!$isarchive)
+            $view = 'document_view_' . $arDoc['type'];
+        else
+            $view = 'document_archive_' . $arDoc['type'];
+
+
 
         $sql = "SELECT * FROM $view WHERE id = ?";
 
         $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
-        
+
         if ($arDoc['type'] == 'people') {
             $arDoc['peoples'] = RDAStaticPeople::getPeoplesIdByDoc($id);
             foreach ($arDoc['peoples'] as &$item) {
@@ -321,8 +335,9 @@ class RDAStatic {
             default: $typetext = 'Відмітка ';
                 $tab = 'notes';
         }
-
-        $value['fullstr'] = date('d.m.Y') . ' - ' . $typetext .
+        $typetext = ''; // АЗАЗАЗАЗАЗАЗАЗАЗАЗА
+        //$value['fullstr'] = date('d.m.Y') . ' - ' . $typetext .
+        $value['fullstr'] = $typetext .
                 $value['text'];
         $data['document_id'] = $docId;
         $data['keystr'] = $tab;
@@ -388,7 +403,7 @@ class RDAStatic {
             $sqlw = "";
         if ($sqlw != "")
             $sql .= " AND " . $sqlw;
-        $sql.=" ORDER BY lastname  COLLATE  utf8_unicode_ci ASC";
+        $sql .= " ORDER BY lastname  COLLATE  utf8_unicode_ci ASC";
         $arPeople = $app['db']->fetchAll($sql);
         return $arPeople;
     }
@@ -522,20 +537,32 @@ class RDAStatic {
         global $app;
         if (empty($arExternals))
             return false;
-        
+        //var_dump($arExternals);
+        //die('');
         foreach ($arExternals as &$item) {
             if ($item['date'] == '' or $item['date'] == null)
                 $item['date'] = date('d.m.Y');
             $item['fullstr'] = $item['date'] . ' надійшов з ' . $item['org'] .
                     ' під номером ' . $item['number'];
             $data['document_id'] = $docId;
-            $data['keystr'] = 'externals';
+            if (stristr($item['org'], 'Обл'))
+                $item['org'] = 'Облрада';
+            switch ($item['org']) {
+                case 'ОДА': $keystr = 'ОДА';
+                    break;
+                case 'Облрада': $keystr = 'Облрада';
+                    break;
+                case 'МВК': $keystr = 'МВК';
+                    break;
+                default: $keystr = 'externals';
+            }
+            $data['keystr'] = $keystr;
             $data['value'] = serialize($item);
-            
+
 
             $result = $app['db']->insert('document_extnum', $data);
         }
-        
+
 
 
         return 'OK';
@@ -544,38 +571,32 @@ class RDAStatic {
     public static function getExternalsByDocId($id) {
         global $app;
         $arDoc = array();
-        $sql = "SELECT * FROM document_extnum WHERE document_id = ? AND `keystr` = 'externals' ";
+        $sql = "SELECT * FROM document_extnum WHERE document_id = ?  ";
 
         $res = false;
         $arDoc = $app['db']->fetchAll($sql, array((int) $id));
         if (is_null($arDoc) or empty($arDoc))
             $arDoc = array();
-        
+
 
         return $arDoc;
     }
 
-    public static function pushOthersTsByDocId($id = 0, $externals = "") {
-        global $app;
-        $result = $app['db']->update('document_meta', array('value' => $externals), array('document_id' => $id, 'keystr' => "others"));
-        if (!$result)
-            $app['db']->insert('document_meta', array('keystr' => 'others', 'value' => $externals, 'document_id' => $id));
-        return $result;
-    }
+    /*
+      public static function getOthersTsByDocId($id) {
+      global $app;
+      $arDoc = array();
+      $sql = "SELECT * FROM other_people_view WHERE document_id = ? AND `keystr` = 'others' ";
 
-    public static function getOthersTsByDocId($id) {
-        global $app;
-        $arDoc = array();
-        $sql = "SELECT * FROM other_people_view WHERE document_id = ? AND `keystr` = 'others' ";
-
-        $res = false;
-        $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
-        if ($arDoc['value'])
-            $res = $arDoc['value'];
-        else
-            $res = "";
-        return $res;
-    }
+      $res = false;
+      $arDoc = $app['db']->fetchAssoc($sql, array((int) $id));
+      if ($arDoc['value'])
+      $res = $arDoc['value'];
+      else
+      $res = "";
+      return $res;
+      }
+     * */
 
     public static function pushResolution($docId, $to, $text) {
         global $app;
@@ -595,7 +616,8 @@ class RDAStatic {
         $value['userto'] = $to;
         $value['text'] = $text;
         $value['date'] = date('d.m.Y');
-        $value['fullstr'] = date('d.m.Y') . ' - Резолюція до виконання на ' .
+        //$value['fullstr'] = date('d.m.Y') . ' - Резолюція до виконання на ' .
+        $value['fullstr'] = 'Резолюція до виконання на ' .
                 $txtvalue['userto'] .
                 ' Передано з приміткою: ' . $value['text'];
         $data['document_id'] = $docId;

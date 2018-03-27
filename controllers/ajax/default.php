@@ -5,9 +5,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-require_once 'people.php';
-require_once 'org.php';
-require_once 'document.php';
+
+
+include_once 'people.php';
+include_once 'org.php';
+include_once 'document.php';
+include_once 'doclist.php';
+include_once 'search.php';
 
 
 
