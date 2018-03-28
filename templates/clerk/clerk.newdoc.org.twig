@@ -22,7 +22,7 @@
                         <span class="input-group-addon" id="prefix_0_span">
                             XX
                         </span>
-                        <input id="internal_number" name="internal_number" placeholder="Робочий номер" class="form-control input-md" required="" type="text" readonly="readonly" value="{{new_num}}">
+                        <input id="internal_number" name="internal_number" placeholder="Робочий номер" class="form-control input-md" required="" type="text" value="{{new_num}}">
                         <span class="input-group-addon" id="prefix_2_span">
                             XX
                         </span>
@@ -63,7 +63,7 @@
             </div>
 
 
-            <!-- Select Basic -->
+            <!-- Select Basic
             <div class="form-group">
                 <label class="col-md-4 control-label" for="orgname">Виберіть організацію</label>
                 <div class="col-md-4">
@@ -73,7 +73,7 @@
 
             </div>
 
-            <!-- Button -->
+
             <div class="form-group">
                 <label class="col-md-4 control-label" for="addorg">Або додайте нову</label>
                 <div class="col-md-4">
@@ -82,7 +82,7 @@
             </div>
 
 
-            <!-- Text input-->
+
             <div class="form-group">
                 <label class="col-md-4 control-label" for="external_number">Зовнішній номер</label>  
                 <div class="col-md-4">
@@ -90,6 +90,7 @@
                     <span class="help-block">Номер документа сторонньої організації</span>  
                 </div>
             </div>
+            -->
 
             <div class="form-group">
                 <label class="col-md-4 control-label" for="notes">Вихідні номери інших організацій</label>
@@ -126,8 +127,20 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="date_control">Дата контролю</label>  
                 <div class="col-md-4">
-                    <input id="date_control" name="date_control" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text">
+                    <input id="date_control" name="date_control" placeholder="00.00.2000" class="form-control input-md datepicker" type="text">
                     <span class="help-block">Дата контролю виконання</span>  
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="selectinterviewer">На резолюцію подано</label>
+                <div class="col-md-4">
+                    <select id="selectinterviewerstate" name="selectinterviewer" class="form-control" required="required">
+                        <option value="-1" disabled="disabled" selected="selected">Оберіть співробітника</option>
+                        {% for item in bosslist %}
+                            <option value="{{item.id}}">{{item.name}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 

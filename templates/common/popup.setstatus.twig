@@ -20,7 +20,7 @@
                                             <option value="p">Вирішено позитивно</option>
                                             <option value="m">Відмовлено</option>
                                             <option value="r">Роз'яснено</option>
-                                            
+
                                         </select>
                                     </div>
                                 </div>
@@ -33,6 +33,14 @@
                                     <div class="col-md-6">                     
                                         <textarea class="form-control" id="textstatus" name="textstatus"></textarea>
                                     </div>
+                                    <div class="col-md-12">
+                                        <ul class="nav nav-pills">
+                                            <li class="active"><a id="done-template-0" href="#">Без шаблону</a></li>
+                                            <li><a id="done-template-1"  href="#">Рішення виконкому</a></li>
+                                            <li><a id="done-template-2"  href="#">Лист з поз'ясненням</a></li>
+                                            <li><a id="done-template-3"  href="#">Лист з повідомленням</a></li>
+                                        </ul>
+                                    </div> 
                                 </div>                     
                             </div>
 
@@ -47,7 +55,25 @@
                         $(document).ready(function () {
                             $("#btnpoststatus").click(function () {
                                 $("#setstatusform").ajaxSubmit({url: '{{path('ajax.donestatus.push')}}', type: 'post'});
-                                setTimeout(function(){location.reload();}, 1000);
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
+                            });
+                            
+                            $("#done-template-0").click(function(){
+                                $("#textstatus").text('');
+                            });
+
+                            $("#done-template-1").click(function(){
+                                $("#textstatus").text('Рішення виконкому №     від « » 2018 року. Вирішено позитивно.');
+                            });
+
+                            $("#done-template-2").click(function(){
+                                $("#textstatus").text('« » 2018 року  заявнику надіслано листа з повідомленням про призначення субсидії. Виконавець:');
+                            });
+
+                            $("#done-template-3").click(function(){
+                                $("#textstatus").text('« » 2018 року  заявнику надіслано листа з роз’ясненням. Виконавець:');
                             });
 
                         });

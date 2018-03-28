@@ -42,10 +42,6 @@
             <td width="25%" align="center">
                 <div class="btn-group-vertical">
 
-                    {% if doc.status!='archived' %}
-                        <!--<a href="{{path('clerk.doc.edit',{'doc':doc.id})}}" class="btn btn-warning">Редагувати</a>-->
-                    {% endif %}
-
 
                     {% if ((doc.donestatus!='p') and (doc.donestatus!='m') and (doc.donestatus!='r'))%}
 

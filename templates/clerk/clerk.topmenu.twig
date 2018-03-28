@@ -7,7 +7,7 @@
         <ul class="dropdown-menu" role="menu">
             <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
-            <!--<li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З ОРГАНІЗАЦІЙ</a></li>-->
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З УСТАНОВ</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
             <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
             <!--<li><a href="{{path('clerk.doc.searchinput')}}">ПОШУК</a></li>-->
@@ -28,6 +28,7 @@
     <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">АРХІВ ВХІДНІ</a>
         <ul class="dropdown-menu" role="menu">
             <li><a href="{{path('clerk.docarchive.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
+            <li><a href="{{path('clerk.docarchive.alltyped',{'type':'org'})}}">ЛИСТИ З УСТАНОВ</a></li>
             <li><a href="{{path('clerk.docarchive.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
             <li><a href="{{path('clerk.docarchive.alltyped',{'type':'visit'})}}">ВХІДНІ ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
             
