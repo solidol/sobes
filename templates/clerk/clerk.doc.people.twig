@@ -60,9 +60,10 @@
                     <h2>№ {{doc.fullnum}} : {{doc.year}}</h2>
 
                 </td>
+                
                 <td  align="center">
-                    <h4 style="color:#888;">Створено {{doc.date_in_text}}</h4>
-                    <h3 style="color:#ac2911;">КОНТРОЛЬ {{doc.date_control_text}}</h3> 
+                    <div class="date_in_text">Створено <span id="{{doc.id}}:mainfield:date_in" contenteditable="true">{{doc.date_in_text}}</span></div>
+                    <div class="date_control_text">КОНТРОЛЬ <span id="{{doc.id}}:mainfield:date_control" contenteditable="true">{{doc.date_control_text}}</span></div>
                 </td>
                 <td width="25%" align="center">
                     <div class="btn-group-vertical">
@@ -94,7 +95,7 @@
                         {{item.full[0].lastname}} 
                         {{item.full[0].firstname}}
                         {{item.full[0].secondname}}
-                        вул. {{item.full[0].street}}, 
+                        {{item.full[0].street}}, 
                         буд. {{item.full[0].building}}
                         {% if item.full[0].housing!='' %}/{{item.full[0].housing}}{% endif %}, 
                         {% if item.full[0].room!='' %}кв. {{item.full[0].room}}{% endif %}<br>

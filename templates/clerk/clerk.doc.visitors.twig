@@ -55,8 +55,8 @@
                     
             </td>
             <td  align="center">
-                    <h4 style="color:#888;">Створено {{doc.date_in_text}}</h4>
-                    <h3 style="color:#ac2911;">КОНТРОЛЬ {{doc.date_control_text}}</h3> 
+                    <div class="date_in_text">Створено <span id="{{doc.id}}:mainfield:date_in" contenteditable="true">{{doc.date_in_text}}</span></div>
+                    <div class="date_control_text">КОНТРОЛЬ <span id="{{doc.id}}:mainfield:date_control" contenteditable="true">{{doc.date_control_text}}</span></div>
             </td>
             <td width="25%" align="center">
                 <div class="btn-group-vertical">
@@ -92,7 +92,7 @@
                 Адреса
             </td>
             <td colspan="2">
-                вул. {{doc.street}}, буд. {{doc.building}}, {% if doc.room!='' %}кв. {{doc.room}}{% endif %}
+                {{doc.street}}, буд. {{doc.building}}, {% if doc.room!='' %}кв. {{doc.room}}{% endif %}
             </td>
         </tr>
        

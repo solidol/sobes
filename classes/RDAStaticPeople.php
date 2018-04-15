@@ -75,6 +75,14 @@ class RDAStaticPeople {
         return $result;
     }
 
+    public static function pushPeople($id=0, $arData) {
+        global $app;
+        $result = $app['db']->update('people', $arData, array('id' => $id));
+        if (!$result)
+            $app['db']->insert('people', $arData);
+        return $result;
+    }
+
     public static function insertPeoplesDoc($docId = 0, $peoples = array()) {
         global $app;
         $query = array();

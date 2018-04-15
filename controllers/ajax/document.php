@@ -80,6 +80,15 @@ $app->post('/ajax/autosave/push', function() use ($app) {
     $id = $post->get('id');
     $content = strip_tags($post->get('content'));
     $params = explode(":", $id);
+    switch ($params[2]) {
+        case "date_in":
+        case "date_control":
+            $dt = explode(".", $content);
+            $content = $dt[2] . '-' . $dt[1] . '-' . $dt[0];
+            break;
+    }
+
+
     switch ($params[1]) {
         case "mainfield":
             RDAStatic::updateMainField($params[0], $params[2], $content);

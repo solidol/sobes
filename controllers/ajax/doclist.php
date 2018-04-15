@@ -122,6 +122,9 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         $item['notes'] = '';
         if ($v['impstatus'] == 'ugl')
             $item['notes'] .= ' <span style="background-color:red;color:white;font-size:20px">УГЛ</span>';
+        if ($v['num_types'] != null)
+            $item['notes'] .= ' <span style="background-color:brown;color:white;font-size:20px">'.$v['num_types'].'</span>';
+        
         if ($v['donestatus'] == 'p')
             $item['notes'] .= ' <span style="color:rgb(0, 150, 60);font-size:20px">+</span>';
         if ($v['donestatus'] == 'm')
