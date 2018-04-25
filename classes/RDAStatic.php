@@ -203,7 +203,7 @@ class RDAStatic {
             $sql .= " AND " . $sqls;
 
         if (is_numeric($limit['start']) and is_numeric($limit['draw']) and is_numeric($limit['length'])) {
-            $sql .= " ORDER BY internal_number DESC ";
+            $sql .= " ORDER BY id DESC ";
             $sql .= " LIMIT " . $limit['start'] . "," . $limit['length'] . " ";
         }
         $arPeople = $app['db']->fetchAll($sql);
@@ -547,12 +547,28 @@ class RDAStatic {
             $data['document_id'] = $docId;
             if (stristr($item['org'], 'Обл'))
                 $item['org'] = 'Облрада';
-            switch ($item['org']) {
-                case 'ОДА': $keystr = 'ОДА';
+            switch (true) {
+                case mb_stristr($item['org'],'Мінсоцполітики'): $keystr = 'Мінсоцполітики';
                     break;
-                case 'Облрада': $keystr = 'Облрада';
+                case mb_stristr($item['org'],'з НС'): $keystr = 'ДСНС';
                     break;
-                case 'МВК': $keystr = 'МВК';
+                case mb_stristr($item['org'],'ДСНС'): $keystr = 'ДСНС';
+                    break;
+                case mb_stristr($item['org'],'ОДА'): $keystr = 'ОДА';
+                    break;
+                case mb_stristr($item['org'],'ВРУ'): $keystr = 'ВРУ';
+                    break;
+                case mb_stristr($item['org'],'Верховна Рада'): $keystr = 'ВРУ';
+                    break;
+                case mb_stristr($item['org'],'КМУ'): $keystr = 'КМУ';
+                    break;
+                case mb_stristr($item['org'],'Кабінет міністрів'): $keystr = 'КМУ';
+                    break;
+                case mb_stristr($item['org'],'кабмін'): $keystr = 'КМУ';
+                    break;
+                case mb_stristr($item['org'],'Облрада'): $keystr = 'Облрада';
+                    break;
+                case mb_stristr($item['org'],'МВК'): $keystr = 'МВК';
                     break;
                 default: $keystr = 'externals';
             }

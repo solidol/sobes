@@ -114,7 +114,7 @@ $app->post('/clerk/updpeople', function() use ($app) {
     foreach ($post->get('social') as $k => $v) {
         $arMetaSoc[] = $k;
     }
-    RDAStaticPeople::pushPeopleMetaByPeopleId($data['id'], $arMetaSoc);
+    //RDAStaticPeople::pushPeopleMetaByPeopleId($data['id'], $arMetaSoc);
     return $app->redirect(
                     $app['url_generator']->generate('clerk.people.all'));
 })->bind('clerk.people.upd');
