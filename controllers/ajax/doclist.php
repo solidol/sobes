@@ -86,7 +86,10 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
     $limit['length'] = $get->get('length') ? $get->get('length') : 10;
     $limit['start'] = $get->get('start') ? $get->get('start') : 0;
     $search = $get->get('search') ? $get->get('search')['value'] : false;
-    $keys = array();
+    $keys['fullnum'] = $get->get('columns')[0]['search']['value'];
+    $keys['date_in_text'] = $get->get('columns')[2]['search']['value'];
+    $keys['date_control_text'] = $get->get('columns')[3]['search']['value'];
+
     if ($type)
         $keys['type'] = $type;
     if ($datecontrol)
@@ -131,8 +134,8 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
             $item['notes'] .= ' <span style="color:red;font-size:20px">-</span>';
         if ($v['donestatus'] == 'r')
             $item['notes'] .= ' <span style="color:blue;font-size:20px">P</span>';
-        $item['date_in'] = $v['date_in'];
-        $item['date_control'] = $v['date_control'];
+        $item['date_in'] = $v['date_in_text'];
+        $item['date_control'] = $v['date_control_text'];
         $item['timetolife'] = $v['timetolife'];
         $item['comment'] = $v['comment'];
         $item['summary'] = $v['summary'];
@@ -235,8 +238,8 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
         if ($v['internal_number'] != '')
             $item['num'] .= '-' . $v['internal_number'];
         $item['num'] = $v['fullnum'];
-        $item['date_in'] = $v['date_in'];
-        $item['date_control'] = $v['date_control'];
+        $item['date_in'] = $v['date_in_text'];
+        $item['date_control'] = $v['date_control_text'];
         $item['timetolife'] = $v['timetolife'];
         $item['comment'] = $v['comment'];
         $item['summary'] = $v['summary'];

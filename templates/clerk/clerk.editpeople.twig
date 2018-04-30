@@ -139,7 +139,9 @@
                                         <div class="col-md-3">
                                             <div class="checkbox">
                                                 <label for="social[]">
-                                                    <input name="social[{{atitem.keystr}}]" id="soc-{{atitem.keystr}}" value="1" type="checkbox">
+                                                    <input name="social[{{atitem.keystr}}]" id="soc-{{atitem.keystr}}" value="1" type="checkbox" 
+                                                           {% if atitem.status=='checked' %} checked="ckeked"{%endif%}
+                                                           >
                                                     {{atitem.value}}
                                                 </label>
                                             </div>

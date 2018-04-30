@@ -24,7 +24,7 @@
                 </div>
             </div>
 
-            
+
 
             <table id="people" class="display table hover" width="100%" cellspacing="0">
                 <thead>
@@ -35,6 +35,16 @@
                         <th>Дата контролю</th>
                         <th>Короткий зміст</th>
                         <th>Зведена інформація</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th><input placeholder="Номер" type="text"></th>
+                        <th></th>
+                        <th><input placeholder="Дата створення" type="text"></th>
+                        <th><input placeholder="Дата контролю" type="text"></th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -63,6 +73,7 @@
                 "language": uk_trans,
                 "processing": true,
                 "serverSide": true,
+                searchDelay: 1000,
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'people'})}}",
                 "columns": [
                     {"data": "num"},
@@ -99,6 +110,27 @@
                     }
 
                 }
+            });
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function (e) {
+                    if (that.search() !== this.value) {
+
+
+
+                        if (this.value.length >= 2 || e.keyCode == 13) {
+                            that
+                                    .search(this.value)
+                                    .draw();
+                        }
+
+                        if (this.value == "") {
+                            that.search("").draw();
+                        }
+
+                    }
+                });
             });
         });
     </script>

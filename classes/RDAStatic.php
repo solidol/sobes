@@ -171,22 +171,23 @@ class RDAStatic {
 
         if (!empty($keys))
             foreach ($keys as $key => $value) {
-                switch ($key) {
-                    case "type":
-                        if ($value == 'people')
-                            $type = " (type = 'people' OR type = 'visitors') ";
-                        else
-                            $type = " type = '$value' ";
-                        $sqlw[] = $type;
-                        break;
-                    case "fullnum": $sqlw[] = " fullnum LIKE '%$value%' ";
-                        break;
-                    case "date_in": $sqlw[] = " date_in = '$value' ";
-                        break;
-                    case "date_control": $sqlw[] = " date_control = '$value' ";
-                        break;
-                        break;
-                }
+                if ($value > '')
+                    switch ($key) {
+                        case "type":
+                            if ($value == 'people')
+                                $type = " (type = 'people' OR type = 'visitors') ";
+                            else
+                                $type = " type = '$value' ";
+                            $sqlw[] = $type;
+                            break;
+                        case "fullnum": $sqlw[] = " fullnum LIKE '%$value%' ";
+                            break;
+                        case "date_in_text": $sqlw[] = " date_in_text LIKE '%$value%' ";
+                            break;
+                        case "date_control_text": $sqlw[] = " date_control_text LIKE '%$value%' ";
+                            break;
+                            break;
+                    }
             }
         if ($search) {
 
@@ -375,7 +376,7 @@ class RDAStatic {
      * @param string $logic
      * @return array
      */
-    public static function getPeopleByAnyKey($keys = array(), $logic = "AND", $limit = "30") {
+    public static function getPeopleByAnyKey($keys = array(), $logic = "AND", $limit = array()) {
         global $app;
         $sqlw = array();
         $arPeople = array();
@@ -404,7 +405,12 @@ class RDAStatic {
         if ($sqlw != "")
             $sql .= " AND " . $sqlw;
         $sql .= " ORDER BY lastname  COLLATE  utf8_unicode_ci ASC";
+        if (!empty($limit))
+            if (is_numeric($limit['start']) and is_numeric($limit['length'])) {
+                $sql .= " LIMIT " . $limit['start'] . "," . $limit['length'] . " ";
+            }
         $arPeople = $app['db']->fetchAll($sql);
+        //var_dump($sql);
         return $arPeople;
     }
 
@@ -548,27 +554,27 @@ class RDAStatic {
             if (stristr($item['org'], 'Обл'))
                 $item['org'] = 'Облрада';
             switch (true) {
-                case mb_stristr($item['org'],'Мінсоцполітики'): $keystr = 'Мінсоцполітики';
+                case mb_stristr($item['org'], 'Мінсоцполітики'): $keystr = 'Мінсоцполітики';
                     break;
-                case mb_stristr($item['org'],'з НС'): $keystr = 'ДСНС';
+                case mb_stristr($item['org'], 'з НС'): $keystr = 'ДСНС';
                     break;
-                case mb_stristr($item['org'],'ДСНС'): $keystr = 'ДСНС';
+                case mb_stristr($item['org'], 'ДСНС'): $keystr = 'ДСНС';
                     break;
-                case mb_stristr($item['org'],'ОДА'): $keystr = 'ОДА';
+                case mb_stristr($item['org'], 'ОДА'): $keystr = 'ОДА';
                     break;
-                case mb_stristr($item['org'],'ВРУ'): $keystr = 'ВРУ';
+                case mb_stristr($item['org'], 'ВРУ'): $keystr = 'ВРУ';
                     break;
-                case mb_stristr($item['org'],'Верховна Рада'): $keystr = 'ВРУ';
+                case mb_stristr($item['org'], 'Верховна Рада'): $keystr = 'ВРУ';
                     break;
-                case mb_stristr($item['org'],'КМУ'): $keystr = 'КМУ';
+                case mb_stristr($item['org'], 'КМУ'): $keystr = 'КМУ';
                     break;
-                case mb_stristr($item['org'],'Кабінет міністрів'): $keystr = 'КМУ';
+                case mb_stristr($item['org'], 'Кабінет міністрів'): $keystr = 'КМУ';
                     break;
-                case mb_stristr($item['org'],'кабмін'): $keystr = 'КМУ';
+                case mb_stristr($item['org'], 'кабмін'): $keystr = 'КМУ';
                     break;
-                case mb_stristr($item['org'],'Облрада'): $keystr = 'Облрада';
+                case mb_stristr($item['org'], 'Облрада'): $keystr = 'Облрада';
                     break;
-                case mb_stristr($item['org'],'МВК'): $keystr = 'МВК';
+                case mb_stristr($item['org'], 'МВК'): $keystr = 'МВК';
                     break;
                 default: $keystr = 'externals';
             }

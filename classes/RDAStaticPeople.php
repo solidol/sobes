@@ -28,20 +28,22 @@ class RDAStaticPeople {
         $sql = "SELECT * FROM people_meta WHERE people_id = $id AND keystr = 'social'";
         $arKeys = $app['db']->fetchAssoc($sql);
         $arKeys = unserialize($arKeys['value']);
-        //var_dump($arKeys);
+        //var_dump($arAllStatuses);
         $arRes = array();
         if (is_array($arAllStatuses) and is_array($arKeys))
-            foreach ($arAllStatuses as $value) {
+            foreach ($arAllStatuses as &$value) {
                 //if ($value['keystr']=="geroyukrainy") var_dump ($value);
 
                 if (in_array($value['keystr'], $arKeys)) {
                     //var_dump($value);
-                    $arRes[] = $value;
+                    $value['status'] = 'checked';
+                } else {
+                    $value['status'] = '';
                 }
-            } else
-            $arRes = array();
+            }
+        unset($value);
 
-        return $arRes;
+        return $arAllStatuses;
     }
 
     public static function getPeopleMetaByPeopleId($id, $metaType) {
@@ -68,19 +70,25 @@ class RDAStaticPeople {
         $arDoc = 0;
         $arNotes = array_diff($arNotes, array(''));
         $notes = serialize($arNotes);
-
-        $result = $app['db']->update('people_meta', array('value' => $notes), array('people_id' => $id, 'keystr' => $type));
-        if (!$result)
+        try {
+            $app['db']->update('people_meta', array('value' => $notes), array('people_id' => $id, 'keystr' => $type));
+        } catch (Exception $ex) {
             $app['db']->insert('people_meta', array('keystr' => $type, 'value' => $notes, 'people_id' => $id));
-        return $result;
+        }
+
+
+        return 1;
     }
 
-    public static function pushPeople($id=0, $arData) {
+    public static function pushPeople($id = 0, $arData) {
         global $app;
-        $result = $app['db']->update('people', $arData, array('id' => $id));
-        if (!$result)
+        try {
             $app['db']->insert('people', $arData);
-        return $result;
+        } catch (Exception $ex) {
+            $app['db']->update('people', $arData, array('id' => $id));
+        }
+
+        return 1;
     }
 
     public static function insertPeoplesDoc($docId = 0, $peoples = array()) {

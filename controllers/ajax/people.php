@@ -5,6 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 $app->get('/ajax/people/shortsearchpeople', function() use ($app) {
@@ -81,11 +82,11 @@ $app->get('/ajax/people/getlist', function() use ($app) {
     $search = $get->get('search') ? $get->get('search')['value'] : false;
     $keys = array();
 
-    $keys['firstname'] = $searchstring;
-    $keys['secondname'] = $searchstring;
-    $keys['lastname'] = $searchstring;
+    $keys['firstname'] = $get->get('columns')[1]['search']['value'];
+    $keys['secondname'] = $get->get('columns')[2]['search']['value'];
+    $keys['lastname'] = $get->get('columns')[0]['search']['value'];
     $keys['passport'] = $searchstring;
-    $result = RDAStatic::getPeopleByAnyKey($keys, "OR");
+    $result = RDAStatic::getPeopleByAnyKey($keys, "OR", $limit);
     foreach ($result as $k => $v) {
         $item['lastname'] = $v['lastname'];
         $item['firstname'] = $v['firstname'];
@@ -96,10 +97,11 @@ $app->get('/ajax/people/getlist', function() use ($app) {
         $item['addr'] = $v['street'] . ', б.' . $v['building'] . ', ' . (($v['room'] != '') ? $v['room'] : '');
         $arPeople['data'][] = $item;
     }
-    $arPeople['draw'] = $get->get('draw') ? $get->get('draw') : false;
     $arPeople['recordsTotal'] = RDAStatic::getPeopleCount();
-    $arPeople['recordsFiltered'] = RDAStatic::getPeopleCount($keys);
-
+    $arPeople['recordsFiltered'] = RDAStatic::getPeopleCount();
+    //$arPeople['recordsFiltered'] = RDAStatic::getPeopleCount($keys);
+    $arPeople['draw'] = $get->get('draw') ? $get->get('draw') : false;
+    
     $resp = new JsonResponse($arPeople);
     return $resp->setCallback(
                     $get->get('callback')

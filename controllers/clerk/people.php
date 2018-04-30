@@ -79,9 +79,9 @@ $app->get('/clerk/people/edit:{pid}', function($pid) use ($app) {
     $user = $token->getUser();
     $data['username'] = $user->getName();
     $data['userid'] = $user->getId();
-    $data['peopleattr'] = RDAStaticPeople::getSocialStatuses();
-
-
+    $data['peopleattr'] = RDAStaticPeople::getSocialStatusesByPeopleId($pid);
+     
+    //var_dump($data['pachecked']);
     $data['data'] = RDAStatic::getPeopleByAnyKey(array('id' => $pid))[0];
 
     return $app['twig']->render('clerk.editpeople.twig', $data);
@@ -114,7 +114,7 @@ $app->post('/clerk/updpeople', function() use ($app) {
     foreach ($post->get('social') as $k => $v) {
         $arMetaSoc[] = $k;
     }
-    //RDAStaticPeople::pushPeopleMetaByPeopleId($data['id'], $arMetaSoc);
+    RDAStaticPeople::pushPeopleMetaByPeopleId($data['id'], $arMetaSoc);
     return $app->redirect(
                     $app['url_generator']->generate('clerk.people.all'));
 })->bind('clerk.people.upd');
