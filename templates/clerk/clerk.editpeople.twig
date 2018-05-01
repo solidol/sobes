@@ -52,7 +52,7 @@
                                     <div class="col-md-8">
                                         <input id="secondname" name="phone" placeholder="12-34-56" class="form-control input-md" type="text" value="{{data.phones}}">
                                         <span class="help-block">Телефони через кому</span>  
-                                         
+
                                     </div>
                                 </div>
 
@@ -165,9 +165,28 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" id="btnpostorg" type="submit" data-dismiss="modal">Зберегти</button>
+                <button class="btn btn-success" id="btnpostorg" type="button" data-dismiss="modal">Зберегти</button>
                 <button class="btn btn-default" type="reset" data-dismiss="modal">Скасувати</button>
             </div>
         </form>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#btnpostorg').click(function () {
+
+                if (window.opener) {
+                    $('#addmanform').ajaxSubmit({'url': '{{path('clerk.people.upd')}}', 'type': 'post'});
+                    setTimeout(function () {
+                        window.opener.location.reload();
+                        window.close();
+                    }, 800);
+
+                } else
+                {
+                    $('#addmanform').submit();
+                }
+                return false;
+            });
+        });
+    </script>
 {% endblock %}
