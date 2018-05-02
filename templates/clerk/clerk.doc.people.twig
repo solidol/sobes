@@ -61,6 +61,9 @@
                     <span id="{{doc.id}}:mainfield:num_prefix_1" contenteditable="true">{{doc.num_prefix_1}}</span>
                     -
                     <span id="{{doc.id}}:mainfield:internal_number" contenteditable="true">{{doc.internal_number}}</span>
+                    {% if doc.isreapeted!='no' %}
+                        <span id="{{doc.id}}:mainfield:isreapeted" contenteditable="true" style="color:red">/{{doc.isreapeted}}</span>
+                    {% endif %}
                     : {{doc.year}}
                 </h2>
 

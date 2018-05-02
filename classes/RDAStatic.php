@@ -182,6 +182,8 @@ class RDAStatic {
                             break;
                         case "fullnum": $sqlw[] = " fullnum LIKE '%$value%' ";
                             break;
+                        case "fullname": $sqlw[] = " fullname LIKE '%$value%' ";
+                            break;
                         case "date_in_text": $sqlw[] = " date_in_text LIKE '%$value%' ";
                             break;
                         case "date_control_text": $sqlw[] = " date_control_text LIKE '%$value%' ";

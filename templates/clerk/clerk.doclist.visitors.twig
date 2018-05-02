@@ -18,15 +18,25 @@
                 </div>
             </div>
 
-            <table id="visitors" class="display table hover" width="100%" cellspacing="0">
+            <table id="people" class="display table hover" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>Номер</th>
-                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
+                        <th>Звернувся</th>
                         <th>Короткий зміст</th>
                         <th>Зведена інформація</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th><input placeholder="Номер" type="text" style="width:80px"></th>
+                        <th><input placeholder="Дата створення" type="text" style="width:80px"></th>
+                        <th><input placeholder="Дата контролю" type="text" style="width:80px"></th>
+                        <th><input placeholder="Звернувся" type="text" style="width:120px"></th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -34,9 +44,9 @@
                 <tfoot>
                     <tr>
                         <th>Номер</th>
-                        <th>Примітки</th>
                         <th>Дата створення</th>
                         <th>Дата контролю</th>
+                        <th>Звернувся</th>
                         <th>Короткий зміст</th>
                         <th>Зведена інформація</th>
                         <th></th>
@@ -51,16 +61,17 @@
 
     <script>
         $(document).ready(function () {
-            $('#visitors').DataTable({
+            window.table = $('#people').DataTable({
                 "language": uk_trans,
                 "processing": true,
                 "serverSide": true,
+                searchDelay: 1000,
                 "ajax": "{{path('ajax.document.getlisttyped',{'type':'visitors'})}}",
                 "columns": [
                     {"data": "num"},
-                    {"data": "notes"},
                     {"data": "date_in"},
                     {"data": "date_control"},
+                    {"data": "fullname"},
                     {"data": "summary"},
                     {"data": "comment"},
                     {"data": "view"},
@@ -91,6 +102,27 @@
                     }
 
                 }
+            });
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function (e) {
+                    if (that.search() !== this.value) {
+
+
+
+                        if (this.value.length >= 2 || e.keyCode == 13) {
+                            that
+                                    .search(this.value)
+                                    .draw();
+                        }
+
+                        if (this.value == "") {
+                            that.search("").draw();
+                        }
+
+                    }
+                });
             });
         });
     </script>

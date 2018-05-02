@@ -47,20 +47,26 @@
         </tr>
         <tr>
             <td width="25%"  align="center">
-                <h2>№ {{doc.fullnum}}
-
+                <h2>№ 
+                    <span id="{{doc.id}}:mainfield:num_prefix_1" contenteditable="true">{{doc.num_prefix_1}}</span>
+                    -
+                    <span id="{{doc.id}}:mainfield:internal_number" contenteditable="true">{{doc.internal_number}}</span>
+                    /
+                    <span id="{{doc.id}}:mainfield:num_prefix_2" contenteditable="true">{{doc.num_prefix_2}}</span>
                     {% if doc.isreapeted!='no' %}
-                        <span style="color:red">/{{doc.isreapeted}}</span>
-                    {% endif %} : {{doc.year}}</h2>
-                    
+                        <span id="{{doc.id}}:mainfield:isreapeted" contenteditable="true" style="color:red">/{{doc.isreapeted}}</span>
+                    {% endif %}
+                    : {{doc.year}}
+                </h2>
+
             </td>
             <td  align="center">
-                    <div class="date_in_text">Створено <span id="{{doc.id}}:mainfield:date_in" contenteditable="true">{{doc.date_in_text}}</span></div>
-                    <div class="date_control_text">КОНТРОЛЬ <span id="{{doc.id}}:mainfield:date_control" contenteditable="true">{{doc.date_control_text}}</span></div>
+                <div class="date_in_text">Створено <span id="{{doc.id}}:mainfield:date_in" contenteditable="true">{{doc.date_in_text}}</span></div>
+                <div class="date_control_text">КОНТРОЛЬ <span id="{{doc.id}}:mainfield:date_control" contenteditable="true">{{doc.date_control_text}}</span></div>
             </td>
             <td width="25%" align="center">
                 <div class="btn-group-vertical">
-                    
+
                     {% if doc.status!='archived' %}
                         <!--<a href="{{path('clerk.doc.edit',{'doc':doc.id})}}" class="btn btn-warning">Редагувати</a>-->
                     {% endif %}
@@ -84,7 +90,12 @@
                 Громадянин
             </td>
             <td colspan="2">
-                {{doc.lastname}} {{doc.firstname}} {{doc.secondname}}
+                <a href="{{path('clerk.people.edit',{'pid':doc.pid})}}" target="_blank" 
+                   onClick="window.open(this.href, '', 'scrollbars=1,top=' + ((screen.height - 400) / 2) + ',left=' + ((screen.width - 1000) / 2) + ',width=1000,height=600,menubar=no,toolbar=no,location=no');
+                           return false;">
+                    <span class="_blank fa fa-file-text-o fa-1x"></span>
+                    {{doc.lastname}} {{doc.firstname}} {{doc.secondname}}
+                </a>
             </td>
         </tr>
         <tr>
@@ -95,7 +106,7 @@
                 {{doc.street}}, буд. {{doc.building}}, {% if doc.room!='' %}кв. {{doc.room}}{% endif %}
             </td>
         </tr>
-       
+
         <tr>
             <td width="20%">
                 Зміст
@@ -112,7 +123,7 @@
                 {% if doc.resolution is not empty %}
                     {% for item in doc.resolution %}
                         <div id="{{item.id}}:metafield:movings" contenteditable="true">{{item.serial.fullstr}}</div>
-                        
+
                     {% endfor %}
                 {% endif %}
             </td>
@@ -133,7 +144,7 @@
                 {% if doc.donestr is not empty %}
                     {% for item in doc.donestr %}
                         <div id="{{item.id}}:metafield:donestr" contenteditable="true">{{item.serial.fullstr}}</div>
-                        
+
                     {% endfor %}
                 {% endif %}
             </td>

@@ -87,9 +87,10 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
     $limit['start'] = $get->get('start') ? $get->get('start') : 0;
     $search = $get->get('search') ? $get->get('search')['value'] : false;
     $keys['fullnum'] = $get->get('columns')[0]['search']['value'];
-    $keys['date_in_text'] = $get->get('columns')[2]['search']['value'];
-    $keys['date_control_text'] = $get->get('columns')[3]['search']['value'];
-
+    $keys['date_in_text'] = str_replace(',','.',$get->get('columns')[1]['search']['value']);
+    $keys['date_control_text'] = str_replace(',','.',$get->get('columns')[2]['search']['value']);
+    $keys['fullname'] = $get->get('columns')[3]['search']['value'];
+    
     if ($type)
         $keys['type'] = $type;
     if ($datecontrol)
@@ -121,24 +122,27 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
             $item['num'] .= '-' . $v['num_prefix_2'];
         if ($v['internal_number'] != '')
             $item['num'] .= '-' . $v['internal_number'];
-        $item['num'] = $v['fullnum'];
+        $item['num'] = ' <div style="background-color:white;color:black;font-size:20px">'.$v['fullnum'].'</div>';;
         $item['notes'] = '';
         if ($v['impstatus'] == 'ugl')
-            $item['notes'] .= ' <span style="background-color:red;color:white;font-size:20px">УГЛ</span>';
+            $item['num'] .= ' <div style="background-color:red;color:white;font-size:14px">УГЛ</div>';
         if ($v['num_types'] != null)
-            $item['notes'] .= ' <span style="background-color:brown;color:white;font-size:20px">'.$v['num_types'].'</span>';
+            $item['num'] .= ' <div style="background-color:brown;color:white;font-size:14px">'.$v['num_types'].'</div>';
         
         if ($v['donestatus'] == 'p')
-            $item['notes'] .= ' <span style="color:rgb(0, 150, 60);font-size:20px">+</span>';
+            $item['num'] .= ' <div style="color:white;background-color:rgb(0, 150, 60);font-size:14px">+</div>';
         if ($v['donestatus'] == 'm')
-            $item['notes'] .= ' <span style="color:red;font-size:20px">-</span>';
+            $item['num'] .= ' <div style="color:white;background-color:red;font-size:14px">-</div>';
         if ($v['donestatus'] == 'r')
-            $item['notes'] .= ' <span style="color:blue;font-size:20px">P</span>';
+            $item['num'] .= ' <div style="color:white;background-color:blue;font-size:14px">P</div>';
         $item['date_in'] = $v['date_in_text'];
         $item['date_control'] = $v['date_control_text'];
         $item['timetolife'] = $v['timetolife'];
         $item['comment'] = $v['comment'];
         $item['summary'] = $v['summary'];
+        if ($type=="people" or $type=="visitors"){
+            $item['fullname'] = $v['fullname'];
+        }
         $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
         $item['arch'] = ($v['donestatus']!='')?'<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>':'';
@@ -206,6 +210,10 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
     $limit['start'] = $get->get('start') ? $get->get('start') : 0;
     $search = $get->get('search') ? $get->get('search')['value'] : false;
     $keys = array();
+    $keys['fullnum'] = $get->get('columns')[0]['search']['value'];
+    $keys['date_in_text'] = str_replace(',','.',$get->get('columns')[1]['search']['value']);
+    $keys['date_control_text'] = str_replace(',','.',$get->get('columns')[2]['search']['value']);
+    $keys['fullname'] = $get->get('columns')[3]['search']['value'];
     if ($type)
         $keys['type'] = $type;
     if ($datecontrol)
@@ -237,15 +245,30 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
             $item['num'] .= '-' . $v['num_prefix_2'];
         if ($v['internal_number'] != '')
             $item['num'] .= '-' . $v['internal_number'];
-        $item['num'] = $v['fullnum'];
+        $item['num'] = ' <div style="background-color:white;color:black;font-size:20px">'.$v['fullnum'].'</div>';;
+        $item['notes'] = '';
+        if ($v['impstatus'] == 'ugl')
+            $item['num'] .= ' <div style="background-color:red;color:white;font-size:14px">УГЛ</div>';
+        if ($v['num_types'] != null)
+            $item['num'] .= ' <div style="background-color:brown;color:white;font-size:14px">'.$v['num_types'].'</div>';
+        
+        if ($v['donestatus'] == 'p')
+            $item['num'] .= ' <div style="color:white;background-color:rgb(0, 150, 60);font-size:14px">+</div>';
+        if ($v['donestatus'] == 'm')
+            $item['num'] .= ' <div style="color:white;background-color:red;font-size:14px">-</div>';
+        if ($v['donestatus'] == 'r')
+            $item['num'] .= ' <div style="color:white;background-color:grey;font-size:14px">P</div>';
         $item['date_in'] = $v['date_in_text'];
         $item['date_control'] = $v['date_control_text'];
         $item['timetolife'] = $v['timetolife'];
         $item['comment'] = $v['comment'];
         $item['summary'] = $v['summary'];
-        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.arch.view', array('doc' => $v['id']))
+        if ($type=="people" or $type=="visit"){
+            $item['fullname'] = $v['fullname'];
+        }
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
-
+        $item['donestatus'] = $v['donestatus'];
         $arDocs['data'][] = $item;
     }
     $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;
