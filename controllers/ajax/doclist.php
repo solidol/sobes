@@ -280,3 +280,50 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
     );
 })->bind('ajax.document.getlist.archivetyped');
 
+$app->get('/ajax/report/org/monthcontrol', function() use ($app) {
+    $result = array();
+    $arDocs = array();
+    $get = $app['request'];
+
+    $result = RDAStatic::getOrgMonthReport();
+    $arDocs['data'] = array();
+    foreach ($result as $k => $v) {
+
+        $item['num'] = '';
+        if ($v['num_prefix_1'] != '')
+            $item['num'] .= $v['num_prefix_1'];
+        if ($v['num_prefix_2'] != '')
+            $item['num'] .= '-' . $v['num_prefix_2'];
+        if ($v['internal_number'] != '')
+            $item['num'] .= '-' . $v['internal_number'];
+        $item['num'] = ' <div style="background-color:white;color:black;font-size:20px">'.$v['fullnum'].'</div>';;
+        $item['notes'] = '';
+        if ($v['impstatus'] == 'ugl')
+            $item['num'] .= ' <div style="background-color:red;color:white;font-size:14px">УГЛ</div>';
+        if ($v['num_types'] != null)
+            $item['num'] .= ' <div style="background-color:brown;color:white;font-size:14px">'.$v['num_types'].'</div>';
+        
+        if ($v['donestatus'] == 'p')
+            $item['num'] .= ' <div style="color:white;background-color:rgb(0, 150, 60);font-size:14px">+</div>';
+        if ($v['donestatus'] == 'm')
+            $item['num'] .= ' <div style="color:white;background-color:red;font-size:14px">-</div>';
+        if ($v['donestatus'] == 'r')
+            $item['num'] .= ' <div style="color:white;background-color:blue;font-size:14px">P</div>';
+        $item['date_in'] = $v['date_in_text'];
+        $item['date_control'] = $v['date_control_text'];
+        $item['timetolife'] = $v['timetolife'];
+        $item['comment'] = $v['comment'];
+        $item['summary'] = $v['summary'];
+
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
+                . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
+        $item['arch'] = ($v['donestatus']!='')?'<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>':'';
+        $item['donestatus'] = $v['donestatus'];
+        $arDocs['data'][] = $item;
+    }
+
+    $resp = new JsonResponse($arDocs);
+    return $resp->setCallback(
+                    $get->get('callback')
+    );
+})->bind('ajax.report.org.monthcontrol');

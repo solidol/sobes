@@ -11,6 +11,14 @@
  * 
  */
 class RDAStatic {
+    public static function getDatesByDocId($docId){
+        global $app;
+         if ($docId < 1)
+            return false;
+        $sql = "SELECT * FROM dates_control_view WHERE document = ?";
+        $arRes = $app['db']->fetchAll($sql, array((int) $docId));   
+        return $arRes;
+    }
 
     public static function updateMainField($docid, $fieldname, $content) {
         global $app;
@@ -655,4 +663,21 @@ class RDAStatic {
         return 0;
     }
 
+    
+    
+        public static function getOrgMonthReport($month = 'now') {
+        global $app;
+        $sqlw = array();
+        $sqls = '';
+        $arPeople = array();
+
+        $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM document_work_org "
+                . "WHERE DATE_FORMAT(NOW(),'%m-%Y') =   DATE_FORMAT(date_control,'%m-%Y')";
+
+
+        $arPeople = $app['db']->fetchAll($sql);
+        //var_dump($sql);
+        return $arPeople;
+    }
+    
 }

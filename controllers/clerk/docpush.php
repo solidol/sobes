@@ -1,5 +1,7 @@
 <?php
 
+
+
 $app->get('/clerk/newdoc/people', function() use ($app) {
     $data = array();
     $token = $app['security']->getToken();
@@ -61,7 +63,7 @@ $app->get('/clerk/newdoc/state', function() use ($app) {
     return $app['twig']->render('clerk.newdoc.state.twig', $data);
 })->bind('clerk.doc.new.state');
 
-
+/*
 
 $app->post('/clerk/newdoc/people', function() use ($app) {
     $token = $app['security']->getToken();
@@ -126,7 +128,7 @@ $app->post('/clerk/newdoc/people', function() use ($app) {
     return $app->redirect($app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));
 })->bind('clerk.doc.push.collect');
 
-
+*/
 
 $app->post('/clerk/newdoc', function() use ($app) {
     $token = $app['security']->getToken();
@@ -135,12 +137,10 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $post = $app['request'];
 
     $data['isreapeted'] = $post->get('isreapeted') ? $post->get('isreapeted') : "no";
-    
-    $dt_in = explode(".", $post->get('date_in'));
-    $dt_in = $dt_in[2] . '-' . $dt_in[1] . '-' . $dt_in[0];
-    $dt_cr = explode(".", ($post->get('date_control')>'')?$post->get('date_control'):'00.00.0000');
-    $dt_cr = $dt_cr[2] . '-' . $dt_cr[1] . '-' . $dt_cr[0];
 
+    $dt_in = $post->get('date_in');
+    $dt_cr = ($post->get('date_control') > '') ? $post->get('date_control') : '00.00.0000';
+    
     $data['num_prefix_0'] = ($post->get('num_prefix_0') != null) ? $post->get('num_prefix_0') : '';
     $data['num_prefix_1'] = ($post->get('num_prefix_1') != null) ? $post->get('num_prefix_1') : '';
     $data['num_prefix_2'] = ($post->get('num_prefix_2') != null) ? $post->get('num_prefix_2') : '';
@@ -153,12 +153,12 @@ $app->post('/clerk/newdoc', function() use ($app) {
     //var_dump($orgnums);
     //die('');
     if (!empty($orgnums[0]))
-    foreach ($orgnums as $k => $v) {
-        $newitem['number'] = $v;
-        $newitem['org'] = $orgs[$k];
-        $newitem['date'] = $dates[$k];
-        $externals[] = $newitem;
-    }
+        foreach ($orgnums as $k => $v) {
+            $newitem['number'] = $v;
+            $newitem['org'] = $orgs[$k];
+            $newitem['date'] = $dates[$k];
+            $externals[] = $newitem;
+        }
     $data['impstatus'] = $post->get('impstatus') ? 'ugl' : '';
     $data['external_number'] = $post->get('external_number');
     $data['year'] = (int) date("Y");
@@ -172,22 +172,50 @@ $app->post('/clerk/newdoc', function() use ($app) {
     $data['curr_user'] = $user->getId();
     $data['summary'] = $post->get('summary');
     $data['comment'] = $post->get('comment');
-    
+
     $data['topicstarter_text'] = $post->get('tstext');
     if ($data['type'] == "people") {
         $peoples = explode(",", $data['topicstarter']);
         $data['topicstarter'] = $peoples[0];
     }
+
+
+
+    if ($post->get('doctype') == "org") {
+        $arDates = $post->get('dates_control');
+        $data['date_control'] = (is_array($arDates)) ? $arDates[0] : '00.00.0000';
+    }
+
     $app['db']->insert('document', $data);
+
+
     $newId = $app['db']->lastInsertId();
     if ($data['type'] == "people")
         RDAStaticPeople::insertPeoplesDoc($newId, $peoples);
     $boss = RDAStatic::getBoss();
-    if (($post->get('doctype') != "visitors") or ($post->get('doctype') != "people"))
+    if ($post->get('doctype') == "org") {
+
+        foreach ($arDates as $dtItem) {
+            $dates=array();
+            $dates['document'] = $newId;
+            $dates['date_control'] = ($dtItem > '') ? $dtItem : '00.00.0000';
+            $app['db']->insert('dates_control', $dates);
+        }
+    }
+
+    if (($post->get('doctype') != "visitors") or ( $post->get('doctype') != "people"))
     //    RDAStatic::moveDoc($newId, $user->getId(), $boss['id'], 'Створено картку');
     //else
         RDAStatic::moveDoc($newId, $user->getId(), $post->get('selectinterviewer'), 'Створено картку, передано на резолюцію');
     RDAStatic::pushExternalsByDocId($newId, $externals);
+    
+        
+    
+    if ($post->get('nocontrol')=='on'){
+        RDAStatic::changeDocStatus($newId, 'hasresolution');
+        RDAStatic::setDoneStatusById($newId, 'r');
+    }
+
     switch ($post->get('doctype')) {
         case "people": return $app->redirect(
                             $app['url_generator']->generate('clerk.doc.view', array('doc' => $newId)));

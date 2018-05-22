@@ -14,6 +14,7 @@ $app->get('/clerk/view/id:{doc}', function($doc) use ($app) {
     $data['doc'] = RDAStatic::getDocById($doc);
     $data['doc']['externals'] = RDAStatic::getExternalsByDocId($doc);
     $data['doc']['notes'] = RDAStatic::getNotesByDocId($doc);
+    $data['doc']['controls'] = RDAStatic::getDatesByDocId($doc);
     $data['doc']['donestr'] = RDAStatic::getNotesByDocId($doc, 'donestr');
     $data['doc']['resolution'] = RDAStatic::getResolutionByDocId($doc);
     $data['doc']['movings'] = RDAStatic::getMovingsByDocId($doc);

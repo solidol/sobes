@@ -72,7 +72,7 @@
                     <div class="entry input-group panel-body">
                         <input class="form-control" name="externalnums[]" type="text" placeholder="Вихідний номер" value="" />
                         <input class="form-control" name="externalorgs[]" type="text" placeholder="Назва організації" value="" />
-                        <input class="form-control datepicker" name="externaldates[]" type="text" placeholder="Дата документу" value="" />
+                        <input class="form-control" name="externaldates[]" type="date" placeholder="Дата документу" value="" />
                         <span class="input-group-btn">     
                             <button class="btn btn-success btn-add" type="button">
                                 <span class="glyphicon glyphicon-plus"></span>
@@ -90,7 +90,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="date_in">Дата стоврення</label>
                 <div class="col-md-4">
-                    <input id="date_in" name="date_in" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text">
+                    <input id="date_in" name="date_in" placeholder="00.00.2000" class="form-control input-md" required="" type="date">
                     <span class="help-block">Дата отримання, або сторення</span>
                 </div>
             </div>
@@ -99,7 +99,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="date_control">Дата контролю</label>
                 <div class="col-md-4">
-                    <input id="date_control" name="date_control" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text">
+                    <input id="date_control" name="date_control" placeholder="00.00.2000" class="form-control input-md" required="" type="date">
                     <span class="help-block">Дата контролю виконання</span>
                 </div>
             </div>

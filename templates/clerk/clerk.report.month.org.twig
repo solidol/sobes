@@ -1,0 +1,92 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Список документів
+{% endblock %}
+{% block content %}
+
+    <div class="tab-content">
+        <div id="menu3">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <h3>Контроль листів на поточний місяць</h3>
+                    </div>
+                </div>
+            </div>
+
+
+            <table id="org" class="display table hover" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style="width:80px">Номер</th>
+                        <th style="width:80px">Дата надходження</th>
+                        <th style="width:80px">Дата контролю</th>
+                        <th>Короткий зміст</th>
+                        <th style="width:80px"></th>
+                    </tr>
+                                        <tr>
+                        <th><input placeholder="Номер" type="text" style="width:80px"></th>
+                        <th><input placeholder="Дата створення" type="text" style="width:80px"></th>
+                        <th><input placeholder="Дата контролю" type="text" style="width:80px"></th>
+                        <th><input placeholder="Зміст" type="text" style="width:400px"></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата надходження</th>
+                        <th>Дата контролю</th>
+                        <th>Короткий зміст</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#org').DataTable({
+                "language": uk_trans,
+                "paging": false,
+                "processing": true,
+                "ajax": "{{path('ajax.report.org.monthcontrol')}}",
+                "columns": [
+                    {"data": "num"},
+                    {"data": "date_in"},
+                    {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "view"}
+                ],
+                "fnRowCallback": function (nRow, aData) {
+                    if (aData['timetolife'] < 0) {
+                        $('td', nRow).css({"background-color": "#FF978C"});
+                    } else
+
+                    if (aData['timetolife'] > 0 &&
+                            aData['timetolife'] <= 2) {
+                        $('td', nRow).css({"background-color": "#FFDCCB"});
+                    } else
+
+                    if (aData['timetolife'] > 2 &&
+                            aData['timetolife'] <= 5) {
+                        $('td', nRow).css({"background-color": "#FFE9CB"});
+                    } else
+
+                    {
+                        //$('td', nRow).addClass("success");
+                        $('td', nRow).css({"background-color": "#DFFFE5"});
+                    }
+
+                }
+            });
+        });
+    </script>
+
+
+{% endblock %}

@@ -12,7 +12,7 @@
             <td  colspan="3" align="center">
                 <h1>
                     КАРТКА ОБЛІКУ<br>
-                    листів з організацій
+                    листів з установ
                 </h1>
             </td>
 
@@ -54,6 +54,20 @@
                     {% for item in doc.externals %}
                         {{item.serial.fullstr}}
                         <br/>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                Контроль
+            </td>
+            <td colspan="2">
+                {% if doc.controls is not empty %}
+                    {% for item in doc.controls %}
+                        <div>
+                        {{item.date_control_text}}
+                        </div>
                     {% endfor %}
                 {% endif %}
             </td>

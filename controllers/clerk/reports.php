@@ -171,3 +171,12 @@ $app->get('/clerk/report/totalmonth:{startY}', function($startY) use ($app) {
     return $app['twig']->render('clerk.report.totalmonth.twig', $data);
 })->bind('clerk.report.totalmonth');
 
+$app->get('/clerk/report/org/thismonth', function() use ($app) {
+    $data=array();
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data['username']=$user->getName();
+    $data['userid']=$user->getId();
+return $app['twig']->render('clerk.report.month.org.twig', $data); 
+
+})->bind('clerk.report.orgcontrol');

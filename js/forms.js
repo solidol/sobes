@@ -35,6 +35,27 @@ $(document).ready(function () {
     });
 
 
+    $(document).on('click', '.btn-add', function (e)
+    {
+        e.preventDefault();
+        var controlForm = $('.controls2'),
+                currentEntry = $(this).parents('.entry2:first'),
+                newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        newEntry.find('input').val('');
+        controlForm.find('.entry2:not(:last) .btn-add')
+                .removeClass('btn-add').addClass('btn-remove')
+                .removeClass('btn-success').addClass('btn-danger')
+                .html('<span class="glyphicon glyphicon-minus"></span>');
+    }).on('click', '.btn-remove', function (e)
+    {
+        $(this).parent().parent().remove();
+
+        e.preventDefault();
+        return false;
+    });
+
+
     $(".datepicker").datepicker();
 
     $(".datepicker").change(function () {
