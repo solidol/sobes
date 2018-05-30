@@ -14,6 +14,6 @@ require_once 'org.php';
 require_once 'reports.php';
 
 $app->get('/clerk', function() use ($app) {
-    return $app->redirect($app['url_generator']->generate('clerk.doclist.all'));
+    return $app['twig']->render('clerk.start.twig');
 })->bind('clerk.start');
 

@@ -5,6 +5,10 @@ CSS Credit: http://www.templatemo.com
     z-index: 100;
 }
 
+.pad-10{
+    padding: 10px;
+}
+
 
 body {
     margin: 0;
