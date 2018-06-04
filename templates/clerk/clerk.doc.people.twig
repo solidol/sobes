@@ -86,7 +86,8 @@
                         <button type="button" id="addresolutonbtn" class="btn btn-info" data-toggle="modal" data-target="#orgModal">Додати резолюцію</button>
                         {% if doc.status=='hasresolution' and doc.status!='archived'%}
 
-                            <button type="button" id="addresolutonbtn" class="btn btn-success" data-toggle="modal" data-target="#moveModal">Передати документ</button>    
+                            <button type="button" id="addresolutonbtn" class="btn btn-success" data-toggle="modal" data-target="#moveModal">Передати документ</button>  
+                            <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#doneNotesModal">Проміжне виконання</button>
                         {% endif %}
                         <button type="button" id="setstatusbutton" class="btn btn-danger" data-toggle="modal" data-target="#statusModal">Остаточне виконання</button>                
                     {% endif %}
@@ -173,9 +174,11 @@
                 <div class="input-group">
                     Відмітки про виконання
                     <div class="input-group-btn">
+                        {% if ((doc.donestatus!='p') and (doc.donestatus!='m') and (doc.donestatus!='r'))%}
                         <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#doneNotesModal">
                             <i class="glyphicon glyphicon-plus"></i>
                         </button>
+                        {% endif %}
                     </div>
                 </div>
             </td>

@@ -5,6 +5,37 @@
 {% endblock %}
 {% block content %}
 
+
+    <div class="row">
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="date_start">Дата початку</label>
+            <div class="col-md-4">
+                <input id="date_start" name="date_start" placeholder="00.00.2000" class="form-control input-md" required="" type="date">
+                <span class="help-block">Дата початнку</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">  
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="date_end">Дата кінця</label>
+            <div class="col-md-4">
+                <input id="date_end" name="date_end" placeholder="00.00.2000" class="form-control input-md" required="" type="date">
+                <span class="help-block">Дата кінця</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">  
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="submitok">Показати</label>
+            <div class="col-md-8">
+                <button id="submitok" type="button" name="submitok" class="btn btn-success">Показати</button>
+                <!--<button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>-->
+            </div>
+        </div>
+    </div>
+
     <div class="tab-content">
         <div id="menu3">
             <div class="container">
@@ -26,7 +57,7 @@
                         <th>Короткий зміст</th>
                         <th style="width:80px"></th>
                     </tr>
-                                        <tr>
+                    <tr>
                         <th><input placeholder="Номер" type="text" style="width:80px"></th>
                         <th><input placeholder="Дата створення" type="text" style="width:80px"></th>
                         <th><input placeholder="Дата контролю" type="text" style="width:80px"></th>
@@ -51,12 +82,14 @@
 
     <script>
         $(document).ready(function () {
-            $('#org').DataTable({
+
+
+            var tab = $('#org').DataTable({
                 "language": uk_trans,
                 "paging": false,
                 "processing": true,
-                "lengthMenu": [ 25, 100, 500, 1000 ],
-                "ajax": "{{path('ajax.report.org.monthcontrol')}}",
+                "lengthMenu": [25, 100, 500, 1000],
+                "ajax": "{{path('ajax.report.org.monthcontrol',{'startDate':datemonthstart,'endDate':datemonthend})}}",
                 "columns": [
                     {"data": "num"},
                     {"data": "date_in"},
@@ -86,6 +119,13 @@
 
                 }
             });
+
+            $('#submitok').click(function () {
+
+                tab.ajax.url('/default.php/ajax/report/org/monthcontrol:' + $('#date_start').val() + ':' + $('#date_end').val()).load();
+            });
+
+
         });
     </script>
 

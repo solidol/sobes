@@ -280,12 +280,12 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
     );
 })->bind('ajax.document.getlist.archivetyped');
 
-$app->get('/ajax/report/org/monthcontrol', function() use ($app) {
+$app->get('/ajax/report/org/monthcontrol:{startDate}:{endDate}', function($startDate, $endDate) use ($app) {
     $result = array();
     $arDocs = array();
     $get = $app['request'];
 
-    $result = RDAStatic::getOrgMonthReport();
+    $result = RDAStatic::getOrgMonthReport($startDate, $endDate);
     $arDocs['data'] = array();
     foreach ($result as $k => $v) {
 

@@ -78,6 +78,7 @@
                         {% if doc.status=='hasresolution' and doc.status!='archived'%}
 
                             <button type="button" id="addresolutonbtn" class="btn btn-success" data-toggle="modal" data-target="#moveModal">Передати документ</button>    
+                            <button class="btn btn-default" type="button"  data-toggle="modal" data-target="#doneNotesModal">Проміжне виконання</button>
                         {% endif %}
                         <button type="button" id="setstatusbutton" class="btn btn-danger" data-toggle="modal" data-target="#statusModal">Остаточне виконання</button>                
                     {% endif %}

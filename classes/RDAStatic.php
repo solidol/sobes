@@ -11,12 +11,13 @@
  * 
  */
 class RDAStatic {
-    public static function getDatesByDocId($docId){
+
+    public static function getDatesByDocId($docId) {
         global $app;
-         if ($docId < 1)
+        if ($docId < 1)
             return false;
         $sql = "SELECT * FROM dates_control_view WHERE document = ?";
-        $arRes = $app['db']->fetchAll($sql, array((int) $docId));   
+        $arRes = $app['db']->fetchAll($sql, array((int) $docId));
         return $arRes;
     }
 
@@ -663,21 +664,23 @@ class RDAStatic {
         return 0;
     }
 
-    
-    
-        public static function getOrgMonthReport($month = 'now') {
+    public static function getOrgMonthReport($startDate = 'now', $endDate = 'now') {
         global $app;
         $sqlw = array();
         $sqls = '';
         $arPeople = array();
-
-        $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM document_work_org "
-                . "WHERE DATE_FORMAT(NOW(),'%m-%Y') =   DATE_FORMAT(date_control,'%m-%Y')";
-
+        if ($startDate == 'now' or $endDate == 'now')
+            $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM document_work_org "
+                    . "WHERE DATE_FORMAT(NOW(),'%m-%Y') =   DATE_FORMAT(date_control,'%m-%Y')";
+        else
+            $sql = "SELECT *, DATEDIFF(dw.date_control,now()) AS `timetolife` "
+                    . " FROM document_work_org AS dw  INNER JOIN dates_control AS dc ON dw.id=dc.document "
+                    . " WHERE DATE_FORMAT('$startDate','%Y-%m') <=   DATE_FORMAT(dc.date_control,'%Y-%m') AND "
+                    . " DATE_FORMAT('$endDate','%Y-%m') >=   DATE_FORMAT(dc.date_control,'%Y-%m')";
 
         $arPeople = $app['db']->fetchAll($sql);
         //var_dump($sql);
         return $arPeople;
     }
-    
+
 }

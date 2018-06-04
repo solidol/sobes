@@ -11,9 +11,7 @@ $app->post('/clerk/report/total', function() use ($app) {
     $user = $token->getUser();
     $data = array();
     $post = $app['request'];
-    $dt1= explode('.', $post->get('date_start'));
-    $dt2=explode('.', $post->get('date_end'));
-    $arDates = array('startDate' => $dt1[2].'-'.$dt1[1].'-'.$dt1[0], 'endDate' => $dt2[2].'-'.$dt2[1].'-'.$dt2[0]);
+    $arDates = array('startDate' => $post->get('date_start'), 'endDate' => $post->get('date_end'));
     return $app->redirect($app['url_generator']->generate('clerk.report.total', $arDates));
 })->bind('clerk.report.totalpost');
 
@@ -171,7 +169,8 @@ $app->get('/clerk/report/totalmonth:{startY}', function($startY) use ($app) {
     return $app['twig']->render('clerk.report.totalmonth.twig', $data);
 })->bind('clerk.report.totalmonth');
 
-$app->get('/clerk/report/org/thismonth', function() use ($app) {
+
+$app->get('/clerk/report/org/date:{startDate}:{endDate}', function($startDate, $endDate) use ($app) {
     $data=array();
     $token = $app['security']->getToken();
     $user = $token->getUser();
@@ -179,4 +178,4 @@ $app->get('/clerk/report/org/thismonth', function() use ($app) {
     $data['userid']=$user->getId();
 return $app['twig']->render('clerk.report.month.org.twig', $data); 
 
-})->bind('clerk.report.orgcontrol');
+})->bind('clerk.report.orgmonth');
