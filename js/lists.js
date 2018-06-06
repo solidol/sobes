@@ -21,3 +21,18 @@ function moveToArch(id) {
     }
 }
 
+function docDelete(id) {
+    var ask = window.confirm("Ви видаляєте документ, відмінити дію буде неможливо. Продовжити?");
+    if (ask) {
+        window.alert("Документ видалено!");
+
+        $.post("/default.php/ajax/remove/id:" + id, function (data) {
+            setTimeout(function () {
+                window.table.ajax.reload();
+            }, 200);
+        });
+
+
+    }
+}
+

@@ -12,6 +12,11 @@ $app->post('/ajax/toarch/id:{doc}', function($doc) use ($app) {
     return 'OK';
 })->bind('ajax.doc.movetoarch');
 
+$app->post('/ajax/remove/id:{doc}', function($doc) use ($app) {
+    RDAStatic::removeDoc($doc);
+    return 'OK';
+})->bind('ajax.doc.remove');
+
 
 
 $app->post('/ajax/resolution/push', function() use ($app) {

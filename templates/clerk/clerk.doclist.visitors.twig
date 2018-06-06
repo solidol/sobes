@@ -29,12 +29,14 @@
                         <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
+                        <th></th>
                     </tr>
                     <tr>
                         <th><input placeholder="Номер" type="text" style="width:80px"></th>
                         <th><input placeholder="Дата створення" type="text" style="width:80px"></th>
                         <th><input placeholder="Дата контролю" type="text" style="width:80px"></th>
                         <th><input placeholder="Звернувся" type="text" style="width:120px"></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -49,6 +51,7 @@
                         <th>Звернувся</th>
                         <th>Короткий зміст</th>
                         <th>Зведена інформація</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -76,7 +79,8 @@
                     {"data": "summary"},
                     {"data": "comment"},
                     {"data": "view"},
-                    {"data": "arch"}
+                    {"data": "arch"},
+                    {"data": "del"}
                 ],
                 "fnRowCallback": function (nRow, aData) {
                     if (aData['timetolife'] < 0) {

@@ -371,6 +371,15 @@ class RDAStatic {
         return 0;
     }
 
+    public static function removeDoc($id) {
+        global $app;
+        $arDoc = array();
+        
+        $app['db']->delete('document', array('id' => (int) $id));
+
+        return 0;
+    }
+
     public static function setDoneStatusById($id, $status = 'err') {
         global $app;
         $arDoc = array();

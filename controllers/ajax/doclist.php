@@ -146,6 +146,7 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
         $item['arch'] = ($v['donestatus']!='')?'<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>':'';
+        $item['del'] = '<a href="#" onClick="docDelete(' . $v['id'] . ')"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></a>';
         $item['donestatus'] = $v['donestatus'];
         $arDocs['data'][] = $item;
     }
@@ -269,6 +270,7 @@ $app->get('/ajax/document/archivelist:{type}', function($type) use ($app) {
         $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
                 . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
         $item['donestatus'] = $v['donestatus'];
+        $item['del'] = '<a href="#" onClick="docDelete(' . $v['id'] . ')"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></a>';
         $arDocs['data'][] = $item;
     }
     $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;

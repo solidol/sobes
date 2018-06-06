@@ -30,6 +30,7 @@
                         <th>Зведена інформація</th>
                         <th></th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -40,6 +41,7 @@
                         <th>Дата контролю</th>
                         <th>Короткий зміст</th>
                         <th>Зведена інформація</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -66,7 +68,8 @@
                     {"data": "summary"},
                     {"data": "comment"},
                     {"data": "view"},
-                    {"data": "arch"}
+                    {"data": "arch"},
+                    {"data": "del"}
                 ],
                 "fnRowCallback": function (nRow, aData) {
                     if (aData['timetolife'] < 0) {
