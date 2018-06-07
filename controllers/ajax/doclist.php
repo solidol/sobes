@@ -126,7 +126,7 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         $item['notes'] = '';
         if ($v['impstatus'] == 'ugl')
             $item['num'] .= ' <div style="background-color:red;color:white;font-size:14px">УГЛ</div>';
-        if ($v['num_types'] != null)
+        if (isset($v['num_types'])) 
             $item['num'] .= ' <div style="background-color:brown;color:white;font-size:14px">'.$v['num_types'].'</div>';
         
         if ($v['donestatus'] == 'p')
