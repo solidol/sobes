@@ -1,0 +1,122 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Редагувати документ
+{% endblock %}
+{% block content %}
+
+
+
+    <form class="form-horizontal" action="{{path('clerk.doc.update')}}" method="post">
+        <fieldset>
+
+            <!-- Form Name -->
+            <legend>Редагувати документ</legend>
+            <input id="docid" name="docid" type="hidden" value="{{doc.id}}">
+            <input id="doctype" name="doctype" type="hidden" value="visitors">
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="internal_number">Номер документу</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+
+                        <input id="fullnum" name="fullnum" class="form-control input-md" type="text" readonly="readonly" value="{{doc.fullnum}}">
+                        
+                    </div>
+                    <span class="help-block">Внутрішній номер документу</span>
+                </div>
+            </div>
+
+            <!-- Prepended checkbox -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="input_number">Вхідний номер</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">     
+                            <input type="checkbox" name="cbinput_number" id="cbinput_number">     
+                        </span>
+                        <input id="input_number" name="input_number" class="form-control" placeholder="Вхідний номер" required="" type="text" value="-" readOnly="readOnly">
+                    </div>
+                    <p class="help-block">Номер сторонньої організації</p>
+                </div>
+            </div>
+
+            
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_in">Дата стоврення</label>  
+                <div class="col-md-4">
+                    <input id="date_in" name="date_in" class="form-control input-md datepicker" class="form-control input-md datepicker" type="text" value="{{doc.date_in}}">
+                    <span class="help-block">Дата отримання, або сторення</span>  
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_control">Дата контролю</label>  
+                <div class="col-md-4">
+                    <input id="date_control" name="date_control" placeholder="00.00.2000" class="form-control input-md datepicker" required="" type="text"  value="{{doc.date_control}}">
+                    <span class="help-block">Дата контролю виконання</span>  
+                </div>
+            </div>
+
+            
+            <!-- Textarea -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="summary">Зміст документу</label>
+                <div class="col-md-4">                     
+                    <textarea class="form-control" id="summary" name="summary">{{doc.summary}}</textarea>
+                </div>
+            </div>
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="comment">Комментар</label>
+                <div class="col-md-4">                     
+                    <textarea class="form-control" id="comment" name="comment">{{doc.summary}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="notes">Нотатки</label>
+                <div class="col-md-4 controls">
+                    {% if doc.notes is not empty %}
+                        {% for item in doc.notes %}
+                            <div class="entry input-group">
+                                <input class="form-control" name="notes[]" type="text" placeholder="Type something" value="{{item.value}}" />
+                                <span class="input-group-btn">     
+                                    <button class="btn btn-danger btn-remove" type="button">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="entry input-group">
+                        <input class="form-control" name="notes[]" type="text" placeholder="Type something" />
+                        <span class="input-group-btn">     
+                            <button class="btn btn-success btn-add" type="button">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Button (Double) -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="submitok">Завершити</label>
+                <div class="col-md-8">
+                    <button id="submitok" type="submit" name="submitok" class="btn btn-success">Зберегти</button>
+                    <button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>
+                </div>
+            </div>
+
+        </fieldset>
+
+
+
+    {% endblock %}

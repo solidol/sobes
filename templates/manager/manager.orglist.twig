@@ -1,0 +1,44 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Заявники
+{% endblock %}
+{% block content %}
+
+
+
+    <table id="example" class="display" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Назва</th>
+                <th>Місто</th>
+                <th>Адреса</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Назва</th>
+                <th>Місто</th>
+                <th>Адреса</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "processing": true,
+                "language": uk_trans,
+                "serverSide": true,
+                "ajax": "{{path('ajax.org.getlist')}}",
+                "columns": [
+                    {"data": "name"},
+                    {"data": "city"},
+                    {"data": "addr"}
+                ]
+            });
+        });
+    </script>
+
+
+{% endblock %}

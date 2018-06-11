@@ -1,0 +1,159 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Картка № {{doc.fullnum}}
+{% endblock %}
+{% block content %}
+
+
+    <table width="100%" border="1">
+        <tr {%if doc.impstatus=='ugl' %}style="background-color: rgb(255, 151, 140);"{%endif%}>
+            <td align="center" style="font-size:40px;">
+                {%if doc.impstatus=='ugl' %} УГЛ {%endif%}
+                <br/>
+                {% if doc.donestatus=="p" %}
+
+                    <span style="background-color: rgb(0, 150, 60); color:#ffffff; ">
+                        <span style="width: 150px; font-size:40px;">+</span>
+                    </span>
+
+                {% elseif doc.donestatus=="m" %}
+
+                    <span style="background-color: rgb(255, 0, 0); color:#ffffff; font-size:40px; ">
+                        <span style="width: 150px; font-size:40px;">-</span>
+                    </span>
+
+                {% elseif doc.donestatus=="к" %}
+
+                    <span style="background-color: rgb(0, 0, 255); color:#ffffff; font-size:40px; ">
+                        <span style="width: 150px; font-size:40px;">P</span>
+                    </span>
+
+
+                {% elseif doc.donestatus=="e" %}
+                {% else %}
+
+                {% endif %}
+            </td>
+            <td  align="center">
+                <h1>
+                    КАРТКА ОБЛІКУ<br>
+                    прийому відвідувачів<br>
+                    (АРХІВ)
+                </h1>
+            </td>
+            <td align="center">
+                
+            </td>
+        </tr>
+        <tr>
+            <td width="25%"  align="center">
+                <h2>№ {{doc.fullnum}}
+
+                    {% if doc.isreapeted!='no' %}
+                        <span style="color:red">/{{doc.isreapeted}}</span>
+                    {% endif %} : {{doc.year}}</h2>
+                    
+            </td>
+            <td  align="center">
+                    <h4 style="color:#888;">Створено {{doc.date_in_text}}</h4>
+                    <h3 style="color:#ac2911;">КОНТРОЛЬ {{doc.date_control_text}}</h3> 
+            </td>
+            <td width="25%" align="center">
+                <div class="btn-group-vertical">
+                    
+                    
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                Громадянин
+            </td>
+            <td colspan="2">
+                {{doc.lastname}} {{doc.firstname}} {{doc.secondname}}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                Адреса
+            </td>
+            <td colspan="2">
+                вул. {{doc.street}}, буд. {{doc.building}}, {% if doc.room!='' %}кв. {{doc.room}}{% endif %}
+            </td>
+        </tr>
+       
+        <tr>
+            <td width="20%">
+                Зміст
+            </td>
+            <td colspan="2">
+                <div id="{{doc.id}}:mainfield:summary">{{doc.summary}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                Резолюція
+            </td>
+            <td colspan="2">
+                {% if doc.resolution is not empty %}
+                    {% for item in doc.resolution %}
+                        <div id="{{item.id}}:metafield:movings" >{{item.serial.fullstr}}</div>
+                        
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+
+                <div class="input-group">
+                    Відмітки про виконання
+                </div>
+            </td>
+            <td colspan="2">
+                {% if doc.donestr is not empty %}
+                    {% for item in doc.donestr %}
+                        <div id="{{item.id}}:metafield:donestr" >{{item.serial.fullstr}}</div>
+                        
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <td width="20%">
+                <div class="input-group">
+                    Інші відмітки
+                    </div>
+                </div>
+
+            </td>
+            <td colspan="2">
+                {% if doc.notes is not empty %}
+                    {% for item in doc.notes %}
+                        <div id="{{item.id}}:metafield:notes">{{item.serial.fullstr}}</div>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <div class="input-group">
+                    Історія передачі документу
+
+                </div>
+
+            </td>
+            <td colspan="2">
+                {% if doc.movings is not empty %}
+                    {% for item in doc.movings %}
+                        <div id="{{item.id}}:metafield:movings" >{{item.serial.fullstr}}</div>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+
+    </table>
+
+{% endblock %}

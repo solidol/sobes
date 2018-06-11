@@ -1,0 +1,100 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Заявники
+{% endblock %}
+{% block content %}
+
+
+
+<div class="modal-content">
+            <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Додати організацію</h4>
+            </div>
+            <form action="{{path('clerk.org.push')}}" method="post" name="addorgform" id="addorgform1">
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="orgname">Назва організації</label>  
+                                        <div class="col-md-8">
+                                            <input id="orgname" name="orgname" placeholder="Назва" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Назва організації</span>  
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="zipcode">Поштовий індекс</label>  
+                                        <div class="col-md-8">
+                                            <input id="zipcode" name="zipcode" placeholder="73000" class="form-control input-md" type="text">
+                                            <span class="help-block">Поштовий індекс організації</span>  
+                                        </div>
+                                    </div>
+
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="city">Місто</label>  
+                                        <div class="col-md-8">
+                                            <input id="city" name="city" placeholder="Херсон" class="form-control input-md" type="text">
+                                            <span class="help-block">Місто організації</span>  
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="street">Вулиця</label>  
+                                        <div class="col-md-8">
+                                            <input id="street" name="street" placeholder="Вулиця" class="form-control input-md" required="" type="text">
+                                            <span class="help-block">Вулиця проживання</span>  
+                                        </div>
+                                    </div>
+                                    <!-- Text input-->
+                                    <div class="form-group row">
+                                        <label class="col-md-4 control-label" for="building">Будинок</label>  
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <input id="building" name="building" placeholder="№" class="form-control input-md" required="" type="text">
+                                                    <span class="help-block">Будинок </span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input id="housing" name="housing" placeholder="" class="form-control input-md" type="text">
+                                                    <span class="help-block">Корпус </span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input id="room" name="room" placeholder="№" class="form-control input-md" type="text">
+                                                    <span class="help-block">квартира </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label" for="comment">Коментар</label>
+                                    <div class="col-md-10">                     
+                                        <textarea class="form-control" id="comment" name="comment"></textarea>
+                                    </div>
+                                </div>                     
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="btnpostorg" type="submit" data-dismiss="modal">Зберегти</button>
+                    <button class="btn btn-default" type="reset" data-dismiss="modal">Скасувати</button>
+                </div>
+            </form>
+        </div>
+{% endblock %}

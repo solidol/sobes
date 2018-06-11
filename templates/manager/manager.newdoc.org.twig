@@ -1,0 +1,210 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Додати документ
+{% endblock %}
+{% block content %}
+
+
+
+    <form class="form-horizontal" action="{{path('clerk.doc.push')}}" method="post">
+        <fieldset>
+
+            <!-- Form Name -->
+            <legend>Новий документ</legend>
+            <input id="doctype" name="doctype" type="hidden" value="org">
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="internal_number">Номер документу</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+
+                        <span class="input-group-addon" id="prefix_0_span">
+                            XX
+                        </span>
+                        <input id="internal_number" name="internal_number" placeholder="Робочий номер" class="form-control input-md" required="" type="text" value="{{new_num}}">
+                        <span class="input-group-addon" id="prefix_2_span">
+                            XX
+                        </span>
+
+                    </div>
+                    <input id="num_prefix_0" name="num_prefix_0" type="hidden" >
+                    <input id="num_prefix_2" name="num_prefix_2" type="hidden" >
+                    <span class="help-block">Внутрішній номер документу</span>
+                </div>
+            </div>
+
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="selectorgtype">Виберіть тип документа</label>
+                <div class="col-md-4">
+                    <select id="selectorgtype" name="selectorgtype" class="form-control" required="required">
+                        <option value="-1" disabled="disabled" selected="selected">Оберіть тип</option>
+                        {% for item in doctypes %}
+                            <option value="{{item.subcode}}">{{item.text}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+
+
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="selectcontent">Виберіть тип змісту</label>
+                <div class="col-md-4">
+                    <select id="selecttype" name="selectcontent" class="form-control" required="required">
+                        <option value="-1" disabled="disabled" selected="selected">Оберіть тип</option>
+                        {% for item in doctcontent %}
+                            <option value="{{item.subcode}}">{{item.text}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+
+            <!-- Select Basic
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="orgname">Виберіть організацію</label>
+                <div class="col-md-4">
+                    <input id="orgname" name="orgname" placeholder="Назва або адреса" class="form-control input-md" required="" type="text">
+                    <input id="orgstarter" name="orgstarter" type="hidden" value="0">
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="addorg">Або додайте нову</label>
+                <div class="col-md-4">
+                    <button type="button" id="addorg" name="addorg" class="btn btn-inverse"  data-toggle="modal" data-target="#orgModal">Нова організація</button>
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="external_number">Зовнішній номер</label>  
+                <div class="col-md-4">
+                    <input id="external_number" name="external_number" placeholder="XXXXXXXXX" class="form-control input-md" required="" type="text">
+                    <span class="help-block">Номер документа сторонньої організації</span>  
+                </div>
+            </div>
+            -->
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="notes">Вихідні номери інших організацій</label>
+                <div class="col-md-4 controls panel panel-default">
+
+
+                    <div class="entry input-group panel-body">
+                        <input class="form-control" name="externalnums[]" type="text" placeholder="Вихідний номер" value="" />
+                        <input class="form-control" name="externalorgs[]" type="text" placeholder="Назва організації" value="" />
+                        <input id="dp_other_01" class="form-control " name="externaldates[]" type="date" placeholder="Дата документу" value="" />
+                        <span class="input-group-btn">     
+                            <button class="btn btn-success btn-add" type="button">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_in">Дата стоврення</label>  
+                <div class="col-md-4">
+                    <input id="date_in" name="date_in" placeholder="00.00.2000" class="form-control input-md " required="" type="date">
+                    <span class="help-block">Дата отримання, або сторення</span>  
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="date_in">Без контролю</label>  
+                <div class="col-md-4">
+                    <input id="nocontrol" name="nocontrol" class="form-control input-sm " type="checkbox">
+                     
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="notes">Дати контролю</label>
+                <div class="col-md-4 controls2 panel panel-default">
+                    <input name="date_control" type="hidden" value="" />
+
+                    <div class="entry2 input-group panel-body">
+
+                        <input class="form-control" name="dates_control[]" type="date" placeholder="00.00.0000" value="" />
+                        <span class="input-group-btn">     
+                            <button class="btn btn-success btn-add" type="button">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="selectinterviewer">На резолюцію подано</label>
+                <div class="col-md-4">
+                    <select id="selectinterviewerstate" name="selectinterviewer" class="form-control" required="required">
+                        <option value="-1" disabled="disabled" selected="selected">Оберіть співробітника</option>
+                        {% for item in bosslist %}
+                            <option value="{{item.id}}">{{item.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="doccreator">Документ створив</label>  
+                <div class="col-md-4">
+                    <input id="doccreator" name="doccreator" placeholder="" class="form-control input-md" required="" type="text" value="{{username}}" readOnly="readOnly">
+                    <span class="help-block">Співробітник, що обробив картку</span>  
+                </div>
+            </div>
+
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="summary">Зміст документу</label>
+                <div class="col-md-4">                     
+                    <textarea class="form-control" id="summary" name="summary"></textarea>
+                </div>
+            </div>
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="comment">Комментар</label>
+                <div class="col-md-4">                     
+                    <textarea class="form-control" id="comment" name="comment"></textarea>
+                </div>
+            </div>
+
+            <!-- Button (Double) -->
+            <!-- Button (Double) -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="submitok">Завершити</label>
+                <div class="col-md-8">
+                    <button id="submitok" type="submit" name="submitok" class="btn btn-success">Зберегти</button>
+                    <button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+    {% include 'popup.neworg.twig' %}
+
+{% endblock %}

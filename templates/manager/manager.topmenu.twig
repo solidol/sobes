@@ -1,0 +1,64 @@
+
+<ul class="nav navbar navbar-nav">
+
+    <li><a href="{{path('clerk.start')}}">ПОЧАТОК</a></li>
+
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ВХІДНІ ДОКУМЕНТИ</a>
+        <ul class="dropdown-menu" role="menu">
+            
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З УСТАНОВ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
+            <!--<li><a href="{{path('clerk.doc.searchinput')}}">ПОШУК</a></li>-->
+        </ul>
+    </li>  
+    
+    <!--
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ВИХІДНІ ДОКУМЕНТИ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}">ЛИСТИ З ОРГАНІЗАЦІЙ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
+            <li><a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}">ПОШУК</a></li>
+        </ul>
+    </li>   --> 
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">АРХІВ ВХІДНІ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.docarchive.alltyped',{'type':'state'})}}">РОЗПОРЯДЧІ ЛИСТИ</a></li>
+            <li><a href="{{path('clerk.docarchive.alltyped',{'type':'org'})}}">ЛИСТИ З УСТАНОВ</a></li>
+            <li><a href="{{path('clerk.docarchive.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ ГРОМАДЯН</a></li>
+            <li><a href="{{path('clerk.docarchive.alltyped',{'type':'visit'})}}">ВХІДНІ ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
+            
+        </ul>
+    </li>
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ЗВІТИ ВХІДНІ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
+            <li><a href="{{path('clerk.report.total',{'startDate':datemonthstart,'endDate':datemonthend})}}">ЗВЕРНЕННЯ ЗА ДАТАМИ</a></li>
+            <li><a href="{{path('clerk.report.totalmonth',{'startY': "now"|date("Y")})}}">ЗВЕРНЕННЯ ЗА МІСЯЦЕМ</a></li>
+            <li><a href="{{path('clerk.report.orgmonth',{'startDate':datemonthstart,'endDate':datemonthend})}}">ЖУРНАЛ КОНТРОЛЮ УСТАНОВ</a></li>
+        </ul>
+    </li>
+    <!--
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">АРХІВ ВИХІДНІ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.docarchive.alltyped',{'type':'visit'})}}">ВХІДНІ ПРИЙОМ ВІДВІДУВАЧІВ</a></li>
+            
+        </ul>
+    </li>-->
+    <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">ЗАЯВНИКИ</a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{path('clerk.people.all')}}">ГРОМАДЯНИ</a></li>
+            <!--<li><a href="{{path('clerk.org.all')}}">ОРГАНІЗАЦІЇ</a></li>-->
+            <li><a href="{{path('clerk.people.add')}}">ДОДАТИ ГPОМАДЯНИНА</a></li>
+            <!--<li><a href="{{path('clerk.org.add')}}">ДОДАТИ ОРГАНІЗАЦІЮ</a></li>-->
+        </ul>
+    </li>
+      
+
+
+</ul>
+

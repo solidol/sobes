@@ -1,0 +1,95 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Додати документ
+{% endblock %}
+{% block content %}
+
+    <h1>Система реєстрації та контролю документів</h1>
+
+    <div class="container">
+
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 pad-10">
+                <h2>Документи та списки</h2>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doclist.alltyped',{'type':'people'})}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Звернення громадян</a>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doc.new.people')}}" class="btn btn-warning col-md-12 col-sm-12 col-xs-12">Додати звернення</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doclist.alltyped',{'type':'visit'})}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Прийом відвідувачів</a>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doc.new.visitors')}}" class="btn btn-warning col-md-12 col-sm-12 col-xs-12">Додати прийом</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doclist.alltyped',{'type':'org'})}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Листи з установ</a>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doc.new.org')}}" class="btn btn-warning col-md-12 col-sm-12 col-xs-12">Додати лист</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doclist.alltyped',{'type':'state'})}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Розпорядчі документи</a>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.doc.new.state')}}" class="btn btn-warning col-md-12 col-sm-12 col-xs-12">Додати розпорядчий лист</a>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 pad-10">
+                <h2>Звіти</h2>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 pad-10">
+                <a href="{{path('clerk.doclist.all')}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Документи з контролем на сьогодні</a>
+            </div>
+
+        </div>    
+
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.report.total',{'startDate':datemonthstart,'endDate':datemonthend})}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Звернення (період за датами)</a>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.report.totalmonth',{'startY': "now"|date("Y")})}}" class="btn btn-warning col-md-12 col-sm-12 col-xs-12">Звернення (період за мфсяцями)</a>
+            </div>
+        </div>  
+
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.report.orgmonth',{'startDate':datemonthstart,'endDate':datemonthend})}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Журнал контролю листів з установ</a>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 pad-10">
+                <a href="{{path('clerk.report.orgmonth',{'startDate':datemonthstart,'endDate':datemonthend})}}" class="btn btn-success col-md-12 col-sm-12 col-xs-12">Журнал контролю листів з установ</a>
+            </div>
+        </div>  
+
+    </div>
+
+
+{% endblock %}

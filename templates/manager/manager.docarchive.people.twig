@@ -1,0 +1,103 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Архів документів
+{% endblock %}
+{% block content %}
+
+    <div class="tab-content">
+        <div id="menu4">
+
+
+            <table id="people" class="display table hover" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата створення</th>
+                        <th>Дата контролю</th>
+                        <th>Звернувся</th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
+                        <th></th>
+                        <th></th>
+
+                    </tr>
+                    <tr>
+                        <th><input placeholder="Номер" type="text" style="width:80px"></th>
+                        <th><input placeholder="Дата створення" type="text" style="width:80px"></th>
+                        <th><input placeholder="Дата контролю" type="text" style="width:80px"></th>
+                        <th><input placeholder="Звернувся" type="text" style="width:120px"></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата створення</th>
+                        <th>Дата контролю</th>
+                        <th>Звернувся</th>
+                        <th>Короткий зміст</th>
+                        <th>Зведена інформація</th>
+                        <th></th>
+                        <th></th>
+
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            window.table = $('#people').DataTable({
+                "language": uk_trans,
+                "processing": true,
+                "serverSide": true,
+                searchDelay: 1000,
+                "lengthMenu": [ 25, 100, 500, 1000 ],
+                "ajax": "{{path('ajax.document.getlist.archivetyped',{'type':'people'})}}",
+                "columns": [
+                    {"data": "num"},
+                    {"data": "date_in"},
+                    {"data": "date_control"},
+                    {"data": "fullname"},
+                    {"data": "summary"},
+                    {"data": "comment"},
+                    {"data": "view"},
+                    {"data": "del"}
+                ],
+                "fnRowCallback": function (nRow, aData) {
+                }
+            });
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function (e) {
+                    if (that.search() !== this.value) {
+
+
+
+                        if (this.value.length >= 2 || e.keyCode == 13) {
+                            that
+                                    .search(this.value)
+                                    .draw();
+                        }
+
+                        if (this.value == "") {
+                            that.search("").draw();
+                        }
+
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+{% endblock %}

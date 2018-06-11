@@ -1,0 +1,138 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Список документів
+{% endblock %}
+{% block content %}
+
+
+    <div class="row">
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="date_start">Дата початку</label>
+            <div class="col-md-4">
+                <input id="date_start" name="date_start" placeholder="00.00.2000" class="form-control input-md" required="" type="date">
+                <span class="help-block">Дата початнку</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="date_end">Дата кінця</label>
+            <div class="col-md-4">
+                <input id="date_end" name="date_end" placeholder="00.00.2000" class="form-control input-md" required="" type="date">
+                <span class="help-block">Дата кінця</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="submitok">Показати</label>
+            <div class="col-md-8">
+                <button id="submitok" type="button" name="submitok" class="btn btn-success">Показати</button>
+                <!--<button id="formreset" type="reset" name="formreset" class="btn btn-danger">Очистити</button>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content">
+        <div id="menu3">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <h3>Контроль листів на поточний місяць</h3>
+                    </div>
+                </div>
+            </div>
+
+
+            <table id="org" class="display table hover" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <td><input placeholder="Номер" type="text" style="width:80px"></td>
+                        <td><input placeholder="Дата створення" type="text" style="width:80px"></td>
+                        <td><input placeholder="Дата контролю" type="text" style="width:80px"></td>
+                        <td><input placeholder="Зміст" type="text" style="width:400px"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th style="width:80px">Номер</th>
+                        <th style="width:80px">Дата надходження</th>
+                        <th style="width:80px">Дата контролю</th>
+                        <th>Короткий зміст</th>
+                        <th style="width:80px"></th>
+                    </tr>
+                    
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата надходження</th>
+                        <th>Дата контролю</th>
+                        <th>Короткий зміст</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+
+
+            var tab = $('#org').DataTable({
+                "language": uk_trans,
+                "paging": false,
+                "processing": true,
+                "lengthMenu": [25, 100, 500, 1000],
+                "ajax": "{{path('ajax.report.org.monthcontrol',{'startDate':datemonthstart,'endDate':datemonthend})}}",
+                "columns": [
+                    {"data": "num"},
+                    {"data": "date_in"},
+                    {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "view"}
+                ],
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel'
+                ],
+                "fnRowCallback": function (nRow, aData) {
+                    if (aData['timetolife'] < 0) {
+                        $('td', nRow).css({"background-color": "#FF978C"});
+                    } else
+
+                    if (aData['timetolife'] > 0 &&
+                            aData['timetolife'] <= 2) {
+                        $('td', nRow).css({"background-color": "#FFDCCB"});
+                    } else
+
+                    if (aData['timetolife'] > 2 &&
+                            aData['timetolife'] <= 5) {
+                        $('td', nRow).css({"background-color": "#FFE9CB"});
+                    } else
+
+                    {
+                        //$('td', nRow).addClass("success");
+                        $('td', nRow).css({"background-color": "#DFFFE5"});
+                    }
+
+                }
+            });
+
+            $('#submitok').click(function () {
+
+                tab.ajax.url('/default.php/ajax/report/org/monthcontrol:' + $('#date_start').val() + ':' + $('#date_end').val()).load();
+            });
+
+
+        });
+    </script>
+
+
+{% endblock %}

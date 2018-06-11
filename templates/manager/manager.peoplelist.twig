@@ -1,0 +1,80 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Організації
+{% endblock %}
+{% block content %}
+
+
+
+    <table id="peoplelist" class="display" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Прізвище</th>
+                <th>Ім'я</th>
+                <th>По батькові</th>
+                <th>Адреса</th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <th><input placeholder="Прізвище" type="text"></th>
+                <th><input placeholder="Ім'я" type="text"></th>
+                <th><input placeholder="По батькові" type="text"></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Прізвище</th>
+                <th>Ім'я</th>
+                <th>По батькові</th>
+                <th>Адреса</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            table = $('#peoplelist').DataTable({
+                "processing": true,
+                "language": uk_trans,
+                "serverSide": true,
+                "ajax": "{{path('ajax.people.getlist')}}",
+                searchDelay: 1000,
+                "columns": [
+                    {"data": "lastname"},
+                    {"data": "firstname"},
+                    {"data": "secondname"},
+                    {"data": "addr"},
+                    {"data": "edit"}
+                ]
+            });
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function (e) {
+                    if (that.search() !== this.value) {
+
+
+
+                        if (this.value.length >= 4 || e.keyCode == 13) {
+                            that
+                                    .search(this.value)
+                                    .draw();
+                        }
+
+                        if (this.value == "") {
+                            that.search("").draw();
+                        }
+
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}

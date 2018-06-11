@@ -1,0 +1,62 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Архів документів
+{% endblock %}
+{% block content %}
+
+    <div class="tab-content">
+        <div id="menu4">
+
+
+            <table id="visitors" class="display table hover" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата створення</th>
+                        <th>Дата контролю</th>
+                        <th>Короткий зміст</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата створення</th>
+                        <th>Дата контролю</th>
+                        <th>Короткий зміст</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#visitors').DataTable({
+                "language": uk_trans,
+                "processing": true,
+                "serverSide": true,
+                "lengthMenu": [ 25, 100, 500, 1000 ],
+                "ajax": "{{path('ajax.document.getlist.archivetyped',{'type':'visitors'})}}",
+                "columns": [
+                    {"data": "num"},
+                    {"data": "date_in"},
+                    {"data": "date_control"},
+                    {"data": "summary"},
+                    {"data": "view"},
+                    {"data": "del"}
+                ],
+                "fnRowCallback": function (nRow, aData) {
+                }
+            });
+        });
+    </script>
+
+
+{% endblock %}
