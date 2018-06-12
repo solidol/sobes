@@ -63,34 +63,7 @@
             </div>
 
 
-            <!-- Select Basic
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="orgname">Виберіть організацію</label>
-                <div class="col-md-4">
-                    <input id="orgname" name="orgname" placeholder="Назва або адреса" class="form-control input-md" required="" type="text">
-                    <input id="orgstarter" name="orgstarter" type="hidden" value="0">
-                </div>
 
-            </div>
-
-
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="addorg">Або додайте нову</label>
-                <div class="col-md-4">
-                    <button type="button" id="addorg" name="addorg" class="btn btn-inverse"  data-toggle="modal" data-target="#orgModal">Нова організація</button>
-                </div>
-            </div>
-
-
-
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="external_number">Зовнішній номер</label>  
-                <div class="col-md-4">
-                    <input id="external_number" name="external_number" placeholder="XXXXXXXXX" class="form-control input-md" required="" type="text">
-                    <span class="help-block">Номер документа сторонньої організації</span>  
-                </div>
-            </div>
-            -->
 
             <div class="form-group">
                 <label class="col-md-4 control-label" for="notes">Вихідні номери інших організацій</label>
@@ -128,7 +101,7 @@
                 <label class="col-md-4 control-label" for="date_in">Без контролю</label>  
                 <div class="col-md-4">
                     <input id="nocontrol" name="nocontrol" class="form-control input-sm " type="checkbox">
-                     
+
                 </div>
             </div>
 
@@ -151,21 +124,26 @@
 
             </div>
 
-
-
-
-
             <div class="form-group">
-                <label class="col-md-4 control-label" for="selectinterviewer">На резолюцію подано</label>
+                <label class="col-md-4 control-label" for="controlperiod">Період контролю</label>
                 <div class="col-md-4">
-                    <select id="selectinterviewerstate" name="selectinterviewer" class="form-control" required="required">
-                        <option value="-1" disabled="disabled" selected="selected">Оберіть співробітника</option>
-                        {% for item in bosslist %}
-                            <option value="{{item.id}}">{{item.name}}</option>
-                        {% endfor %}
+                    <select id="controlperiod" name="controlperiod" class="form-control" required="required">
+                        <option value="once" disabled="disabled" selected="selected">Одноразово</option>
+
+                        <option value="eweek">Щотижня</option>
+                        <option value="emonth5">Щомісяця на 5 число</option>
+                        <option value="emonth25">Щомісяця на 25 число</option>
+                        <option value="e3month">Щокварталу</option>
+                        <option value="eyear">Щороку</option>
+
                     </select>
                 </div>
             </div>
+
+
+
+
+
 
             <!-- Text input-->
             <div class="form-group">
