@@ -8,23 +8,23 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Home</a>
+            <a class="navbar-brand" href="/">На початок</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ path('user.list') }}">List users</a></li>
+                <li><a href="{{ path('user.list') }}">Список користувачів</a></li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        Hello, {{ app.user.displayName }}!
+                        Доброго дня, {{ app.user.displayName }}!
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="{{ path('user') }}"><span class="glyphicon glyphicon-user"></span> View your profile</a></li>
-                        <li><a href="{{ path('user.edit', { id: app.user.id }) }}"><span class="glyphicon glyphicon-edit"></span> Edit your profile</a></li>
-                        <li><a href="{{ path('user.logout') }}"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
+                        <li><a href="{{ path('user') }}"><span class="glyphicon glyphicon-user"></span> Переглянути профіль</a></li>
+                        <li><a href="{{ path('user.edit', { id: app.user.id }) }}"><span class="glyphicon glyphicon-edit"></span> Редагувати профіль</a></li>
+                        <li><a href="{{ path('user.logout') }}"><span class="glyphicon glyphicon-off"></span> Вихід</a></li>
                     </ul>
                 </li>
 

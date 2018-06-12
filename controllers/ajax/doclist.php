@@ -125,16 +125,16 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
         $item['num'] = ' <div style="background-color:white;color:black;font-size:20px">'.$v['fullnum'].'</div>';;
         $item['notes'] = '';
         if ($v['impstatus'] == 'ugl')
-            $item['num'] .= ' <div style="background-color:red;color:white;font-size:14px">УГЛ</div>';
+            $item['notes'] .= ' <div style="background-color:red;color:white;font-size:14px">УГЛ</div>';
         if (isset($v['num_types'])) 
-            $item['num'] .= ' <div style="background-color:brown;color:white;font-size:14px">'.$v['num_types'].'</div>';
+            $item['notes'] .= ' <div style="background-color:brown;color:white;font-size:14px">'.$v['num_types'].'</div>';
         
         if ($v['donestatus'] == 'p')
-            $item['num'] .= ' <div style="color:white;background-color:rgb(0, 150, 60);font-size:14px">+</div>';
+            $item['notes'] .= ' <div style="color:white;background-color:rgb(0, 150, 60);font-size:14px">+</div>';
         if ($v['donestatus'] == 'm')
-            $item['num'] .= ' <div style="color:white;background-color:red;font-size:14px">-</div>';
+            $item['notes'] .= ' <div style="color:white;background-color:red;font-size:14px">-</div>';
         if ($v['donestatus'] == 'r')
-            $item['num'] .= ' <div style="color:white;background-color:blue;font-size:14px">P</div>';
+            $item['notes'] .= ' <div style="color:white;background-color:blue;font-size:14px">P</div>';
         $item['date_in'] = $v['date_in_text'];
         $item['date_control'] = $v['date_control_text'];
         $item['timetolife'] = $v['timetolife'];
