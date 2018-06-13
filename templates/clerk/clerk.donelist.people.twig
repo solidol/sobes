@@ -1,0 +1,126 @@
+{% extends "index.twig" %}
+
+{% block title %}
+    Список документів
+{% endblock %}
+{% block content %}
+
+
+
+    <div class="tab-content">
+        <div id="menu2">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <h3>Відмітки про виконання</h3>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <table id="people" class="display table hover" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            <div>Номер</div>
+                            <input placeholder="Номер" type="text" style="width:80px"></th>
+                        <th>
+                            <div>Дата контролю</div>
+                            <input placeholder="Дата контролю" type="text" style="width:80px"></th>
+                        <th>
+                            <div>Звернувся</div>
+                            <input placeholder="Звернувся" type="text" style="width:120px"></th>
+                        <th>Відмітки про виконання</th>
+                        <th></th>
+
+                    </tr>                  
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Дата контролю</th>
+                        <th>Звернувся</th>
+                        <th>Відмітки про виконання</th>
+                        <th></th>
+
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            window.table = $('#people').DataTable({
+                "language": uk_trans,
+                "processing": true,
+                "serverSide": true,
+                searchDelay: 1000,
+                "lengthMenu": [25, 100, 500, 'all'],
+                "ajax": "{{path('ajax.document.getlisttyped.donestrings',{'type':'people'})}}",
+                "columns": [
+                    {"data": "num"},
+                    {"data": "date_control"},
+                    {"data": "fullname"},
+                    {"data": "donestr"},
+                    {"data": "view"}
+                ],
+                
+                "fnRowCallback": function (nRow, aData) {
+                    if (aData['timetolife'] < 0) {
+                        $('td', nRow).css({"background-color": "#FF978C"});
+                    } else
+
+                    if (aData['timetolife'] > 0 &&
+                            aData['timetolife'] <= 2) {
+                        $('td', nRow).css({"background-color": "#FFDCCB"});
+                    } else
+
+                    if (aData['timetolife'] > 2 &&
+                            aData['timetolife'] <= 5) {
+                        $('td', nRow).css({"background-color": "#FFE9CB"});
+                    } else
+
+                    {
+                        //$('td', nRow).addClass("success");
+                        $('td', nRow).css({"background-color": "#DFFFE5"});
+                    }
+                    if (aData['donestatus'] == 'm' || aData['donestatus'] == 'p' || aData['donestatus'] == 'r') {
+                        $('td', nRow).css({"background-color": "#889688"});
+                        $('td', nRow).css({"color": "#ffffff"});
+                    }
+
+                }
+            });
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keyup change', function (e) {
+                    if (that.search() !== this.value) {
+
+
+
+                        if (this.value.length >= 2 || e.keyCode == 13) {
+                            that
+                                    .search(this.value)
+                                    .draw();
+                        }
+
+                        if (this.value == "") {
+                            that.search("").draw();
+                        }
+
+                    }
+                });
+            });
+
+
+        });
+    </script>
+
+
+{% endblock %}

@@ -329,3 +329,88 @@ $app->get('/ajax/report/org/monthcontrol:{startDate}:{endDate}', function($start
                     $get->get('callback')
     );
 })->bind('ajax.report.org.monthcontrol');
+
+$app->get('/ajax/document/donestrings/getlist:{type}', function($type) use ($app) {
+    $result = array();
+    $arDocs = array();
+    $get = $app['request'];
+    $type = urldecode($get->get('type'));
+    $datecontrol = urldecode($get->get('datecontrol'));
+    $columnsParam = $get->get('columns') ? $get->get('columns') : array();
+    $limit['draw'] = $get->get('draw') ? $get->get('draw') : 1;
+    $limit['length'] = $get->get('length') ? $get->get('length') : 10;
+    $limit['start'] = $get->get('start') ? $get->get('start') : 0;
+    $search = $get->get('search') ? $get->get('search')['value'] : false;
+    $keys['fullnum'] = $get->get('columns')[0]['search']['value'];
+    $keys['date_in_text'] = str_replace(',','.',$get->get('columns')[1]['search']['value']);
+    $keys['date_control_text'] = str_replace(',','.',$get->get('columns')[2]['search']['value']);
+    $keys['fullname'] = $get->get('columns')[3]['search']['value'];
+    
+    if ($type)
+        $keys['type'] = $type;
+    if ($datecontrol)
+        $keys['date_control'] = $datecontrol;
+    if (!empty($columnsParam))
+        foreach ($columnsParam as $key => $value) {
+
+            switch ($key) {
+                case 0: if ($value['search']['value'] != '')
+                        $keys['fullnum'] = $value['search']['value'];
+                    break;
+                case 1: if ($value['search']['value'] != '')
+                        $keys['date_in'] = $value['search']['value'];
+                    break;
+                case 2: if ($value['search']['value'] != '')
+                        $keys['date_control'] = $value['search']['value'];
+                    break;
+            }
+        }
+    //var_dump($keys);
+    $result = RDAStatic::getDocList($keys, "AND", $limit, $search, false, true);
+    $arDocs['data'] = array();
+    foreach ($result as $k => $v) {
+
+        $item['num'] = '';
+        if ($v['num_prefix_1'] != '')
+            $item['num'] .= $v['num_prefix_1'];
+        if ($v['num_prefix_2'] != '')
+            $item['num'] .= '-' . $v['num_prefix_2'];
+        if ($v['internal_number'] != '')
+            $item['num'] .= '-' . $v['internal_number'];
+        $item['num'] = ' <div style="background-color:white;color:black;font-size:20px">'.$v['fullnum'].'</div>';;
+        $item['notes'] = '';
+        if ($v['impstatus'] == 'ugl')
+            $item['num'] .= ' <div style="background-color:red;color:white;font-size:14px">УГЛ</div>';
+        if ($v['num_types'] != null)
+            $item['num'] .= ' <div style="background-color:brown;color:white;font-size:14px">'.$v['num_types'].'</div>';
+        
+        if ($v['donestatus'] == 'p')
+            $item['num'] .= ' <div style="color:white;background-color:rgb(0, 150, 60);font-size:14px">+</div>';
+        if ($v['donestatus'] == 'm')
+            $item['num'] .= ' <div style="color:white;background-color:red;font-size:14px">-</div>';
+        if ($v['donestatus'] == 'r')
+            $item['num'] .= ' <div style="color:white;background-color:blue;font-size:14px">P</div>';
+        $item['date_in'] = $v['date_in_text'];
+        $item['date_control'] = $v['date_control_text'];
+        $item['timetolife'] = $v['timetolife'];
+        $item['donestr'] = $v['donestr'];
+        $item['summary'] = $v['summary'];
+        if ($type=="people" or $type=="visitors"){
+            $item['fullname'] = $v['fullname'];
+        }
+        $item['view'] = '<a href="' . $app['url_generator']->generate('clerk.doc.view', array('doc' => $v['id']))
+                . '"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></a>';
+        $item['arch'] = ($v['donestatus']!='')?'<a href="#" onClick="moveToArch(' . $v['id'] . ')"><i class="fa fa-archive fa-2x" aria-hidden="true"></i></a>':'';
+        $item['del'] = '<a href="#" onClick="docDelete(' . $v['id'] . ')"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></a>';
+        $item['donestatus'] = $v['donestatus'];
+        $arDocs['data'][] = $item;
+    }
+    $arDocs['draw'] = $get->get('draw') ? $get->get('draw') : false;
+    $arDocs['recordsTotal'] = RDAStatic::getDocCount();
+    $arDocs['recordsFiltered'] = RDAStatic::getDocCount($keys, "AND", $search);
+    $resp = new JsonResponse($arDocs);
+    return $resp->setCallback(
+                    $get->get('callback')
+    );
+})->bind('ajax.document.getlisttyped.donestrings');
+

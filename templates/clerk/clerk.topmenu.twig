@@ -39,6 +39,7 @@
             <li><a href="{{path('clerk.doclist.all')}}">ДОКУМЕНТИ НА {{ "now"|date("d.m.Y") }}</a></li>
             <li><a href="{{path('clerk.report.total',{'startDate':datemonthstart,'endDate':datemonthend})}}">ЗВЕРНЕННЯ ЗА ДАТАМИ</a></li>
             <li><a href="{{path('clerk.report.totalmonth',{'startY': "now"|date("Y")})}}">ЗВЕРНЕННЯ ЗА МІСЯЦЕМ</a></li>
+            <li><a href="{{path('clerk.donelist.alltyped',{'type':'people'})}}">ЗВЕРНЕННЯ (ВІДМІТКИ ВИКОНАННЯ)</a></li>
             <li><a href="{{path('clerk.report.orgmonth',{'startDate':datemonthstart,'endDate':datemonthend})}}">ЖУРНАЛ КОНТРОЛЮ УСТАНОВ</a></li>
         </ul>
     </li>

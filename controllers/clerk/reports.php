@@ -179,3 +179,19 @@ $app->get('/clerk/report/org/date:{startDate}:{endDate}', function($startDate, $
 return $app['twig']->render('clerk.report.month.org.twig', $data); 
 
 })->bind('clerk.report.orgmonth');
+
+$app->get('/clerk/donelist/all:{type}', function($type) use ($app) {
+    $data=array();
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data['username']=$user->getName();
+    $data['userid']=$user->getId();
+    switch ($type){
+        case "org": return $app['twig']->render('clerk.doclist.org.twig', $data); break; 
+        case "state": return $app['twig']->render('clerk.doclist.state.twig', $data); break; 
+        case "people": return $app['twig']->render('clerk.donelist.people.twig', $data); break; 
+        case "visit": return $app['twig']->render('clerk.doclist.visitors.twig', $data); break; 
+        default: return $app['twig']->render('clerk.doclist.all.twig', $data); break; 
+    }
+    return $app['twig']->render('clerk.doclist.all.twig', $data);
+})->bind('clerk.donelist.alltyped');

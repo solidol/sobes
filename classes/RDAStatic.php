@@ -165,7 +165,7 @@ class RDAStatic {
         return $arRes['doccnt'];
     }
 
-    public static function getDocList($keys = array(), $logic = "AND", $limit = false, $search = false, $isarchive = false) {
+    public static function getDocList($keys = array(), $logic = "AND", $limit = false, $search = false, $isarchive = false, $donestr = false) {
         global $app;
         $sqlw = array();
         $sqls = '';
@@ -177,7 +177,14 @@ class RDAStatic {
         if (isset($keys['type']))
             $view .= '_' . $keys['type'];
         $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM $view WHERE 1 ";
-
+        if ($donestr){
+            $sql = "SELECT *, DATEDIFF(date_control,now()) AS `timetolife`  FROM $view "
+                    . "LEFT JOIN "
+                    . "(SELECT document_id, GROUP_CONCAT(donetext separator '<br>\n') AS donestr "
+                    . "from `donestrings_view` group by document_id) AS dones "
+                    . "ON $view.id = dones.document_id "
+                    . "WHERE 1 ";
+        }
         if (!empty($keys))
             foreach ($keys as $key => $value) {
                 if ($value > '')
@@ -692,4 +699,13 @@ class RDAStatic {
         return $arPeople;
     }
 
+    
+    public static function getDoneDtringsConcated($doc){
+        $sql = "SELECT document_id, GROUP_CONCAT(donetext separator '<br>\n') as donestr
+            from 
+            `donestrings_view` 
+            where document_id= $doc 
+            group by document_id";
+        $arPeople = $app['db']->fetchAssoc($sql);
+    }
 }
