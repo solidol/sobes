@@ -87,10 +87,13 @@
                     {"data": "arch"},
                     {"data": "del"}
                 ],
-                
+
                 "fnRowCallback": function (nRow, aData) {
                     if (aData['timetolife'] < 0) {
-                        $('td', nRow).css({"background-color": "#FF978C"});
+                        $('td', nRow).addClass('timefailed');
+                    } else
+                    if (aData['timetolife'] == 0) {
+                        $('td', nRow).addClass('timeempty');
                     } else
 
                     if (aData['timetolife'] > 0 &&

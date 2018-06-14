@@ -55,6 +55,7 @@ $app->get('/ajax/document/getlist', function() use ($app) {
             $item['notes'] .= ' <span style="color:red;font-size:20px">-</span>';
         if ($v['donestatus'] == 'r')
             $item['notes'] .= ' <span style="color:blue;font-size:20px">P</span>';
+        $item['num'].=$item['notes'];
         $item['date_in'] = $v['date_in'];
         $item['date_control'] = $v['date_control'];
         $item['timetolife'] = $v['timetolife'];
@@ -135,6 +136,7 @@ $app->get('/ajax/document/getlist:{type}', function($type) use ($app) {
             $item['notes'] .= ' <div style="color:white;background-color:red;font-size:14px">-</div>';
         if ($v['donestatus'] == 'r')
             $item['notes'] .= ' <div style="color:white;background-color:blue;font-size:14px">P</div>';
+        $item['num'].=$item['notes'];
         $item['date_in'] = $v['date_in_text'];
         $item['date_control'] = $v['date_control_text'];
         $item['timetolife'] = $v['timetolife'];
