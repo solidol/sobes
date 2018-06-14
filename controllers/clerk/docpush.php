@@ -148,9 +148,9 @@ $app->post('/clerk/newdoc', function() use ($app) {
 
 
 
-    if ($post->get('nocontrol') == 'on') {
-        RDAStatic::changeDocStatus($newId, 'hasresolution');
-        RDAStatic::setDoneStatusById($newId, 'r');
+    if ($post->get('nocontrol') == 'on') {// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        //RDAStatic::changeDocStatus($newId, 'hasresolution');
+        //RDAStatic::setDoneStatusById($newId, 'r');
     }
 
     switch ($post->get('doctype')) {
