@@ -140,10 +140,10 @@ $app->post('/clerk/newdoc', function() use ($app) {
         }
     }
 
-    if (($post->get('doctype') == "visitors") or ( $post->get('doctype') == "people")) {
+   //if (($post->get('doctype') == "visitors") or ( $post->get('doctype') == "people")) {
 
         RDAStatic::moveDoc($newId, $user->getId(), $post->get('selectinterviewer'), 'Створено картку, передано на резолюцію');
-    }
+    //}
     RDAStatic::pushExternalsByDocId($newId, $externals);
 
 
