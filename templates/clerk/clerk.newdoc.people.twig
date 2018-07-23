@@ -189,6 +189,7 @@
             var engine = new Bloodhound({
                 remote: {
                     url: "/default.php/ajax/people/shortsearchpeople?query=%QUERY",
+                    rateLimitWait: 300,
                     filter: function (response) {
                         console.log(response);
                         return response;
@@ -198,7 +199,8 @@
                 datumTokenizer: function (d) {
                     return Bloodhound.tokenizers.whitespace(d.label);
                 },
-                queryTokenizer: Bloodhound.tokenizers.whitespace
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                limit: 10
             });
             engine.initialize();
             $('#topicstarter')
@@ -239,7 +241,8 @@
                             {
                                 name: 'topicstarter',
                                 displayKey: 'label',
-                                source: engine.ttAdapter()
+                                source: engine.ttAdapter(),
+                                limit: 10
                             }
                         ]
 

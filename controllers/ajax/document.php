@@ -48,6 +48,23 @@ $app->post('/ajax/notes/push', function() use ($app) {
     return 'OK';
 })->bind('ajax.notes.push');
 
+$app->post('/ajax/datescontrol/push', function() use ($app) {
+    $token = $app['security']->getToken();
+    $user = $token->getUser();
+    $data = array();
+    $post = $app['request'];
+    $arDates = $post->get('dates_control');
+    $data['date_control'] = (is_array($arDates)) ? $arDates[0] : '00.00.0000';
+    $app['db']->delete('dates_control', array('document'=>$post->get('doc')));
+    foreach ($arDates as $dtItem) {
+        $dates = array();
+        $dates['document'] = $post->get('doc');
+        $dates['date_control'] = ($dtItem > '') ? $dtItem : '00.00.0000';
+        $app['db']->insert('dates_control', $dates);
+    }
+    return 'OK';
+})->bind('ajax.datescontrol.push');
+
 $app->post('/ajax/document/move', function() use ($app) {
     $token = $app['security']->getToken();
     $user = $token->getUser();

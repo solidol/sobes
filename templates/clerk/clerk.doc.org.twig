@@ -74,10 +74,14 @@
                 {% if doc.controls is not empty %}
                     {% for item in doc.controls %}
                         <div>
-                        {{item.date_control_text}}
+                            {{item.date_control_text}}
                         </div>
                     {% endfor %}
                 {% endif %}
+                <div class="col-md-4">
+                    <button type="button" id="addman" name="addman" class="btn btn-inverse"  
+                            data-toggle="modal" data-target="#datesModal">Редагувати дати</button>
+                </div>
             </td>
         </tr>
         <tr>
@@ -173,8 +177,56 @@
         </tr>
 
     </table>
-        {% include 'popup.resolution.twig' %}
-        {% include 'popup.docmov.twig' %}
-        {% include 'popup.setstatus.org.twig' %}
-        {% include 'popup.notes.twig' %}
+    {% include 'popup.resolution.twig' %}
+    {% include 'popup.docmov.twig' %}
+    {% include 'popup.setstatus.org.twig' %}
+    {% include 'popup.notes.twig' %}
+
+
+    <div id="datesModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+                    <h4 class="modal-title">Дати контролю</h4>
+                </div>
+                <form action="" method="post" name="dates123" id="dates123">
+
+
+                    <div class="controls2 panel panel-default">
+                        <input name="doc" type="hidden" value="{{doc.id}}" />
+                        {% if doc.controls is not empty %}
+                            {% for item in doc.controls %}
+                                <div class="entry2 input-group panel-body">
+                                    <input class="form-control" name="dates_control[]" type="date" placeholder="00.00.0000" value="{{item.date_control}}" />
+                                    <span class="input-group-btn">     
+                                        <button class="btn btn-success btn-add" type="button">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <button class="btn btn-success" id="btnpost111" type="button" data-dismiss="modal">Зберегти</button>
+                        <button class="btn btn-default" type="button" data-dismiss="modal">Скасувати</button>
+                        <script>
+                            $(document).ready(function () {
+                                $("#btnpost111").click(function () {
+                                    //alert('ololo');
+                                    $("#dates123").ajaxSubmit({url: '{{path('ajax.datescontrol.push')}}', type: 'post'});
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 1000);
+                                });
+
+                            });
+                        </script>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
