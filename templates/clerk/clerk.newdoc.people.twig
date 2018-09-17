@@ -200,7 +200,7 @@
                     return Bloodhound.tokenizers.whitespace(d.label);
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                limit: 10
+                limit: 50
             });
             engine.initialize();
             $('#topicstarter')
@@ -242,7 +242,7 @@
                                 name: 'topicstarter',
                                 displayKey: 'label',
                                 source: engine.ttAdapter(),
-                                limit: 10
+                                limit: 50
                             }
                         ]
 
