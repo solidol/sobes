@@ -417,6 +417,8 @@ class RDAStatic {
 
                         case "id": $sqlw[] = " id = '$value' ";
                             break;
+                        case "fullname": $sqlw[] = " fullname LIKE '%$value%' ";
+                            break;
                         case "firstname": $sqlw[] = " firstname LIKE '%$value%' ";
                             break;
                         case "secondname": $sqlw[] = " secondname LIKE '%$value%' ";
@@ -438,6 +440,7 @@ class RDAStatic {
             if (is_numeric($limit['start']) and is_numeric($limit['length'])) {
                 $sql .= " LIMIT " . $limit['start'] . "," . $limit['length'] . " ";
             }
+			
         $arPeople = $app['db']->fetchAll($sql);
         //var_dump($sql);
         return $arPeople;

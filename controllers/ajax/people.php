@@ -15,6 +15,8 @@ $app->get('/ajax/people/shortsearchpeople', function() use ($app) {
     $searchstring = urldecode($get->get('term'));
     if ($get->get('query') > "")
         $searchstring = urldecode($get->get('query'));
+    $keys['fullname'] = $searchstring;
+	//echo($keys['fullname']);
     $keys['firstname'] = $searchstring;
     $keys['secondname'] = $searchstring;
     $keys['lastname'] = $searchstring;
